@@ -3,7 +3,7 @@ TARGET = wallet
 
 # Trình biên dịch và flags
 CXX = g++
-CXXFLAGS = -Wall -std=c++17 -I./include
+CXXFLAGS = -Wall -std=c++17 -I./include -I./deps/libbcrypt/include -I./deps/json/include
 DEBUG_FLAGS = -g -DDEBUG
 RELEASE_FLAGS = -O3
 
@@ -11,6 +11,7 @@ RELEASE_FLAGS = -O3
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
+DEPS_DIR = deps
 
 # Tìm tất cả các file .cpp trong thư mục src và các thư mục con
 SRCS := $(shell find $(SRC_DIR) -name '*.cpp')
@@ -27,7 +28,7 @@ all: $(BIN_DIR)/$(TARGET)
 $(BIN_DIR)/$(TARGET): $(OBJS)
 	@echo "Linking..."
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(OBJS) -o $@
+	$(CXX) $(OBJS) -L$(DEPS_DIR)/libbcrypt/build -lbcrypt -o $@
 
 # Build các file object
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
