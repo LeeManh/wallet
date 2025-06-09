@@ -21,8 +21,14 @@ OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 $(shell mkdir -p $(BIN_DIR))
 $(shell mkdir -p $(OBJ_DIR))
 
+# Build libbcrypt
+$(DEPS_DIR)/libbcrypt/build/libbcrypt.a:
+	@echo "Building libbcrypt..."
+	@mkdir -p $(DEPS_DIR)/libbcrypt/build
+	@cd $(DEPS_DIR)/libbcrypt/build && cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 .. && make
+
 # Target mặc định
-all: $(BIN_DIR)/$(TARGET)
+all: $(DEPS_DIR)/libbcrypt/build/libbcrypt.a $(BIN_DIR)/$(TARGET)
 
 # Build chương trình
 $(BIN_DIR)/$(TARGET): $(OBJS)
@@ -52,6 +58,8 @@ run: all
 clean:
 	@echo "Cleaning..."
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	@echo "Cleaning dependencies..."
+	rm -rf $(DEPS_DIR)/libbcrypt/build
 
 # Tạo documentation
 docs:
