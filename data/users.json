@@ -1,4 +1,8 @@
-{
-  "happy": true,
-  "pi": 3.141
-}
+[
+    {
+        "fullName": "Lê Văn Mạnh",
+        "isAdmin": false,
+        "passwordHash": "$2a$12$7rnEwOKq7E9dY0b3xRQed.KUPUuyVW5fNL.N6kijsO9XJcEGD9Fiy",
+        "username": "leem28"
+    }
+]
