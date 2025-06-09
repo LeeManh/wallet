@@ -18,7 +18,7 @@ Hệ thống quản lý ví điểm thưởng là một ứng dụng cho phép n
 1. Clone repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/LeeManh/wallet.git
 ```
 
 2. Lấy các dependencies (submodules):
