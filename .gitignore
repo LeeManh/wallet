@@ -69,10 +69,6 @@ Thumbs.db
 *.idb
 *.pdb
 
-# Dependencies
-deps/
-vendor/
-
 # CMake
 CMakeFiles/
 CMakeCache.txt
