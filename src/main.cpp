@@ -1,45 +1,97 @@
 #include <iostream>
 
-#include "ui/ui.hpp"
+#include "controllers/AuthController.hpp"
+#include "views/AdminView.hpp"
+#include "views/CustomerView.hpp"
+#include "views/MainView.hpp"
+#include "views/RegistrationView.hpp"
 
 using namespace std;
 
 int main() {
+  views::MainView mainView;
+  views::AdminView adminView;
+  views::CustomerView customerView;
+  views::RegistrationView registrationView;
+  controllers::AuthController authController;
+
   while (true) {
-    ui::UserInterface::displayMainMenu();
-    int choice = ui::UserInterface::getMenuChoice();
+    mainView.display();
+    int choice = mainView.getChoice();
 
     switch (choice) {
       case 1: {
-        auto [success, isAdmin] = ui::UserInterface::handleLogin();
+        cout << "\n=== Đăng nhập ===" << endl;
+        string username = mainView.getInput("Nhập tên đăng nhập: ");
+        string password = mainView.getInput("Nhập mật khẩu: ");
+        auto [success, isAdmin] = authController.login(username, password);
 
         if (success) {
           while (true) {
             if (isAdmin) {
-              ui::UserInterface::displayAdminMenu();
-              int adminChoice = ui::UserInterface::getAdminMenuChoice();
+              adminView.display();
+              int adminChoice = adminView.getChoice();
               if (adminChoice == 0) break;
+
               switch (adminChoice) {
-                case 4:  // Tạo tài khoản mới cho người dùng
-                  ui::UserInterface::handleAdminCreateAccount();
+                case 1:
+                  adminView.handleViewAllUsers();
                   break;
-                // Handle other admin menu choices
-                default:
-                  cout << "Chức năng đang được phát triển..." << endl;
+                case 2:
+                  adminView.handleViewAllWallets();
+                  break;
+                case 3:
+                  adminView.handleViewTransactionHistory();
+                  break;
+                case 4:
+                  adminView.handleCreateAccount();
+                  break;
+                case 5:
+                  adminView.handleEditUserInfo();
+                  break;
+                case 6:
+                  adminView.handleManageTotalWallet();
+                  break;
+                case 7:
+                  adminView.handleChangePassword();
                   break;
               }
             } else {
-              ui::UserInterface::displayCustomerMenu();
-              int customerChoice = ui::UserInterface::getCustomerMenuChoice();
+              customerView.display();
+              int customerChoice = customerView.getChoice();
               if (customerChoice == 0) break;
-              // Handle customer menu choices
+
+              switch (customerChoice) {
+                case 1:
+                  customerView.handleViewBalance();
+                  break;
+                case 2:
+                  customerView.handleDeposit();
+                  break;
+                case 3:
+                  customerView.handleWithdraw();
+                  break;
+                case 4:
+                  customerView.handleTransfer();
+                  break;
+                case 5:
+                  customerView.handleViewTransactionHistory();
+                  break;
+                case 6:
+                  customerView.handleEditProfile();
+                  break;
+                case 7:
+                  customerView.handleChangePassword();
+                  break;
+              }
             }
           }
         }
         break;
       }
       case 2:
-        ui::UserInterface::handleRegistration();
+        registrationView.display();
+        registrationView.handleRegistration();
         break;
       case 0:
         cout << "Cảm ơn bạn đã sử dụng chương trình!" << endl;

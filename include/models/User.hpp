@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace user {
+namespace models {
 
 class User {
  private:
@@ -28,5 +28,6 @@ class User {
   void setFullName(const std::string& newFullName);
 };
 
-}  // namespace user
+}  // namespace models
+
 #endif

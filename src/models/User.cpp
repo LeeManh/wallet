@@ -1,10 +1,10 @@
-#include "user/user.hpp"
+#include "models/User.hpp"
 
 #include <string>
 
 #include "utils/hash.hpp"
 
-namespace user {
+namespace models {
 
 // Parameterized constructor
 User::User(const std::string& username, const std::string& passwordHash,
@@ -28,4 +28,4 @@ void User::setFullName(const std::string& newFullName) {
   fullName = newFullName;
 }
 
-}  // namespace user
+}  // namespace models

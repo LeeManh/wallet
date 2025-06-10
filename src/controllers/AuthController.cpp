@@ -1,21 +1,15 @@
-#include "auth/auth.hpp"
+#include "controllers/AuthController.hpp"
+
+#include <iostream>
 
 #include "utils/hash.hpp"
+#include "utils/password.hpp"
 #include "utils/storage.hpp"
 
-namespace auth {
+namespace controllers {
 
-bool isUserExists(const json& users, const std::string& username) {
-  for (const auto& user : users) {
-    if (user["username"] == username) {
-      return true;
-    }
-  }
-  return false;
-}
-
-std::pair<bool, bool> login(const std::string& username,
-                            const std::string& password) {
+std::pair<bool, bool> AuthController::login(const std::string& username,
+                                            const std::string& password) {
   try {
     // Đọc file users.json
     json users = utils::storage::readJsonFile("data/users.json");
@@ -41,21 +35,24 @@ std::pair<bool, bool> login(const std::string& username,
   }
 }
 
-bool registerUser(const std::string& username, const std::string& password,
-                  const std::string& fullName) {
+bool AuthController::registerUser(const std::string& username,
+                                  const std::string& password,
+                                  const std::string& fullName) {
   try {
     // Đọc file users.json hiện tại
     json users = utils::storage::readJsonFile("data/users.json");
 
     // Kiểm tra username đã tồn tại chưa
-    if (isUserExists(users, username)) {
-      std::cout << "Tài khoản đã tồn tại!" << std::endl;
-      return false;
+    for (const auto& user : users) {
+      if (user["username"] == username) {
+        std::cout << "Tên đăng nhập đã tồn tại!" << std::endl;
+        return false;
+      }
     }
 
     // Tạo đối tượng User
     std::string passwordHash = utils::hash::generatePasswordHash(password);
-    user::User newUser(username, passwordHash, fullName);
+    models::User newUser(username, passwordHash, fullName);
 
     // Thêm thông tin người dùng mới
     json userData;
@@ -86,4 +83,14 @@ bool registerUser(const std::string& username, const std::string& password,
   }
 }
 
-}  // namespace auth
+bool AuthController::createUserByAdmin(const std::string& username,
+                                       const std::string& fullName,
+                                       std::string& generatedPassword) {
+  // Tạo mật khẩu ngẫu nhiên
+  generatedPassword = utils::password::generateRandomPassword(8);
+
+  // Đăng ký user với mật khẩu đã tạo
+  return registerUser(username, generatedPassword, fullName);
+}
+
+}  // namespace controllers
