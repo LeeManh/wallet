@@ -16,10 +16,10 @@ class AuthController {
 
   // Đăng ký
   bool registerUser(const std::string& username, const std::string& password,
-                    const std::string& fullName);
+                    const std::string& email, const std::string& fullName);
 
   // Tạo tài khoản bởi admin
-  bool createUserByAdmin(const std::string& username,
+  bool createUserByAdmin(const std::string& username, const std::string& email,
                          const std::string& fullName,
                          std::string& generatedPassword);
 };
