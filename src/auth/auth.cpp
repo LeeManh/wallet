@@ -5,7 +5,8 @@
 
 namespace auth {
 
-bool login(const std::string& username, const std::string& password) {
+std::pair<bool, bool> login(const std::string& username,
+                            const std::string& password) {
   try {
     // Đọc file users.json
     json users = utils::storage::readJsonFile("data/users.json");
@@ -18,17 +19,16 @@ bool login(const std::string& username, const std::string& password) {
         if (!isMathPassword) break;
 
         std::cout << "Đăng nhập thành công!" << std::endl;
-        std::cout << "Xin chào " << user["fullName"] << std::endl;
-        return true;
+        return {true, user["isAdmin"]};
       }
     }
 
     std::cout << "Tên đăng nhập hoặc mật khẩu không đúng!" << std::endl;
-    return false;
+    return {false, false};
 
   } catch (const std::exception& e) {
     std::cout << "Lỗi: " << e.what() << std::endl;
-    return false;
+    return {false, false};
   }
 }
 

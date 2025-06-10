@@ -1,8 +1,14 @@
 [
     {
-        "fullName": "le van manh",
+        "fullName": "admin",
+        "isAdmin": true,
+        "passwordHash": "$2a$12$lRbxWXCJ3F0P6k1DWxMbJO.y5yVODFfjzpNEPTsBEGOY2qhYnaw6m",
+        "username": "admin"
+    },
+    {
+        "fullName": "customer",
         "isAdmin": false,
         "passwordHash": "$2a$12$lRbxWXCJ3F0P6k1DWxMbJO.y5yVODFfjzpNEPTsBEGOY2qhYnaw6m",
-        "username": "leem1"
+        "username": "customer"
     }
 ]

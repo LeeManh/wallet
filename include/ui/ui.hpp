@@ -16,8 +16,12 @@ class UserInterface {
  public:
   static void displayMainMenu();
   static int getMenuChoice();
-  static bool handleLogin();
+  static std::pair<bool, bool> handleLogin();
   static bool handleRegistration();
+  static void displayCustomerMenu();
+  static void displayAdminMenu();
+  static int getCustomerMenuChoice();
+  static int getAdminMenuChoice();
 };
 
 }  // namespace ui

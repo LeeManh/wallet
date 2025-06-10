@@ -12,7 +12,8 @@ using json = nlohmann::json;
 
 namespace auth {
 
-bool login(const std::string& username, const std::string& password);
+std::pair<bool, bool> login(const std::string& username,
+                            const std::string& password);
 bool registerUser(const std::string& username, const std::string& password,
                   const std::string& fullName);
 
