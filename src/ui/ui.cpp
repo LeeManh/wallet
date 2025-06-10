@@ -11,16 +11,16 @@
 namespace ui {
 void UserInterface::displayMainMenu() {
   std::cout << "\n=== Hệ thống quản lý ví điểm thưởng ===" << std::endl;
-  std::cout << "1. Đăng nhập" << std::endl;
-  std::cout << "2. Đăng ký" << std::endl;
-  std::cout << "3. Thoát" << std::endl;
-  std::cout << "Nhập lựa chọn (1-3): ";
+  std::cout << "[1] Đăng nhập" << std::endl;
+  std::cout << "[2] Đăng ký" << std::endl;
+  std::cout << "[0] Thoát" << std::endl;
+  std::cout << "Nhập lựa chọn: ";
 }
 
 int UserInterface::getMenuChoice() {
   int choice;
-  while (!(std::cin >> choice) || choice < 1 || choice > 3) {
-    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (1-3): ";
+  while (!(std::cin >> choice) || choice < 0 || choice > 2) {
+    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-2): ";
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
@@ -68,7 +68,7 @@ bool UserInterface::handleRegistration() {
   return auth::registerUser(username, password, fullName);
 }
 
-bool UserInterface::handleLogin() {
+std::pair<bool, bool> UserInterface::handleLogin() {
   std::cout << "\n=== Đăng nhập ===" << std::endl;
 
   // Nhập username
@@ -86,6 +86,53 @@ bool UserInterface::handleLogin() {
       "- Mật khẩu phải có ít nhất 6 ký tự và không được trống.");
 
   return auth::login(username, password);
+}
+
+void UserInterface::displayCustomerMenu() {
+  std::cout << "\n=== Menu Khách hàng ===" << std::endl;
+  std::cout << "[1] Xem thông tin cá nhân" << std::endl;
+  std::cout << "[2] Cập nhật thông tin cá nhân" << std::endl;
+  std::cout << "[3] Đổi mật khẩu" << std::endl;
+  std::cout << "[4] Xem số dư ví" << std::endl;
+  std::cout << "[5] Chuyển điểm cho người khác" << std::endl;
+  std::cout << "[6] Xem lịch sử giao dịch" << std::endl;
+  std::cout << "[0] Đăng xuất" << std::endl;
+  std::cout << "Nhập lựa chọn của bạn: ";
+}
+
+void UserInterface::displayAdminMenu() {
+  std::cout << "\n=== Menu Quản trị viên ===" << std::endl;
+  std::cout << "[1] Xem thông tin cá nhân" << std::endl;
+  std::cout << "[2] Đổi mật khẩu" << std::endl;
+  std::cout << "[3] Xem danh sách người dùng" << std::endl;
+  std::cout << "[4] Tạo tài khoản mới cho người dùng" << std::endl;
+  std::cout << "[5] Điều chỉnh thông tin tài khoản người dùng" << std::endl;
+  std::cout << "[6] Xem số dư ví của người dùng" << std::endl;
+  std::cout << "[7] Xem/Tra cứu lịch sử giao dịch" << std::endl;
+  std::cout << "[0] Đăng xuất" << std::endl;
+  std::cout << "Nhập lựa chọn của bạn: ";
+}
+
+int UserInterface::getCustomerMenuChoice() {
+  int choice;
+  while (!(std::cin >> choice) || choice < 0 || choice > 6) {
+    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-6): ";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  return choice;
+}
+
+int UserInterface::getAdminMenuChoice() {
+  int choice;
+  while (!(std::cin >> choice) || choice < 0 || choice > 7) {
+    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-7): ";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  }
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  return choice;
 }
 
 }  // namespace ui
