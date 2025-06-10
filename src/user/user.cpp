@@ -2,37 +2,30 @@
 
 #include <string>
 
+#include "utils/hash.hpp"
+
 namespace user {
 
 // Parameterized constructor
-User::User(const string& username, const string& password,
-           const string& fullName, bool isAdmin)
-    : username(username), fullName(fullName), isAdmin(isAdmin) {
-  // Hash password using bcrypt
-  passwordHash = BCrypt::generateHash(password);
-}
+User::User(const std::string& username, const std::string& passwordHash,
+           const std::string& fullName, bool isAdmin)
+    : username(username),
+      passwordHash(passwordHash),
+      fullName(fullName),
+      isAdmin(isAdmin) {}
 
 // Getters
-string User::getUsername() const { return username; }
-
-string User::getFullName() const { return fullName; }
-
+std::string User::getUsername() const { return username; }
+std::string User::getFullName() const { return fullName; }
 bool User::isAdminUser() const { return isAdmin; }
-
-string User::getPasswordHash() const { return passwordHash; }
+std::string User::getPasswordHash() const { return passwordHash; }
 
 // Setters
-void User::setPassword(const string& newPassword) {
-  // Hash new password using bcrypt
-  passwordHash = BCrypt::generateHash(newPassword);
+void User::setPassword(const std::string& newPassword) {
+  passwordHash = utils::hash::generatePasswordHash(newPassword);
 }
-
-void User::setFullName(const string& newFullName) { fullName = newFullName; }
-
-// Authentication
-bool User::verifyPassword(const string& password) const {
-  // Verify password using bcrypt
-  return BCrypt::validatePassword(password, passwordHash);
+void User::setFullName(const std::string& newFullName) {
+  fullName = newFullName;
 }
 
 }  // namespace user

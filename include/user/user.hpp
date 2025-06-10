@@ -3,38 +3,30 @@
 
 #include <string>
 
-#include "bcrypt/BCrypt.hpp"
-
-using namespace std;
-
 namespace user {
 
 class User {
  private:
-  string username;      // Tên đăng nhập (unique)
-  string passwordHash;  // Mật khẩu đã được hash
-  string fullName;      // Họ và tên đầy đủ
-  bool isAdmin;         // Phân quyền admin
+  std::string username;      // Tên đăng nhập (unique)
+  std::string passwordHash;  // Mật khẩu đã được hash
+  std::string fullName;      // Họ và tên đầy đủ
+  bool isAdmin;              // Phân quyền admin
 
  public:
   // Constructor
-  User(const string& username, const string& password, const string& fullName,
-       bool isAdmin = false);
+  User(const std::string& username, const std::string& passwordHash,
+       const std::string& fullName, bool isAdmin = false);
 
   // Getters
-  string getUsername() const;
-  string getFullName() const;
+  std::string getUsername() const;
+  std::string getFullName() const;
   bool isAdminUser() const;
-  string getPasswordHash() const;
+  std::string getPasswordHash() const;
 
   // Setters
-  void setPassword(const string& newPassword);
-  void setFullName(const string& newFullName);
-
-  // Authentication methods
-  bool verifyPassword(const string& password) const;
+  void setPassword(const std::string& newPassword);
+  void setFullName(const std::string& newFullName);
 };
 
 }  // namespace user
-
 #endif
