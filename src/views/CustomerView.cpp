@@ -10,20 +10,18 @@ namespace views {
 void CustomerView::display() {
   std::cout << "\n=== MENU KHÁCH HÀNG ===" << std::endl;
   std::cout << "[1] Xem số dư" << std::endl;
-  std::cout << "[2] Nạp điểm" << std::endl;
-  std::cout << "[3] Rút điểm" << std::endl;
-  std::cout << "[4] Chuyển điểm" << std::endl;
-  std::cout << "[5] Xem lịch sử giao dịch" << std::endl;
-  std::cout << "[6] Điều chỉnh thông tin cá nhân" << std::endl;
-  std::cout << "[7] Đổi mật khẩu" << std::endl;
+  std::cout << "[2] Chuyển điểm" << std::endl;
+  std::cout << "[3] Xem lịch sử giao dịch" << std::endl;
+  std::cout << "[4] Điều chỉnh thông tin cá nhân" << std::endl;
+  std::cout << "[5] Đổi mật khẩu" << std::endl;
   std::cout << "[0] Đăng xuất" << std::endl;
   std::cout << "Nhập lựa chọn: ";
 }
 
 int CustomerView::getChoice() {
   int choice;
-  while (!(std::cin >> choice) || choice < 0 || choice > 7) {
-    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-7): ";
+  while (!(std::cin >> choice) || choice < 0 || choice > 5) {
+    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-5): ";
     std::cin.clear();
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
@@ -33,18 +31,6 @@ int CustomerView::getChoice() {
 
 void CustomerView::handleViewBalance() {
   // TODO: Gọi WalletController để lấy số dư
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
-}
-
-void CustomerView::handleDeposit() {
-  std::string amount = getInput("Nhập số điểm muốn nạp: ");
-  // TODO: Gọi WalletController để nạp điểm
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
-}
-
-void CustomerView::handleWithdraw() {
-  std::string amount = getInput("Nhập số điểm muốn rút: ");
-  // TODO: Gọi WalletController để rút điểm
   std::cout << "Chức năng đang được phát triển..." << std::endl;
 }
 

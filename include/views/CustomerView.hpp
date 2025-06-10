@@ -12,8 +12,6 @@ class CustomerView : public View {
 
   // Các phương thức xử lý menu customer
   void handleViewBalance();
-  void handleDeposit();
-  void handleWithdraw();
   void handleTransfer();
   void handleViewTransactionHistory();
   void handleEditProfile();

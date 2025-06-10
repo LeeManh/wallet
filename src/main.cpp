@@ -66,21 +66,15 @@ int main() {
                   customerView.handleViewBalance();
                   break;
                 case 2:
-                  customerView.handleDeposit();
-                  break;
-                case 3:
-                  customerView.handleWithdraw();
-                  break;
-                case 4:
                   customerView.handleTransfer();
                   break;
-                case 5:
+                case 3:
                   customerView.handleViewTransactionHistory();
                   break;
-                case 6:
+                case 4:
                   customerView.handleEditProfile();
                   break;
-                case 7:
+                case 5:
                   customerView.handleChangePassword();
                   break;
               }
