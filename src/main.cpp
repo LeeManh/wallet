@@ -19,7 +19,15 @@ int main() {
               ui::UserInterface::displayAdminMenu();
               int adminChoice = ui::UserInterface::getAdminMenuChoice();
               if (adminChoice == 0) break;
-              // Handle admin menu choices
+              switch (adminChoice) {
+                case 4:  // Tạo tài khoản mới cho người dùng
+                  ui::UserInterface::handleAdminCreateAccount();
+                  break;
+                // Handle other admin menu choices
+                default:
+                  cout << "Chức năng đang được phát triển..." << endl;
+                  break;
+              }
             } else {
               ui::UserInterface::displayCustomerMenu();
               int customerChoice = ui::UserInterface::getCustomerMenuChoice();

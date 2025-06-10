@@ -6,6 +6,7 @@
 
 #include "auth/auth.hpp"
 #include "utils/input.hpp"
+#include "utils/password.hpp"
 #include "utils/validation.hpp"
 
 namespace ui {
@@ -133,6 +134,38 @@ int UserInterface::getAdminMenuChoice() {
   }
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   return choice;
+}
+
+bool UserInterface::handleAdminCreateAccount() {
+  std::cout << "\n=== Tạo tài khoản mới cho người dùng ===" << std::endl;
+
+  // Nhập username
+  std::string username = utils::input::getValidatedInput(
+      "Nhập tên đăng nhập: ", utils::validation::isValidUsername,
+      "- Tên đăng nhập không hợp lệ.\n"
+      "- Tên đăng nhập phải có ít nhất 3 ký tự và chỉ chứa chữ cái, số và "
+      "dấu gạch dưới");
+
+  // Nhập họ tên
+  std::string fullName = getInput("Nhập họ và tên: ");
+
+  // Tạo mật khẩu ngẫu nhiên
+  std::string password = utils::password::generateRandomPassword(8);
+
+  // Đăng ký tài khoản
+  bool success = auth::registerUser(username, password, fullName);
+
+  if (success) {
+    std::cout << "\nTạo tài khoản thành công!" << std::endl;
+    std::cout << "Thông tin đăng nhập:" << std::endl;
+    std::cout << "Tên đăng nhập: " << username << std::endl;
+    std::cout << "Mật khẩu: " << password << std::endl;
+    std::cout << "\nVui lòng lưu lại thông tin đăng nhập này và chuyển cho "
+                 "người dùng."
+              << std::endl;
+  }
+
+  return success;
 }
 
 }  // namespace ui

@@ -22,6 +22,7 @@ class UserInterface {
   static void displayAdminMenu();
   static int getCustomerMenuChoice();
   static int getAdminMenuChoice();
+  static bool handleAdminCreateAccount();
 };
 
 }  // namespace ui
