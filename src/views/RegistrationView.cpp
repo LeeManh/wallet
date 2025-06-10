@@ -20,6 +20,7 @@ void RegistrationView::handleRegistration() {
   std::string password = getInput("Nhập mật khẩu: ");
   std::string confirmPassword = getInput("Nhập lại mật khẩu: ");
   std::string fullName = getInput("Nhập họ và tên: ");
+  std::string email = getInput("Nhập email: ");
 
   if (password != confirmPassword) {
     std::cout << "Mật khẩu không khớp!" << std::endl;
@@ -27,7 +28,7 @@ void RegistrationView::handleRegistration() {
   }
 
   controllers::AuthController authController;
-  authController.registerUser(username, password, fullName);
+  authController.registerUser(username, password, email, fullName);
 }
 
 }  // namespace views

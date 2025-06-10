@@ -21,6 +21,9 @@ bool fileExists(const std::string& path);
 // Tạo thư mục nếu chưa tồn tại
 bool ensureDirectoryExists(const std::string& path);
 
+// Lấy ID tiếp theo
+int getNextUserId(const json& users);
+
 }  // namespace storage
 }  // namespace utils
 

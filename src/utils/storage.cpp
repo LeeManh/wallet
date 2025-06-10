@@ -80,5 +80,11 @@ bool ensureDirectoryExists(const std::string& path) {
   }
 }
 
+int getNextUserId(const json& users) {
+  if (users.empty()) return 1;
+
+  return users.back()["id"].get<int>() + 1;
+}
+
 }  // namespace storage
 }  // namespace utils

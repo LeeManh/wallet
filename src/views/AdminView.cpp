@@ -35,14 +35,17 @@ void AdminView::handleCreateAccount() {
   std::cout << "\n=== TẠO TÀI KHOẢN MỚI CHO NGƯỜI DÙNG ===" << std::endl;
 
   std::string username = getInput("Nhập tên đăng nhập: ");
+  std::string email = getInput("Nhập email: ");
   std::string fullName = getInput("Nhập họ và tên: ");
 
   controllers::AuthController authController;
   std::string generatedPassword;
 
-  if (authController.createUserByAdmin(username, fullName, generatedPassword)) {
+  if (authController.createUserByAdmin(username, email, fullName,
+                                       generatedPassword)) {
     std::cout << "\nTạo tài khoản thành công!" << std::endl;
     std::cout << "Tên đăng nhập: " << username << std::endl;
+    std::cout << "Email: " << email << std::endl;
     std::cout << "Mật khẩu: " << generatedPassword << std::endl;
     std::cout << "Vui lòng lưu lại mật khẩu này để đăng nhập lần đầu!"
               << std::endl;
