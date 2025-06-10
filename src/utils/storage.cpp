@@ -55,7 +55,29 @@ bool fileExists(const std::string& path) {
 
 bool ensureDirectoryExists(const std::string& path) {
   if (path.empty()) return true;
-  return std::filesystem::create_directories(path);
+
+  try {
+    if (std::filesystem::exists(path)) {
+      if (!std::filesystem::is_directory(path)) {
+        std::cerr << "Đường dẫn " << path
+                  << " đã tồn tại nhưng không phải là thư mục!" << std::endl;
+        return false;
+      }
+      return true;
+    }
+
+    std::error_code ec;
+    if (!std::filesystem::create_directories(path, ec)) {
+      std::cerr << "Không thể tạo thư mục " << path << ": " << ec.message()
+                << std::endl;
+      return false;
+    }
+    return true;
+  } catch (const std::exception& e) {
+    std::cerr << "Lỗi khi tạo thư mục " << path << ": " << e.what()
+              << std::endl;
+    return false;
+  }
 }
 
 }  // namespace storage

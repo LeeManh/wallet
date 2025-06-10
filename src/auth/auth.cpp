@@ -5,6 +5,15 @@
 
 namespace auth {
 
+bool isUserExists(const json& users, const std::string& username) {
+  for (const auto& user : users) {
+    if (user["username"] == username) {
+      return true;
+    }
+  }
+  return false;
+}
+
 std::pair<bool, bool> login(const std::string& username,
                             const std::string& password) {
   try {
@@ -35,12 +44,18 @@ std::pair<bool, bool> login(const std::string& username,
 bool registerUser(const std::string& username, const std::string& password,
                   const std::string& fullName) {
   try {
+    // Đọc file users.json hiện tại
+    json users = utils::storage::readJsonFile("data/users.json");
+
+    // Kiểm tra username đã tồn tại chưa
+    if (isUserExists(users, username)) {
+      std::cout << "Tài khoản đã tồn tại!" << std::endl;
+      return false;
+    }
+
     // Tạo đối tượng User
     std::string passwordHash = utils::hash::generatePasswordHash(password);
     user::User newUser(username, passwordHash, fullName);
-
-    // Đọc file users.json hiện tại
-    json users = utils::storage::readJsonFile("data/users.json");
 
     // Thêm thông tin người dùng mới
     json userData;
@@ -51,9 +66,15 @@ bool registerUser(const std::string& username, const std::string& password,
 
     users.push_back(userData);
 
+    // Đảm bảo thư mục data tồn tại
+    if (!utils::storage::ensureDirectoryExists("data")) {
+      std::cout << "Không thể tạo thư mục data!" << std::endl;
+      return false;
+    }
+
     // Lưu user vào file
     if (!utils::storage::writeJsonFile("data/users.json", users)) {
-      std::cout << "Không thể lưu thông tin người dùng" << std::endl;
+      std::cout << "Không thể lưu thông tin người dùng!" << std::endl;
       return false;
     }
 
