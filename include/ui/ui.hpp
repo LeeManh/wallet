@@ -12,8 +12,6 @@ namespace ui {
 class UserInterface {
  private:
   static std::string getInput(const std::string& prompt);
-  static bool isValidUsername(const std::string& username);
-  static bool isValidPassword(const std::string& password);
 
  public:
   static void displayMainMenu();
