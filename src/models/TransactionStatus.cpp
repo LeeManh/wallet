@@ -5,9 +5,9 @@
 namespace models {
 
 // Constructor
-Transaction::Transaction(int id, int sourceWalletId, int destinationWalletId,
+Transaction::Transaction(int sourceWalletId, int destinationWalletId,
                          double amount, TransactionStatus status,
-                         bool otpVerified)
+                         bool otpVerified, int id)
     : id(id),
       sourceWalletId(sourceWalletId),
       destinationWalletId(destinationWalletId),

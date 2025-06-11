@@ -1,6 +1,7 @@
 #ifndef TRANSACTION_HPP
 #define TRANSACTION_HPP
 
+#include <ctime>
 #include <string>
 
 namespace models {
@@ -27,10 +28,9 @@ class Transaction {
 
  public:
   // Constructor
-  Transaction(int id = -1, int sourceWalletId, int destinationWalletId,
-              double amount,
+  Transaction(int sourceWalletId, int destinationWalletId, double amount,
               TransactionStatus status = TransactionStatus::PENDING,
-              bool otpVerified = false);
+              bool otpVerified = false, int id = -1);
 
   // Getters
   int getId() const;
