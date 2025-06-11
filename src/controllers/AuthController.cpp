@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "utils/Hash.hpp"
+#include "utils/OTPGenerator.hpp"
 #include "utils/Password.hpp"
 #include "utils/Storage.hpp"
 
@@ -57,7 +58,9 @@ bool AuthController::registerUser(const std::string& username,
 
     // Tạo đối tượng User
     std::string passwordHash = utils::hash::generatePasswordHash(password);
-    models::User newUser(username, passwordHash, email, fullName);
+    std::string otpSecret = utils::otp::OTPGenerator::generateSecret();
+    models::User newUser(username, passwordHash, email, fullName, false, false,
+                         otpSecret);
 
     // Thêm thông tin người dùng mới
     json userData;
@@ -102,6 +105,57 @@ bool AuthController::createUserByAdmin(const std::string& username,
 
   // Đăng ký user với mật khẩu đã tạo
   return registerUser(username, generatedPassword, email, fullName);
+}
+
+bool AuthController::sendOTP(const std::string& email) {
+  try {
+    // Đọc file users.json
+    json users = utils::storage::readJsonFile("data/users.json");
+
+    // Kiểm tra email có tồn tại không
+    for (const auto& user : users) {
+      if (user["email"] == email) {
+        // Tạo và gửi mã OTP
+        currentOTP = utils::otp::OTPGenerator::generateOTP();
+        otpTime = time(nullptr);
+
+        if (utils::otp::OTPGenerator::sendOTP(email, currentOTP)) {
+          std::cout << "Đã gửi mã OTP đến email của bạn!" << std::endl;
+          return true;
+        }
+        return false;
+      }
+    }
+
+    std::cout << "Email không tồn tại trong hệ thống!" << std::endl;
+    return false;
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi: " << e.what() << std::endl;
+    return false;
+  }
+}
+
+bool AuthController::verifyOTP(const std::string& email,
+                               const std::string& otp) {
+  try {
+    // Kiểm tra OTP đã hết hạn chưa
+    if (utils::otp::OTPGenerator::isOTPExpired(otpTime)) {
+      std::cout << "Mã OTP đã hết hạn!" << std::endl;
+      return false;
+    }
+
+    // Kiểm tra mã OTP
+    if (otp == currentOTP) {
+      std::cout << "Xác thực OTP thành công!" << std::endl;
+      return true;
+    }
+
+    std::cout << "Mã OTP không đúng!" << std::endl;
+    return false;
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi: " << e.what() << std::endl;
+    return false;
+  }
 }
 
 }  // namespace controllers

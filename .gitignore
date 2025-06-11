@@ -70,7 +70,7 @@ Thumbs.db
 *.pdb
 
 # Dependencies
-deps/
+# deps/
 
 # CMake
 CMakeFiles/

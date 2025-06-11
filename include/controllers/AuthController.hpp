@@ -22,6 +22,17 @@ class AuthController {
   bool createUserByAdmin(const std::string& username, const std::string& email,
                          const std::string& fullName,
                          std::string& generatedPassword);
+
+  // Gửi mã OTP
+  bool sendOTP(const std::string& email);
+
+  // Xác thực mã OTP
+  bool verifyOTP(const std::string& email, const std::string& otp);
+
+ private:
+  // Lưu trữ OTP tạm thời
+  std::string currentOTP;
+  time_t otpTime;
 };
 
 }  // namespace controllers

@@ -8,6 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set minimum policy version for compatibility
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
+# Find OpenSSL
+find_package(OpenSSL REQUIRED)
+
 # Compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
@@ -22,10 +25,15 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/deps/libbcrypt/include
     ${CMAKE_SOURCE_DIR}/deps/json/include
+    ${CMAKE_SOURCE_DIR}/deps/libcotp/src
+    ${OPENSSL_INCLUDE_DIR}
 )
 
 # Add libbcrypt as a subdirectory
 add_subdirectory(deps/libbcrypt)
+
+# Add libcotp as a subdirectory
+add_subdirectory(deps/libcotp)
 
 # Find all source files
 file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -39,7 +47,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} bcrypt)
+target_link_libraries(${PROJECT_NAME} bcrypt cotp ${OPENSSL_LIBRARIES})
 
 # Add custom targets
 add_custom_target(show_help
