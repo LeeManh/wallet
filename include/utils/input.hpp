@@ -4,6 +4,8 @@
 #include <functional>
 #include <string>
 
+#include "utils/Validation.hpp"
+
 namespace utils {
 namespace input {
 
