@@ -25,6 +25,14 @@ class AuthController {
   // Đổi mật khẩu
   bool changePassword(const int userId, const std::string& currentPassword,
                       const std::string& newPassword);
+
+  // Gửi mã OTP thông tin cá nhân
+  bool sendOTPInfoChange(const int userId);
+
+  // Xác thực OTP và đổi mật khẩu
+  bool verifyOTPAndChangePassword(const int userId, const std::string& otpCode,
+                                  const std::string& currentPassword,
+                                  const std::string& newPassword);
 };
 
 }  // namespace controllers

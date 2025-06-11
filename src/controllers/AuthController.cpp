@@ -4,6 +4,7 @@
 #include <tuple>
 
 #include "models/User.hpp"
+#include "services/OtpService.hpp"
 #include "utils/Hash.hpp"
 #include "utils/Password.hpp"
 #include "utils/Storage.hpp"
@@ -133,7 +134,6 @@ bool AuthController::changePassword(const int userId,
           return false;
         }
 
-        std::cout << "Đổi mật khẩu thành công!" << std::endl;
         return true;
       }
     }
@@ -143,6 +143,44 @@ bool AuthController::changePassword(const int userId,
 
   } catch (const std::exception& e) {
     std::cout << "Lỗi: " << e.what() << std::endl;
+    return false;
+  }
+}
+
+bool AuthController::sendOTPInfoChange(const int userId) {
+  try {
+    json users = utils::storage::readJsonFile("data/users.json");
+    std::string email;
+    for (const auto& user : users) {
+      if (user["id"] == userId) {
+        email = user["email"];
+        break;
+      }
+    }
+    // Gửi OTP
+    return services::OtpService::generateAndSendOTP(userId, email);
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi khi gửi OTP: " << e.what() << std::endl;
+    return false;
+  }
+}
+
+bool AuthController::verifyOTPAndChangePassword(
+    const int userId, const std::string& otpCode,
+    const std::string& currentPassword, const std::string& newPassword) {
+  try {
+    // Xác thực OTP trước
+    if (!services::OtpService::verifyOTP(userId, otpCode,
+                                         models::OTPType::INFO_CHANGE)) {
+      return false;
+    }
+
+    // Nếu OTP hợp lệ, thực hiện đổi mật khẩu
+    return changePassword(userId, currentPassword, newPassword);
+
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi khi xác thực OTP và đổi mật khẩu: " << e.what()
+              << std::endl;
     return false;
   }
 }
