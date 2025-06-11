@@ -78,6 +78,8 @@ void AdminView::handleManageTotalWallet() {
 }
 
 void AdminView::handleChangePassword() {
+  std::cout << "\n=== ĐỔI MẬT KHẨU ===" << std::endl;
+
   std::string currentPassword = getInput("Nhập mật khẩu hiện tại: ");
   std::string newPassword = getInput("Nhập mật khẩu mới: ");
   std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
@@ -87,8 +89,26 @@ void AdminView::handleChangePassword() {
     return;
   }
 
+  // Gửi OTP trước khi đổi mật khẩu
   controllers::AuthController authController;
-  authController.changePassword(userId, currentPassword, newPassword);
+
+  std::cout << "\nGửi mã OTP để xác thực..." << std::endl;
+  if (!authController.sendOTPInfoChange(userId)) {
+    std::cout << "Không thể gửi mã OTP. Vui lòng thử lại!" << std::endl;
+    return;
+  }
+
+  // Nhập mã OTP từ người dùng
+  std::string otpCode = getInput("\nNhập mã OTP đã được gửi: ");
+
+  // Thực hiện đổi mật khẩu với xác thực OTP
+  if (authController.verifyOTPAndChangePassword(userId, otpCode,
+                                                currentPassword, newPassword)) {
+    std::cout << "Đổi mật khẩu thành công!" << std::endl;
+  } else {
+    std::cout << "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!"
+              << std::endl;
+  }
 }
 
 }  // namespace views
