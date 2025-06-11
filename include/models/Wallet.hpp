@@ -21,8 +21,8 @@ class Wallet {
 
  public:
   // Constructor
-  Wallet(int userId, double balance = 0.0,
-         WalletType walletType = WalletType::USER, int id = -1);
+  Wallet(int id = -1, int userId, double balance = 0.0,
+         WalletType walletType = WalletType::USER);
 
   // Getters
   int getId() const;
