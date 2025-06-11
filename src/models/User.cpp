@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "utils/hash.hpp"
+#include "utils/Hash.hpp"
 
 namespace models {
 

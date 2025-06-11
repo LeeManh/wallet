@@ -1,5 +1,4 @@
-
-#include "utils/hash.hpp"
+#include "utils/Hash.hpp"
 
 #include <string>
 

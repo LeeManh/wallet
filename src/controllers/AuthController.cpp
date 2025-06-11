@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "utils/hash.hpp"
-#include "utils/password.hpp"
-#include "utils/storage.hpp"
+#include "utils/Hash.hpp"
+#include "utils/Password.hpp"
+#include "utils/Storage.hpp"
 
 namespace controllers {
 

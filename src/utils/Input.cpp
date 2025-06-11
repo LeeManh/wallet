@@ -1,4 +1,4 @@
-#include "utils/input.hpp"
+#include "utils/Input.hpp"
 
 #include <iostream>
 
