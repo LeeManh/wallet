@@ -1,12 +1,14 @@
 #ifndef CUSTOMER_VIEW_HPP
 #define CUSTOMER_VIEW_HPP
 
+#include "models/User.hpp"
 #include "views/View.hpp"
 
 namespace views {
 
 class CustomerView : public View {
  public:
+  int userId;
   void display() override;
   int getChoice() override;
 

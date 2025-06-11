@@ -7,6 +7,7 @@ namespace views {
 
 class AdminView : public View {
  public:
+  int userId;
   void display() override;
   int getChoice() override;
 

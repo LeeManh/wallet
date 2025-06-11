@@ -56,8 +56,14 @@ void CustomerView::handleChangePassword() {
   std::string newPassword = getInput("Nhập mật khẩu mới: ");
   std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
 
-  // TODO: Gọi AuthController để đổi mật khẩu
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  if (newPassword != confirmPassword) {
+    std::cout << "Mật khẩu mới không khớp!" << std::endl;
+    return;
+  }
+
+  // Gọi AuthController để đổi mật khẩu
+  controllers::AuthController authController;
+  authController.changePassword(userId, currentPassword, newPassword);
 }
 
 }  // namespace views

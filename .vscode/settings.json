@@ -68,5 +68,6 @@
     "vector": "cpp",
     "algorithm": "cpp"
   },
-  "makefile.configureOnOpen": false
+  "makefile.configureOnOpen": false,
+  "cSpell.enabled": false
 }
