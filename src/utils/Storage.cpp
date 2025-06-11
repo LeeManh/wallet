@@ -39,19 +39,19 @@ json readJsonFile(const std::string& path) {
 }
 
 bool writeJsonFile(const std::string& path, const json& data) {
-  // Đảm bảo thư mục tồn tại
-  std::filesystem::path filePath(path);
-  if (!ensureDirectoryExists(filePath.parent_path().string())) {
-    return false;
-  }
-
-  std::ofstream file(path);
-  if (!file.is_open()) {
-    std::cerr << "Không thể mở file " << path << " để ghi" << std::endl;
-    return false;
-  }
-
   try {
+    // Đảm bảo thư mục tồn tại
+    std::filesystem::path filePath(path);
+    std::filesystem::create_directories(filePath.parent_path());
+
+    // Mở file với mode binary để tránh vấn đề với line endings
+    std::ofstream file(path, std::ios::binary);
+    if (!file.is_open()) {
+      std::cerr << "Không thể mở file " << path << " để ghi" << std::endl;
+      return false;
+    }
+
+    // Ghi dữ liệu với định dạng đẹp
     file << std::setw(2) << data << std::endl;
     file.close();
     return true;

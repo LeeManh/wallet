@@ -11,8 +11,8 @@ namespace controllers {
 class AuthController {
  public:
   // Đăng nhập
-  std::pair<bool, bool> login(const std::string& username,
-                              const std::string& password);
+  std::tuple<bool, int, bool> login(const std::string& username,
+                                    const std::string& password);
 
   // Đăng ký
   bool registerUser(const std::string& username, const std::string& password,
@@ -22,6 +22,9 @@ class AuthController {
   bool createUserByAdmin(const std::string& username, const std::string& email,
                          const std::string& fullName,
                          std::string& generatedPassword);
+  // Đổi mật khẩu
+  bool changePassword(const int userId, const std::string& currentPassword,
+                      const std::string& newPassword);
 };
 
 }  // namespace controllers

@@ -78,8 +78,17 @@ void AdminView::handleManageTotalWallet() {
 }
 
 void AdminView::handleChangePassword() {
-  // TODO: Gọi AuthController để đổi mật khẩu
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  std::string currentPassword = getInput("Nhập mật khẩu hiện tại: ");
+  std::string newPassword = getInput("Nhập mật khẩu mới: ");
+  std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
+
+  if (newPassword != confirmPassword) {
+    std::cout << "Mật khẩu mới không khớp!" << std::endl;
+    return;
+  }
+
+  controllers::AuthController authController;
+  authController.changePassword(userId, currentPassword, newPassword);
 }
 
 }  // namespace views

@@ -24,11 +24,13 @@ int main() {
         cout << "\n=== Đăng nhập ===" << endl;
         string username = mainView.getInput("Nhập tên đăng nhập: ");
         string password = mainView.getInput("Nhập mật khẩu: ");
-        auto [success, isAdmin] = authController.login(username, password);
+        auto [success, userId, isAdmin] =
+            authController.login(username, password);
 
         if (success) {
           while (true) {
             if (isAdmin) {
+              adminView.userId = userId;
               adminView.display();
               int adminChoice = adminView.getChoice();
               if (adminChoice == 0) break;
@@ -57,6 +59,7 @@ int main() {
                   break;
               }
             } else {
+              customerView.userId = userId;
               customerView.display();
               int customerChoice = customerView.getChoice();
               if (customerChoice == 0) break;
