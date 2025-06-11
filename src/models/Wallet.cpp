@@ -5,8 +5,8 @@
 namespace models {
 
 // Constructor
-Wallet::Wallet(int userId, double balance, WalletType walletType, int id)
-    : id(id), userId(userId), balance(balance), walletType(walletType) {
+Wallet::Wallet(int userId, double point, WalletType walletType, int id)
+    : id(id), userId(userId), point(point), walletType(walletType) {
   time_t now = time(nullptr);
   createdAt = now;
   lastUpdated = now;
@@ -15,14 +15,14 @@ Wallet::Wallet(int userId, double balance, WalletType walletType, int id)
 // Getters
 int Wallet::getId() const { return id; }
 int Wallet::getUserId() const { return userId; }
-double Wallet::getBalance() const { return balance; }
+double Wallet::getPoint() const { return point; }
 WalletType Wallet::getWalletType() const { return walletType; }
 time_t Wallet::getCreatedAt() const { return createdAt; }
 time_t Wallet::getLastUpdated() const { return lastUpdated; }
 
 // Setters
-void Wallet::setBalance(double newBalance) {
-  balance = newBalance;
+void Wallet::setPoint(double newPoint) {
+  point = newPoint;
   updateLastUpdated();
 }
 

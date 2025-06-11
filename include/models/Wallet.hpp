@@ -14,26 +14,26 @@ class Wallet {
  private:
   int id;
   int userId;
-  double balance;
+  double point;
   WalletType walletType;
   time_t createdAt;
   time_t lastUpdated;
 
  public:
   // Constructor
-  Wallet(int userId, double balance = 0.0,
+  Wallet(int userId, double point = 0.0,
          WalletType walletType = WalletType::USER, int id = -1);
 
   // Getters
   int getId() const;
   int getUserId() const;
-  double getBalance() const;
+  double getPoint() const;
   WalletType getWalletType() const;
   time_t getCreatedAt() const;
   time_t getLastUpdated() const;
 
   // Setters
-  void setBalance(double newBalance);
+  void setPoint(double newPoint);
   void updateLastUpdated();
   void setId(int newId);
   void setCreatedAt(time_t time);

@@ -90,8 +90,8 @@ void AdminView::handleViewAllWallets() {
       // Hiển thị thông tin ví
       std::cout << "[" << count << "] Ví ID: " << wallet.getId()
                 << " | User: " << wallet.getUserId()
-                << " | Số dư: " << std::fixed << std::setprecision(2)
-                << wallet.getBalance() << " điểm"
+                << " | Số điểm: " << std::fixed << std::setprecision(2)
+                << wallet.getPoint() << " điểm"
                 << " | Loại: " << walletTypeStr << " | Tạo: " << createdStr
                 << std::endl;
       count++;
@@ -101,12 +101,12 @@ void AdminView::handleViewAllWallets() {
     std::cout << "Tổng số ví: " << wallets.size() << std::endl;
 
     // Tính tổng số dư
-    double totalBalance = 0;
+    double totalPoint = 0;
     int userWallets = 0;
     int systemWallets = 0;
 
     for (const auto& wallet : wallets) {
-      totalBalance += wallet.getBalance();
+      totalPoint += wallet.getPoint();
       if (wallet.getWalletType() == models::WalletType::SYSTEM) {
         systemWallets++;
       } else {
@@ -115,7 +115,7 @@ void AdminView::handleViewAllWallets() {
     }
 
     std::cout << "Tổng số điểm hệ thống: " << std::fixed << std::setprecision(2)
-              << totalBalance << " điểm" << std::endl;
+              << totalPoint << " điểm" << std::endl;
     std::cout << "Ví người dùng: " << userWallets
               << " | Ví hệ thống: " << systemWallets << std::endl;
   }
@@ -139,11 +139,11 @@ void AdminView::handleManageTotalWallet() {
   std::cout << "\n=== XEM SỐ DƯ VÍ HỆ THỐNG ===" << std::endl;
 
   int walletId;
-  double balance;
+  double point;
 
   // Gọi WalletController để lấy thông tin ví hệ thống
-  if (controllers::WalletController::getSystemWallet(walletId, balance)) {
-    std::cout << "Số dư ví hệ thống hiện tại: " << balance << " điểm"
+  if (controllers::WalletController::getSystemWallet(walletId, point)) {
+    std::cout << "Số dư ví hệ thống hiện tại: " << point << " điểm"
               << std::endl;
   } else {
     std::cout << "Không tìm thấy ví hệ thống hoặc có lỗi xảy ra!" << std::endl;

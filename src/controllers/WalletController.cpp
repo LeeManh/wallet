@@ -7,7 +7,7 @@
 
 namespace controllers {
 
-bool WalletController::createWallet(int userId, double initialBalance) {
+bool WalletController::createWallet(int userId, double initialPoint) {
   try {
     // Đọc file wallets.json hiện tại
     json wallets = utils::storage::readJsonFile("data/wallets.json");
@@ -21,13 +21,13 @@ bool WalletController::createWallet(int userId, double initialBalance) {
     }
 
     // Tạo đối tượng Wallet mới
-    models::Wallet newWallet(userId, initialBalance);
+    models::Wallet newWallet(userId, initialPoint);
 
     // Thêm thông tin ví mới
     json walletData;
     walletData["id"] = utils::storage::getNextWalletId(wallets);
     walletData["userId"] = newWallet.getUserId();
-    walletData["balance"] = newWallet.getBalance();
+    walletData["balance"] = newWallet.getPoint();
     walletData["walletType"] = static_cast<int>(newWallet.getWalletType());
     walletData["createdAt"] = newWallet.getCreatedAt();
     walletData["lastUpdated"] = newWallet.getLastUpdated();
@@ -49,14 +49,14 @@ bool WalletController::createWallet(int userId, double initialBalance) {
 }
 
 bool WalletController::getWalletByUserId(int userId, int& walletId,
-                                         double& balance) {
+                                         double& point) {
   try {
     json wallets = utils::storage::readJsonFile("data/wallets.json");
 
     for (const auto& wallet : wallets) {
       if (wallet["userId"] == userId) {
         walletId = wallet["id"];
-        balance = wallet["balance"];
+        point = wallet["balance"];
         return true;
       }
     }
@@ -68,7 +68,7 @@ bool WalletController::getWalletByUserId(int userId, int& walletId,
   }
 }
 
-bool WalletController::getSystemWallet(int& walletId, double& balance) {
+bool WalletController::getSystemWallet(int& walletId, double& point) {
   try {
     json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -76,7 +76,7 @@ bool WalletController::getSystemWallet(int& walletId, double& balance) {
       // walletType: 1 là SYSTEM, 0 là USER
       if (wallet["walletType"] == 1) {
         walletId = wallet["id"];
-        balance = wallet["balance"];
+        point = wallet["balance"];
         return true;
       }
     }

@@ -34,16 +34,16 @@ void CustomerView::handleViewBalance() {
   std::cout << "\n=== XEM SỐ DƯ ĐIỂM ===" << std::endl;
 
   int walletId;
-  double balance;
+  double point;
 
   // Gọi WalletController để lấy thông tin ví của user
   if (controllers::WalletController::getWalletByUserId(userId, walletId,
-                                                       balance)) {
-    std::cout << "Số dư điểm hiện tại của bạn: " << balance << " điểm"
+                                                       point)) {
+    std::cout << "Số dư điểm hiện tại của bạn: " << point << " điểm"
               << std::endl;
   } else {
     std::cout << "Không tìm thấy ví của bạn hoặc có lỗi xảy ra!" << std::endl;
-    std::cout << "Vui lòng liên hệ quản trì viên để được hỗ trợ." << std::endl;
+    std::cout << "Vui lòng liên hệ quản trị viên để được hỗ trợ." << std::endl;
   }
 
   std::cout << "\nNhấn Enter để tiếp tục...";
