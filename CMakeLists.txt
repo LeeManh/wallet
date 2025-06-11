@@ -49,6 +49,7 @@ add_custom_target(show_help
     COMMAND ${CMAKE_COMMAND} -E echo "Các lệnh có sẵn:"
     COMMAND ${CMAKE_COMMAND} -E echo "  cmake --build . --target run    - Build và chạy chương trình"
     COMMAND ${CMAKE_COMMAND} -E echo "  cmake --build . --target show_help   - Hiển thị thông tin giúp đỡ"
+    COMMAND ${CMAKE_COMMAND} -E echo "  cmake --build . --target clean   - Xóa các file build"
 )
 
 # Add run target
@@ -56,7 +57,7 @@ add_custom_target(run
     COMMAND ${CMAKE_COMMAND} -E echo "Building ${PROJECT_NAME}..."
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E echo "Running ${PROJECT_NAME}..."
-    COMMAND ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 

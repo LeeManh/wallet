@@ -1,4 +1,3 @@
-
 #include "utils/Storage.hpp"
 
 #include <filesystem>
@@ -78,6 +77,18 @@ int getNextUserId(const json& users) {
   if (users.empty()) return 1;
 
   return users.back()["id"].get<int>() + 1;
+}
+
+int getNextWalletId(const json& wallets) {
+  if (wallets.empty()) return 1;
+
+  int maxId = 0;
+  for (const auto& wallet : wallets) {
+    if (wallet["id"].get<int>() > maxId) {
+      maxId = wallet["id"].get<int>();
+    }
+  }
+  return maxId + 1;
 }
 
 }  // namespace storage

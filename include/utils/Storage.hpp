@@ -23,6 +23,8 @@ bool ensureDirectoryExists(const std::string& path);
 
 // Lấy ID tiếp theo
 int getNextUserId(const json& users);
+int getNextWalletId(const json& wallets);
+int getNextOtpId(const json& otps);
 
 }  // namespace storage
 }  // namespace utils

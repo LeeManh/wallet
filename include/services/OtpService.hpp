@@ -16,9 +16,6 @@ class OtpService {
   static bool verifyOTP(int userId, const std::string& otpCode,
                         models::OTPType otpType);
 
-  // Xóa OTP đã sử dụng hoặc hết hạn
-  static void cleanupExpiredOTPs();
-
  private:
   // Tạo mã OTP 6 chữ số
   static std::string generateOTPCode();

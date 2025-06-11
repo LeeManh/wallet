@@ -91,38 +91,6 @@ bool OtpService::verifyOTP(int userId, const std::string& otpCode,
   }
 }
 
-void OtpService::cleanupExpiredOTPs() {
-  try {
-    auto otps = loadOTPs();
-    time_t currentTime = time(nullptr);
-
-    // Xóa các OTP đã hết hạn
-    otps.erase(std::remove_if(otps.begin(), otps.end(),
-                              [currentTime](const models::OTP& otp) {
-                                return otp.getExpiresAt() <= currentTime;
-                              }),
-               otps.end());
-
-    // Lưu lại danh sách đã được làm sạch
-    json otpArray = json::array();
-    for (const auto& otp : otps) {
-      json otpJson;
-      otpJson["id"] = otp.getId();
-      otpJson["userId"] = otp.getUserId();
-      otpJson["otpCode"] = otp.getOtpCode();
-      otpJson["otpType"] = static_cast<int>(otp.getOtpType());
-      otpJson["createdAt"] = otp.getCreatedAt();
-      otpJson["expiresAt"] = otp.getExpiresAt();
-      otpArray.push_back(otpJson);
-    }
-
-    utils::storage::writeJsonFile("data/otps.json", otpArray);
-
-  } catch (const std::exception& e) {
-    std::cout << "Lỗi khi dọn dẹp OTP: " << e.what() << std::endl;
-  }
-}
-
 std::string OtpService::generateOTPCode() {
   // Secret key được mã hóa Base32
   const char* secret = "JBSWY3DPEHPK3PXP";
