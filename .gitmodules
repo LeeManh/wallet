@@ -1,4 +1,9 @@
 [submodule "deps/json"]
 	path = deps/json
 	url = https://github.com/nlohmann/json.git
-
+[submodule "deps/libbcrypt"]
+	path = deps/libbcrypt
+	url = https://github.com/trusch/libbcrypt.git
+[submodule "deps/libcotp"]
+	path = deps/libcotp
+	url = https://github.com/paolostivanin/libcotp.git

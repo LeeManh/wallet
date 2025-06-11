@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "libs/Bcrypt.hpp"
+#include "bcrypt/BCrypt.hpp"
 
 namespace utils {
 namespace hash {
