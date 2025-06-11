@@ -28,4 +28,10 @@ void Wallet::setBalance(double newBalance) {
 
 void Wallet::updateLastUpdated() { lastUpdated = time(nullptr); }
 
+void Wallet::setId(int newId) { id = newId; }
+
+void Wallet::setCreatedAt(time_t time) { createdAt = time; }
+
+void Wallet::setLastUpdated(time_t time) { lastUpdated = time; }
+
 }  // namespace models

@@ -35,6 +35,9 @@ class Wallet {
   // Setters
   void setBalance(double newBalance);
   void updateLastUpdated();
+  void setId(int newId);
+  void setCreatedAt(time_t time);
+  void setLastUpdated(time_t time);
 };
 
 }  // namespace models

@@ -1,7 +1,10 @@
 #include "views/AdminView.hpp"
 
+#include <ctime>
+#include <iomanip>
 #include <iostream>
 #include <limits>
+#include <sstream>
 
 #include "controllers/AuthController.hpp"
 #include "controllers/WalletController.hpp"
@@ -59,8 +62,67 @@ void AdminView::handleViewAllUsers() {
 }
 
 void AdminView::handleViewAllWallets() {
-  // TODO: Gọi WalletController để lấy danh sách ví
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  std::cout << "\n=== DANH SÁCH TẤT CẢ VÍ TRONG HỆ THỐNG ===" << std::endl;
+
+  auto wallets = controllers::WalletController::getAllWallets();
+
+  if (wallets.empty()) {
+    std::cout << "Không có ví nào trong hệ thống!" << std::endl;
+  } else {
+    std::cout << std::endl;
+
+    // Hiển thị từng ví theo format list
+    int count = 1;
+    for (const auto& wallet : wallets) {
+      // Format thời gian
+      char createdStr[20];
+      struct tm* timeinfo;
+
+      time_t createdAt = wallet.getCreatedAt();
+      timeinfo = localtime(&createdAt);
+      strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
+
+      // Loại ví
+      std::string walletTypeStr =
+          (wallet.getWalletType() == models::WalletType::SYSTEM) ? "SYSTEM"
+                                                                 : "USER";
+
+      // Hiển thị thông tin ví
+      std::cout << "[" << count << "] Ví ID: " << wallet.getId()
+                << " | User: " << wallet.getUserId()
+                << " | Số dư: " << std::fixed << std::setprecision(2)
+                << wallet.getBalance() << " điểm"
+                << " | Loại: " << walletTypeStr << " | Tạo: " << createdStr
+                << std::endl;
+      count++;
+    }
+
+    std::cout << std::string(60, '-') << std::endl;
+    std::cout << "Tổng số ví: " << wallets.size() << std::endl;
+
+    // Tính tổng số dư
+    double totalBalance = 0;
+    int userWallets = 0;
+    int systemWallets = 0;
+
+    for (const auto& wallet : wallets) {
+      totalBalance += wallet.getBalance();
+      if (wallet.getWalletType() == models::WalletType::SYSTEM) {
+        systemWallets++;
+      } else {
+        userWallets++;
+      }
+    }
+
+    std::cout << "Tổng số điểm hệ thống: " << std::fixed << std::setprecision(2)
+              << totalBalance << " điểm" << std::endl;
+    std::cout << "Ví người dùng: " << userWallets
+              << " | Ví hệ thống: " << systemWallets << std::endl;
+  }
+
+  std::cout << "\nNhấn Enter để tiếp tục...";
+  std::cin.ignore();
+  std::cin.get();
 }
 
 void AdminView::handleViewTransactionHistory() {

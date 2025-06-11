@@ -2,6 +2,9 @@
 #define WALLET_CONTROLLER_HPP
 
 #include <string>
+#include <vector>
+
+#include "models/Wallet.hpp"
 
 namespace controllers {
 
@@ -15,6 +18,9 @@ class WalletController {
 
   // Lấy thông tin ví hệ thống (SYSTEM wallet)
   static bool getSystemWallet(int& walletId, double& balance);
+
+  // Lấy danh sách tất cả ví
+  static std::vector<models::Wallet> getAllWallets();
 };
 
 }  // namespace controllers

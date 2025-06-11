@@ -88,4 +88,32 @@ bool WalletController::getSystemWallet(int& walletId, double& balance) {
   }
 }
 
+std::vector<models::Wallet> WalletController::getAllWallets() {
+  std::vector<models::Wallet> walletList;
+
+  try {
+    json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+    for (const auto& wallet : wallets) {
+      // Tạo đối tượng Wallet
+      models::WalletType type = (wallet["walletType"] == 1)
+                                    ? models::WalletType::SYSTEM
+                                    : models::WalletType::USER;
+
+      models::Wallet walletObj(wallet["userId"], wallet["balance"], type);
+
+      // Set các giá trị từ database
+      walletObj.setId(wallet["id"]);
+      walletObj.setCreatedAt(wallet["createdAt"]);
+      walletObj.setLastUpdated(wallet["lastUpdated"]);
+
+      walletList.push_back(walletObj);
+    }
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi khi đọc danh sách ví: " << e.what() << std::endl;
+  }
+
+  return walletList;
+}
+
 }  // namespace controllers
