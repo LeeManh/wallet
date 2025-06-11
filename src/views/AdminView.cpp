@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "controllers/AuthController.hpp"
+#include "controllers/WalletController.hpp"
 
 namespace views {
 
@@ -14,7 +15,7 @@ void AdminView::display() {
   std::cout << "[3] Xem lịch sử giao dịch" << std::endl;
   std::cout << "[4] Tạo tài khoản mới cho người dùng" << std::endl;
   std::cout << "[5] Điều chỉnh thông tin người dùng" << std::endl;
-  std::cout << "[6] Quản lý ví tổng" << std::endl;
+  std::cout << "[6] Xem số dư ví tổng" << std::endl;
   std::cout << "[7] Đổi mật khẩu" << std::endl;
   std::cout << "[0] Đăng xuất" << std::endl;
   std::cout << "Nhập lựa chọn: ";
@@ -73,8 +74,23 @@ void AdminView::handleEditUserInfo() {
 }
 
 void AdminView::handleManageTotalWallet() {
-  // TODO: Gọi WalletController để quản lý ví tổng
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  std::cout << "\n=== XEM SỐ DƯ VÍ HỆ THỐNG ===" << std::endl;
+
+  int walletId;
+  double balance;
+
+  // Gọi WalletController để lấy thông tin ví hệ thống
+  if (controllers::WalletController::getSystemWallet(walletId, balance)) {
+    std::cout << "Số dư ví hệ thống hiện tại: " << balance << " điểm"
+              << std::endl;
+  } else {
+    std::cout << "Không tìm thấy ví hệ thống hoặc có lỗi xảy ra!" << std::endl;
+    std::cout << "Vui lòng kiểm tra lại cấu hình hệ thống." << std::endl;
+  }
+
+  std::cout << "\nNhấn Enter để tiếp tục...";
+  std::cin.ignore();
+  std::cin.get();
 }
 
 void AdminView::handleChangePassword() {

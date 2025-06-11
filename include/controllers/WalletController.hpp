@@ -12,6 +12,9 @@ class WalletController {
 
   // Lấy ví của user
   static bool getWalletByUserId(int userId, int& walletId, double& balance);
+
+  // Lấy thông tin ví hệ thống (SYSTEM wallet)
+  static bool getSystemWallet(int& walletId, double& balance);
 };
 
 }  // namespace controllers

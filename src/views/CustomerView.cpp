@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "controllers/AuthController.hpp"
+#include "controllers/WalletController.hpp"
 
 namespace views {
 
@@ -30,8 +31,24 @@ int CustomerView::getChoice() {
 }
 
 void CustomerView::handleViewBalance() {
-  // TODO: Gọi WalletController để lấy số dư
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  std::cout << "\n=== XEM SỐ DƯ ĐIỂM ===" << std::endl;
+
+  int walletId;
+  double balance;
+
+  // Gọi WalletController để lấy thông tin ví của user
+  if (controllers::WalletController::getWalletByUserId(userId, walletId,
+                                                       balance)) {
+    std::cout << "Số dư điểm hiện tại của bạn: " << balance << " điểm"
+              << std::endl;
+  } else {
+    std::cout << "Không tìm thấy ví của bạn hoặc có lỗi xảy ra!" << std::endl;
+    std::cout << "Vui lòng liên hệ quản trì viên để được hỗ trợ." << std::endl;
+  }
+
+  std::cout << "\nNhấn Enter để tiếp tục...";
+  std::cin.ignore();
+  std::cin.get();
 }
 
 void CustomerView::handleTransfer() {

@@ -68,4 +68,24 @@ bool WalletController::getWalletByUserId(int userId, int& walletId,
   }
 }
 
+bool WalletController::getSystemWallet(int& walletId, double& balance) {
+  try {
+    json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+    for (const auto& wallet : wallets) {
+      // walletType: 1 là SYSTEM, 0 là USER
+      if (wallet["walletType"] == 1) {
+        walletId = wallet["id"];
+        balance = wallet["balance"];
+        return true;
+      }
+    }
+
+    return false;  // Không tìm thấy ví hệ thống
+  } catch (const std::exception& e) {
+    std::cout << "Lỗi khi tìm ví hệ thống: " << e.what() << std::endl;
+    return false;
+  }
+}
+
 }  // namespace controllers
