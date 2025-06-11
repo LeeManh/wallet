@@ -1,5 +1,4 @@
-#ifndef HASH_HPP
-#define HASH_HPP
+#pragma once
 
 #include <string>
 
@@ -9,10 +8,7 @@ namespace utils {
 namespace hash {
 
 std::string generatePasswordHash(const std::string& password);
+bool validatePassword(const std::string& password, const std::string& hash);
 
-bool validatePassword(const std::string& password,
-                      const std::string& hashPassword);
 }  // namespace hash
 }  // namespace utils
-
-#endif

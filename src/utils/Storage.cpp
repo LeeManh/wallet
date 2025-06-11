@@ -1,5 +1,4 @@
-
-#include "utils/storage.hpp"
+#include "utils/Storage.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -7,6 +6,18 @@
 
 namespace utils {
 namespace storage {
+
+std::string getPathSeparator() {
+#ifdef _WIN32
+  return "\\";
+#else
+  return "/";
+#endif
+}
+
+std::string joinPaths(const std::string& path1, const std::string& path2) {
+  return path1 + getPathSeparator() + path2;
+}
 
 json readJsonFile(const std::string& path) {
   json data = json::array();  // Default to empty array
@@ -54,28 +65,10 @@ bool fileExists(const std::string& path) {
 }
 
 bool ensureDirectoryExists(const std::string& path) {
-  if (path.empty()) return true;
-
   try {
-    if (std::filesystem::exists(path)) {
-      if (!std::filesystem::is_directory(path)) {
-        std::cerr << "Đường dẫn " << path
-                  << " đã tồn tại nhưng không phải là thư mục!" << std::endl;
-        return false;
-      }
-      return true;
-    }
-
-    std::error_code ec;
-    if (!std::filesystem::create_directories(path, ec)) {
-      std::cerr << "Không thể tạo thư mục " << path << ": " << ec.message()
-                << std::endl;
-      return false;
-    }
-    return true;
+    return std::filesystem::create_directories(path);
   } catch (const std::exception& e) {
-    std::cerr << "Lỗi khi tạo thư mục " << path << ": " << e.what()
-              << std::endl;
+    std::cerr << "Error creating directory: " << e.what() << std::endl;
     return false;
   }
 }
