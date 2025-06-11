@@ -20,8 +20,15 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 # Include directories
 include_directories(
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/deps/libbcrypt/include
     ${CMAKE_SOURCE_DIR}/deps/json/include
 )
+
+# Add libbcrypt as a subdirectory
+add_subdirectory(deps/libbcrypt)
+
+# Add libcotp as a subdirectory
+add_subdirectory(deps/libcotp)
 
 # Find all source files
 file(GLOB_RECURSE SOURCES "src/*.cpp")
@@ -33,6 +40,9 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Create executable
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} bcrypt cotp)
 
 # Add custom targets
 add_custom_target(show_help
