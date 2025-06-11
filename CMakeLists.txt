@@ -41,15 +41,6 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 # Link libraries
 target_link_libraries(${PROJECT_NAME} bcrypt)
 
-# Copy data directory to build directory
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Copying data directory..."
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/data
-        ${CMAKE_BINARY_DIR}/bin/data
-    COMMAND ${CMAKE_COMMAND} -E echo "Data directory copied successfully"
-)
-
 # Add custom targets
 add_custom_target(show_help
     COMMAND ${CMAKE_COMMAND} -E echo "Các lệnh có sẵn:"
@@ -62,8 +53,8 @@ add_custom_target(run
     COMMAND ${CMAKE_COMMAND} -E echo "Building ${PROJECT_NAME}..."
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E echo "Running ${PROJECT_NAME}..."
-    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR}/bin ./${PROJECT_NAME}
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMAND ${CMAKE_BINARY_DIR}/bin/${PROJECT_NAME}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 )
 
 # Add documentation target
