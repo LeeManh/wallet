@@ -74,12 +74,6 @@ bool AuthController::registerUser(const std::string& username,
 
     users.push_back(userData);
 
-    // Đảm bảo thư mục data tồn tại
-    if (!utils::storage::ensureDirectoryExists("data")) {
-      std::cout << "Không thể tạo thư mục data!" << std::endl;
-      return false;
-    }
-
     // Lưu user vào file
     if (!utils::storage::writeJsonFile("data/users.json", users)) {
       std::cout << "Không thể lưu thông tin người dùng!" << std::endl;

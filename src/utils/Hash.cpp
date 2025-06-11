@@ -1,17 +1,16 @@
-
 #include "utils/Hash.hpp"
 
-#include <string>
+#include "libs/Bcrypt.hpp"
 
 namespace utils {
 namespace hash {
 
 std::string generatePasswordHash(const std::string& password) {
-  return BCrypt::generateHash(password);
+  return libs::PasswordHash::hashPassword(password);
 }
 
 bool validatePassword(const std::string& password, const std::string& hash) {
-  return BCrypt::validatePassword(password, hash);
+  return libs::PasswordHash::verifyPassword(password, hash);
 }
 
 }  // namespace hash
