@@ -1,104 +1,108 @@
 #include "views/CustomerView.hpp"
 
-#include <iostream>
-#include <limits>
-
 #include "controllers/AuthController.hpp"
 #include "controllers/WalletController.hpp"
+#include "utils/Format.hpp"
+#include "utils/Input.hpp"
+#include "utils/MessageHandler.hpp"
 
 namespace views {
 
 void CustomerView::display() {
-  std::cout << "\n=== MENU KHÁCH HÀNG ===" << std::endl;
-  std::cout << "[1] Xem số dư" << std::endl;
-  std::cout << "[2] Chuyển điểm" << std::endl;
-  std::cout << "[3] Xem lịch sử giao dịch" << std::endl;
-  std::cout << "[4] Điều chỉnh thông tin cá nhân" << std::endl;
-  std::cout << "[5] Đổi mật khẩu" << std::endl;
-  std::cout << "[0] Đăng xuất" << std::endl;
-  std::cout << "Nhập lựa chọn: ";
-}
+  while (true) {
+    utils::MessageHandler::logMessage("\n=== MENU KHÁCH HÀNG ===");
+    utils::MessageHandler::logMessage("[1] Xem số dư");
+    utils::MessageHandler::logMessage("[2] Chuyển điểm");
+    utils::MessageHandler::logMessage("[3] Xem lịch sử giao dịch");
+    utils::MessageHandler::logMessage("[4] Điều chỉnh thông tin cá nhân");
+    utils::MessageHandler::logMessage("[5] Đổi mật khẩu");
+    utils::MessageHandler::logMessage("[0] Đăng xuất");
 
-int CustomerView::getChoice() {
-  int choice;
-  while (!(std::cin >> choice) || choice < 0 || choice > 5) {
-    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-5): ";
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    int choice = getChoice(0, 5);
+
+    switch (choice) {
+      case 1:
+        handleViewBalance();
+        break;
+      case 2:
+        handleTransfer();
+        break;
+      case 3:
+        handleViewTransactionHistory();
+        break;
+      case 4:
+        handleEditProfile();
+        break;
+      case 5:
+        handleChangePassword();
+        break;
+      case 0:
+        return;
+    }
   }
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  return choice;
 }
 
 void CustomerView::handleViewBalance() {
-  std::cout << "\n=== XEM SỐ DƯ ĐIỂM ===" << std::endl;
+  utils::MessageHandler::logMessage("\n=== XEM SỐ DƯ ĐIỂM ===");
 
-  int walletId;
-  double point;
-
-  // Gọi WalletController để lấy thông tin ví của user
-  if (controllers::WalletController::getWalletByUserId(userId, walletId,
-                                                       point)) {
-    std::cout << "Số dư điểm hiện tại của bạn: " << point << " điểm"
-              << std::endl;
-  } else {
-    std::cout << "Không tìm thấy ví của bạn hoặc có lỗi xảy ra!" << std::endl;
-    std::cout << "Vui lòng liên hệ quản trị viên để được hỗ trợ." << std::endl;
+  try {
+    controllers::WalletController walletController;
+    models::Wallet wallet = walletController.getWalletByUserId(userId);
+    utils::MessageHandler::logMessage(
+        "Số dư điểm hiện tại của bạn: " +
+        utils::format::formatPoint(wallet.getPoint()) + " điểm");
+  } catch (const std::exception& e) {
+    utils::MessageHandler::logError("Không thể lấy thông tin số dư!");
   }
 
-  std::cout << "\nNhấn Enter để tiếp tục...";
-  std::cin.ignore();
+  utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
   std::cin.get();
 }
 
 void CustomerView::handleTransfer() {
-  std::string username = getInput("Nhập tên đăng nhập người nhận: ");
-  std::string amount = getInput("Nhập số điểm muốn chuyển: ");
-  // TODO: Gọi WalletController để chuyển điểm
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
 }
 
 void CustomerView::handleViewTransactionHistory() {
-  // TODO: Gọi TransactionController để lấy lịch sử giao dịch
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
 }
 
 void CustomerView::handleEditProfile() {
-  // TODO: Gọi UserController để điều chỉnh thông tin cá nhân
-  std::cout << "Chức năng đang được phát triển..." << std::endl;
+  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
 }
 
 void CustomerView::handleChangePassword() {
-  std::cout << "\n=== ĐỔI MẬT KHẨU ===" << std::endl;
+  utils::MessageHandler::logMessage("\n=== ĐỔI MẬT KHẨU ===");
 
   std::string currentPassword = getInput("Nhập mật khẩu hiện tại: ");
   std::string newPassword = getInput("Nhập mật khẩu mới: ");
   std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
 
   if (newPassword != confirmPassword) {
-    std::cout << "Mật khẩu mới không khớp!" << std::endl;
+    utils::MessageHandler::logError("Mật khẩu mới không khớp!");
     return;
   }
 
-  // Gửi OTP trước khi đổi mật khẩu
+  utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
+
   controllers::AuthController authController;
+  bool otpSent = authController.sendOTPInfoChange(userId);
 
-  std::cout << "\nGửi mã OTP để xác thực..." << std::endl;
-  if (!authController.sendOTPInfoChange(userId)) {
-    std::cout << "Không thể gửi mã OTP. Vui lòng thử lại!" << std::endl;
+  if (!otpSent) {
+    utils::MessageHandler::logError("Không thể gửi mã OTP. Vui lòng thử lại!");
     return;
   }
 
-  // Nhập mã OTP từ người dùng
-  std::string otpCode = getInput("\nNhập mã OTP đã được gửi: ");
+  std::string otp = getInput("Nhập mã OTP: ");
 
-  // Thực hiện đổi mật khẩu với xác thực OTP
-  if (authController.verifyOTPAndChangePassword(userId, otpCode,
-                                                currentPassword, newPassword)) {
-    std::cout << "Đổi mật khẩu thành công!" << std::endl;
+  bool success = authController.verifyOTPAndChangePassword(
+      userId, otp, currentPassword, newPassword);
+
+  if (success) {
+    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công!");
   } else {
-    std::cout << "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!"
-              << std::endl;
+    utils::MessageHandler::logError(
+        "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!");
   }
 }
 

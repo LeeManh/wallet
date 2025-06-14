@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include "models/Otp.hpp"
+#include "utils/MessageHandler.hpp"
 #include "utils/Storage.hpp"
 
 using json = nlohmann::json;
@@ -29,21 +30,21 @@ bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
 
     // Lưu OTP
     if (!saveOTP(otp)) {
-      std::cout << "Không thể lưu OTP!" << std::endl;
+      utils::MessageHandler::logError("Không thể lưu OTP!");
       return false;
     }
 
     // Gửi OTP qua email
     if (!sendOTPEmail(email, otpCode)) {
-      std::cout << "Không thể gửi OTP qua email!" << std::endl;
+      utils::MessageHandler::logError("Không thể gửi OTP qua email!");
       return false;
     }
 
-    std::cout << "OTP đã được gửi đến email: " << email << std::endl;
+    utils::MessageHandler::logSuccess("OTP đã được gửi đến email: " + email);
     return true;
 
   } catch (const std::exception& e) {
-    std::cout << "Lỗi khi tạo OTP: " << e.what() << std::endl;
+    utils::MessageHandler::logError("Lỗi khi tạo OTP", e);
     return false;
   }
 }
@@ -77,16 +78,16 @@ bool OtpService::verifyOTP(int userId, const std::string& otpCode,
 
         utils::storage::writeJsonFile("data/otps.json", otpArray);
 
-        std::cout << "OTP xác thực thành công!" << std::endl;
+        utils::MessageHandler::logSuccess("OTP xác thực thành công!");
         return true;
       }
     }
 
-    std::cout << "OTP không hợp lệ hoặc đã hết hạn!" << std::endl;
+    utils::MessageHandler::logError("OTP không hợp lệ hoặc đã hết hạn!");
     return false;
 
   } catch (const std::exception& e) {
-    std::cout << "Lỗi khi xác thực OTP: " << e.what() << std::endl;
+    utils::MessageHandler::logError("Lỗi khi xác thực OTP", e);
     return false;
   }
 }
@@ -97,7 +98,7 @@ std::string OtpService::generateOTPCode() {
 
   // Lấy thời gian hiện tại (UNIX timestamp) chia cho 30 để tạo timeStep
   // Điều này đảm bảo mỗi mã OTP chỉ hợp lệ trong 30 giây
-  uint64_t timeStep = time(nullptr) / 30;
+  // uint64_t timeStep = time(nullptr) / 30;
 
   // Tạo mã TOTP gồm 6 chữ số, sử dụng thuật toán SHA1
   // get_totp có thể cấp phát bộ nhớ động, nên phải free sau khi dùng
@@ -134,10 +135,15 @@ bool OtpService::saveOTP(const models::OTP& otp) {
     otps.push_back(otpJson);
 
     // Ghi danh sách OTP đã cập nhật trở lại vào file
-    return utils::storage::writeJsonFile("data/otps.json", otps);
+    if (!utils::storage::writeJsonFile("data/otps.json", otps)) {
+      utils::MessageHandler::logError("Lỗi khi lưu OTP");
+      return false;
+    }
+
+    return true;
   } catch (const std::exception& e) {
     // In lỗi ra console nếu có ngoại lệ xảy ra khi đọc/ghi file
-    std::cout << "Lỗi khi lưu OTP: " << e.what() << std::endl;
+    utils::MessageHandler::logError("Lỗi khi lưu OTP", e);
     return false;
   }
 }
@@ -164,13 +170,13 @@ std::vector<models::OTP> OtpService::loadOTPs() {
 
 bool OtpService::sendOTPEmail(const std::string& email,
                               const std::string& otpCode) {
-  std::cout << "=====================================" << std::endl;
-  std::cout << "        GỬI OTP QUA EMAIL" << std::endl;
-  std::cout << "=====================================" << std::endl;
-  std::cout << "Đến: " << email << std::endl;
-  std::cout << "Mã OTP: " << otpCode << std::endl;
-  std::cout << "Thời gian hiệu lực: 5 phút" << std::endl;
-  std::cout << "=====================================" << std::endl;
+  utils::MessageHandler::logMessage("=====================================");
+  utils::MessageHandler::logMessage("        GỬI OTP QUA EMAIL");
+  utils::MessageHandler::logMessage("=====================================");
+  utils::MessageHandler::logMessage("Đến: " + email);
+  utils::MessageHandler::logMessage("Mã OTP: " + otpCode);
+  utils::MessageHandler::logMessage("Thời gian hiệu lực: 5 phút");
+  utils::MessageHandler::logMessage("=====================================");
 
   return true;
 }

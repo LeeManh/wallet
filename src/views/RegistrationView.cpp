@@ -1,34 +1,29 @@
 #include "views/RegistrationView.hpp"
 
-#include <iostream>
-#include <limits>
-
 #include "controllers/AuthController.hpp"
+#include "utils/MessageHandler.hpp"
 
 namespace views {
 
 void RegistrationView::display() {
-  std::cout << "\n=== Đăng ký tài khoản ===" << std::endl;
-}
+  utils::MessageHandler::logMessage("\n=== Đăng ký tài khoản ===");
 
-int RegistrationView::getChoice() {
-  return 0;  // Không cần xử lý choice cho view này
-}
-
-void RegistrationView::handleRegistration() {
   std::string username = getInput("Nhập tên đăng nhập: ");
   std::string password = getInput("Nhập mật khẩu: ");
   std::string confirmPassword = getInput("Nhập lại mật khẩu: ");
-  std::string fullName = getInput("Nhập họ và tên: ");
-  std::string email = getInput("Nhập email: ");
 
   if (password != confirmPassword) {
-    std::cout << "Mật khẩu không khớp!" << std::endl;
+    utils::MessageHandler::logError("Mật khẩu không khớp!");
     return;
   }
 
+  std::string email = getInput("Nhập email: ");
+  std::string fullName = getInput("Nhập họ tên đầy đủ: ");
+
   controllers::AuthController authController;
-  authController.registerUser(username, password, email, fullName);
+  if (authController.registerUser(username, password, email, fullName)) {
+    utils::MessageHandler::logSuccess("Đăng ký tài khoản thành công!");
+  }
 }
 
 }  // namespace views

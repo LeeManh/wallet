@@ -1,5 +1,4 @@
-#ifndef STORAGE_HPP
-#define STORAGE_HPP
+#pragma once
 
 #include <nlohmann/json.hpp>
 #include <string>
@@ -28,5 +27,3 @@ int getNextOtpId(const json& otps);
 
 }  // namespace storage
 }  // namespace utils
-
-#endif

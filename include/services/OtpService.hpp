@@ -1,5 +1,4 @@
-#ifndef OTP_SERVICE_HPP
-#define OTP_SERVICE_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -32,5 +31,3 @@ class OtpService {
 };
 
 }  // namespace services
-
-#endif

@@ -1,6 +1,6 @@
-#ifndef ADMIN_VIEW_HPP
-#define ADMIN_VIEW_HPP
+#pragma once
 
+#include "utils/Format.hpp"
 #include "views/View.hpp"
 
 namespace views {
@@ -9,7 +9,6 @@ class AdminView : public View {
  public:
   int userId;
   void display() override;
-  int getChoice() override;
 
   // Các phương thức xử lý menu admin
   void handleCreateAccount();
@@ -22,5 +21,3 @@ class AdminView : public View {
 };
 
 }  // namespace views
-
-#endif

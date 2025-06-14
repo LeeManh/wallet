@@ -1,5 +1,4 @@
-#ifndef OTP_HPP
-#define OTP_HPP
+#pragma once
 
 #include <string>
 
@@ -36,5 +35,3 @@ class OTP {
 };
 
 }  // namespace models
-
-#endif

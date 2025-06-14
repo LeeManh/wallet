@@ -1,5 +1,4 @@
-#ifndef VALIDATION_HPP
-#define VALIDATION_HPP
+#pragma once
 
 #include <string>
 
@@ -13,5 +12,3 @@ bool isValidPassword(const std::string& password);
 
 }  // namespace validation
 }  // namespace utils
-
-#endif

@@ -1,18 +1,14 @@
-#ifndef WALLET_CONTROLLER_HPP
-#define WALLET_CONTROLLER_HPP
+#ifndef WALLET_SERVICE_HPP
+#define WALLET_SERVICE_HPP
 
 #include <string>
 #include <vector>
 
 #include "models/Wallet.hpp"
-#include "services/WalletService.hpp"
 
-namespace controllers {
+namespace services {
 
-class WalletController {
- private:
-  services::WalletService walletService;
-
+class WalletService {
  public:
   // Tạo ví mới cho user
   bool createWallet(int userId, double initialBalance);
@@ -27,6 +23,6 @@ class WalletController {
   std::vector<models::Wallet> getAllWallets();
 };
 
-}  // namespace controllers
+}  // namespace services
 
 #endif

@@ -1,5 +1,4 @@
-#ifndef TRANSACTION_HPP
-#define TRANSACTION_HPP
+#pragma once
 
 #include <ctime>
 #include <string>
@@ -52,5 +51,3 @@ class Transaction {
 };
 
 }  // namespace models
-
-#endif
