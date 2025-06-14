@@ -7,6 +7,12 @@
 ```bash
 wsl --install
 ```
+### Mở WSL đã cài sẵn (trên Windows)
+
+```bash
+wsl
+```
+> Lệnh này sẽ mở default Linux distro (e.g: Ubuntu) trên terminal
 
 Sau khi cài đặt xong và đã vào WSL terminal (Ubuntu), chạy:
 
@@ -14,7 +20,10 @@ Sau khi cài đặt xong và đã vào WSL terminal (Ubuntu), chạy:
 sudo apt update
 sudo apt install libgcrypt20-dev cmake g++ make
 ```
-
+> Lệnh này sẽ cài đặt:
+> GNU compilers (gcc/g++)
+> pkg-config (required cho việc tìm kiếm libraries)
+> libgcrypt20-dev (cài đặt GCRYPT_LIBRARIES và GCRYPT_INCLUDE_DIR)
 ---
 
 ## 2. 🔐 Tạo SSH Key để Kết Nối với GitHub
