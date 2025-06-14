@@ -5,7 +5,7 @@
 namespace models {
 
 // Constructor
-Wallet::Wallet(int userId, double point, WalletType walletType, int id)
+Wallet::Wallet(int id, int userId, double point, WalletType walletType)
     : id(id), userId(userId), point(point), walletType(walletType) {
   time_t now = time(nullptr);
   createdAt = now;

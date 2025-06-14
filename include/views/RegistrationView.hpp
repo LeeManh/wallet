@@ -8,8 +8,6 @@ namespace views {
 class RegistrationView : public View {
  public:
   void display() override;
-  int getChoice() override;
-  void handleRegistration();
 };
 
 }  // namespace views

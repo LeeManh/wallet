@@ -1,5 +1,4 @@
-#ifndef VIEW_HPP
-#define VIEW_HPP
+#pragma once
 
 #include <iostream>
 #include <string>
@@ -10,9 +9,7 @@ class View {
  public:
   static std::string getInput(const std::string& prompt);
   virtual void display() = 0;
-  virtual int getChoice() = 0;
+  virtual int getChoice(int min, int max);
 };
 
 }  // namespace views
-
-#endif

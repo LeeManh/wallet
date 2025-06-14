@@ -3,16 +3,13 @@
 #include <string>
 #include <tuple>
 
-#include "services/AuthService.hpp"
+#include "services/UserService.hpp"
 
-namespace controllers {
+namespace services {
 
-class AuthController {
- private:
-  services::AuthService authService;
-  services::UserService userService;
-
+class AuthService {
  public:
+  // Authentication methods
   std::tuple<bool, int, bool> login(const std::string& username,
                                     const std::string& password);
   bool registerUser(const std::string& username, const std::string& password,
@@ -21,12 +18,14 @@ class AuthController {
                            const std::string& email,
                            const std::string& fullName,
                            std::string& generatedPassword);
-  bool changePassword(const int userId, const std::string& currentPassword,
+
+  // Password management
+  bool changePassword(int userId, const std::string& currentPassword,
                       const std::string& newPassword);
-  bool sendOTPInfoChange(const int userId);
-  bool verifyOTPAndChangePassword(const int userId, const std::string& otpCode,
-                                  const std::string& currentPassword,
-                                  const std::string& newPassword);
+  bool updateUserPassword(int userId, const std::string& newPassword);
+
+ private:
+  UserService userService;
 };
 
-}  // namespace controllers
+}  // namespace services

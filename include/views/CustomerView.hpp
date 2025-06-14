@@ -10,7 +10,6 @@ class CustomerView : public View {
  public:
   int userId;
   void display() override;
-  int getChoice() override;
 
   // Các phương thức xử lý menu customer
   void handleViewBalance();

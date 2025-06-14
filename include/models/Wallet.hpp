@@ -1,5 +1,4 @@
-#ifndef WALLET_HPP
-#define WALLET_HPP
+#pragma once
 
 #include <string>
 
@@ -21,8 +20,8 @@ class Wallet {
 
  public:
   // Constructor
-  Wallet(int userId, double point = 0.0,
-         WalletType walletType = WalletType::USER, int id = -1);
+  Wallet(int id, int userId, double point = 0.0,
+         WalletType walletType = WalletType::USER);
 
   // Getters
   int getId() const;
@@ -41,5 +40,3 @@ class Wallet {
 };
 
 }  // namespace models
-
-#endif

@@ -1,34 +1,47 @@
 #include "views/MainView.hpp"
 
-#include <iostream>
-#include <limits>
+#include "controllers/MenuController.hpp"
+#include "utils/MessageHandler.hpp"
 
 namespace views {
 
 void MainView::display() {
-  std::cout << "\n=== Hệ thống quản lý ví điểm thưởng ===" << std::endl;
-  std::cout << "[1] Đăng nhập" << std::endl;
-  std::cout << "[2] Đăng ký" << std::endl;
-  std::cout << "[0] Thoát" << std::endl;
-  std::cout << "Nhập lựa chọn: ";
-}
+  while (true) {
+    utils::MessageHandler::logMessage(
+        "\n=== Hệ thống quản lý ví điểm thưởng ===");
+    utils::MessageHandler::logMessage("[1] Đăng nhập");
+    utils::MessageHandler::logMessage("[2] Đăng ký");
+    utils::MessageHandler::logMessage("[0] Thoát");
 
-int MainView::getChoice() {
-  int choice;
-  while (!(std::cin >> choice) || choice < 0 || choice > 2) {
-    std::cout << "Lựa chọn không hợp lệ. Vui lòng nhập lại (0-2): ";
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    int choice = getChoice(0, 2);
+
+    switch (choice) {
+      case 1:
+        handleLogin();
+        break;
+      case 2:
+        handleRegistration();
+        break;
+      case 0:
+        utils::MessageHandler::logSuccess(
+            "Cảm ơn bạn đã sử dụng chương trình!");
+        return;
+    }
   }
-  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  return choice;
 }
 
-std::string View::getInput(const std::string& prompt) {
-  std::string input;
-  std::cout << prompt;
-  getline(std::cin, input);
-  return input;
+void MainView::handleLogin() {
+  utils::MessageHandler::logMessage("\n=== Đăng nhập ===");
+  std::string username = getInput("Nhập tên đăng nhập: ");
+  std::string password = getInput("Nhập mật khẩu: ");
+
+  controllers::MenuController menuController;
+  menuController.handleLogin(username, password);
+}
+
+void MainView::handleRegistration() {
+  controllers::MenuController menuController;
+  menuController.handleRegistration();
 }
 
 }  // namespace views

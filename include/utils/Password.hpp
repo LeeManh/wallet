@@ -1,5 +1,4 @@
-#ifndef PASSWORD_HPP
-#define PASSWORD_HPP
+#pragma once
 
 #include <string>
 
@@ -11,5 +10,3 @@ std::string generateRandomPassword(int length = 8);
 
 }  // namespace password
 }  // namespace utils
-
-#endif
