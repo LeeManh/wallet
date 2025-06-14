@@ -6,6 +6,10 @@ Hệ thống quản lý ví điểm thưởng là một ứng dụng cho phép n
 
 ## Cài đặt
 
+### Windows
+
+Xem hướng dẫn chi tiết tại [docs/window.md](docs/window.md)
+
 ### Yêu cầu hệ thống
 
 - C++17 trở lên
