@@ -14,5 +14,13 @@
     "lastUpdated": 1749678876,
     "userId": 2,
     "walletType": 0
+  },
+  {
+    "balance": 0.0,
+    "createdAt": 1749903738,
+    "id": 3,
+    "lastUpdated": 1749903738,
+    "userId": 3,
+    "walletType": 0
   }
 ]

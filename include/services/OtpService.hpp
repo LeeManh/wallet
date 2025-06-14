@@ -2,7 +2,7 @@
 #define OTP_SERVICE_HPP
 
 #include <string>
-
+#include <vector>
 #include "models/Otp.hpp"
 
 namespace services {
