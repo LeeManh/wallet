@@ -8,7 +8,7 @@ Hệ thống quản lý ví điểm thưởng là một ứng dụng cho phép n
 
 ### Windows
 
-Xem hướng dẫn chi tiết tại [docs/window.md](docs/window.md)
+Xem hướng dẫn chi tiết tại [docs/windows.md](docs/windows.md)
 
 ### Yêu cầu hệ thống
 
