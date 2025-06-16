@@ -21,6 +21,8 @@ bool Seed::initialize() {
   seedFiles();
   seedData();
 
+  utils::MessageHandler::logSuccess("Khởi tạo dữ liệu thành công!\n");
+
   return true;
 }
 
@@ -51,8 +53,6 @@ bool Seed::seedData() {
   // Tạo ví cho admin
   services::WalletService::createWallet(admin.getId(), adminWallet["point"],
                                         adminWallet["walletType"]);
-
-  utils::MessageHandler::logSuccess("Khởi tạo dữ liệu thành công!\n");
 
   utils::MessageHandler::logMessage("\n👤 Đang tạo tài khoản admin:");
   utils::MessageHandler::logMessage("└─────────────────────────────");
