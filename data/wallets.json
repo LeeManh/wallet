@@ -1,6 +1,6 @@
 [
   {
-    "balance": 1000.0,
+    "point": 90.00,
     "createdAt": 1749678762,
     "id": 1,
     "lastUpdated": 1749678762,
@@ -8,7 +8,7 @@
     "walletType": 1
   },
   {
-    "balance": 10.0,
+    "point": 10.00,
     "createdAt": 1749678876,
     "id": 2,
     "lastUpdated": 1749678876,
@@ -16,7 +16,7 @@
     "walletType": 0
   },
   {
-    "balance": 0.0,
+    "point": 0.00,
     "createdAt": 1749903738,
     "id": 3,
     "lastUpdated": 1749903738,

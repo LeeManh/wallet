@@ -159,10 +159,10 @@ void AdminView::handleManageTotalWallet() {
   controllers::WalletController walletController;
   auto systemWallet = walletController.getSystemWallet();
 
-  if (systemWallet.getId() != -1) {
+  if (systemWallet) {
     utils::MessageHandler::logMessage(
         "Số dư ví hệ thống hiện tại: " +
-        utils::format::formatPoint(systemWallet.getPoint()) + " điểm");
+        utils::format::formatPoint(systemWallet.value().getPoint()) + " điểm");
   } else {
     utils::MessageHandler::logError(
         "Không tìm thấy ví hệ thống hoặc có lỗi xảy ra!");

@@ -47,10 +47,15 @@ void CustomerView::handleViewBalance() {
 
   try {
     controllers::WalletController walletController;
-    models::Wallet wallet = walletController.getWalletByUserId(userId);
-    utils::MessageHandler::logMessage(
-        "Số dư điểm hiện tại của bạn: " +
-        utils::format::formatPoint(wallet.getPoint()) + " điểm");
+    auto wallet = walletController.getWalletByUserId(userId);
+    if (!wallet) {
+      utils::MessageHandler::logError("Không tìm thấy ví của bạn");
+    } else {
+      utils::MessageHandler::logMessage(
+          "Số dư điểm hiện tại của bạn: " +
+          utils::format::formatPoint(wallet.value().getPoint()) + " điểm");
+    }
+
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Không thể lấy thông tin số dư!");
   }

@@ -1,6 +1,7 @@
 #ifndef WALLET_SERVICE_HPP
 #define WALLET_SERVICE_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -14,10 +15,10 @@ class WalletService {
   bool createWallet(int userId, double initialBalance);
 
   // Lấy ví của user
-  models::Wallet getWalletByUserId(int userId);
+  std::optional<models::Wallet> getWalletByUserId(int userId);
 
   // Lấy thông tin ví hệ thống (SYSTEM wallet)
-  models::Wallet getSystemWallet();
+  std::optional<models::Wallet> getSystemWallet();
 
   // Lấy danh sách tất cả ví
   std::vector<models::Wallet> getAllWallets();

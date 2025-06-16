@@ -11,7 +11,7 @@ namespace services {
 bool WalletService::createWallet(int userId, double initialBalance) {
   try {
     // Kiểm tra xem user đã có ví chưa
-    if (getWalletByUserId(userId).getId() != -1) {
+    if (getWalletByUserId(userId)) {
       utils::MessageHandler::logWarning("User đã có ví!");
       return false;
     }
@@ -42,7 +42,7 @@ bool WalletService::createWallet(int userId, double initialBalance) {
   }
 }
 
-models::Wallet WalletService::getWalletByUserId(int userId) {
+std::optional<models::Wallet> WalletService::getWalletByUserId(int userId) {
   try {
     json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -54,18 +54,14 @@ models::Wallet WalletService::getWalletByUserId(int userId) {
       }
     }
 
-    return models::Wallet(
-        -1, -1, 0.0,
-        models::WalletType::USER);  // Trả về ví mặc định nếu không tìm thấy
+    return std::nullopt;
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi tìm ví", e);
-    return models::Wallet(
-        -1, -1, 0.0,
-        models::WalletType::USER);  // Trả về ví mặc định nếu không tìm thấy
+    return std::nullopt;
   }
 }
 
-models::Wallet WalletService::getSystemWallet() {
+std::optional<models::Wallet> WalletService::getSystemWallet() {
   try {
     json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -78,14 +74,10 @@ models::Wallet WalletService::getSystemWallet() {
       }
     }
 
-    return models::Wallet(
-        -1, -1, 0.0,
-        models::WalletType::USER);  // Trả về ví mặc định nếu không tìm thấy
+    return std::nullopt;
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi tìm ví hệ thống", e);
-    return models::Wallet(
-        -1, -1, 0.0,
-        models::WalletType::USER);  // Trả về ví mặc định nếu không tìm thấy
+    return std::nullopt;
   }
 }
 
