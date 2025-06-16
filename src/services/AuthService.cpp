@@ -3,9 +3,9 @@
 
 #include <tuple>
 
-#include "controllers/WalletController.hpp"
 #include "models/User.hpp"
 #include "services/UserService.hpp"
+#include "services/WalletService.hpp"
 #include "utils/Hash.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Password.hpp"
@@ -53,8 +53,7 @@ bool AuthService::registerUser(const std::string& username,
     }
 
     // Tự động tạo ví cho user mới
-    controllers::WalletController walletController;
-    if (!walletController.createWallet(newUser.getId(), 0.0)) {
+    if (!WalletService::createWallet(newUser.getId(), 0.0)) {
       utils::MessageHandler::logWarning(
           "Cảnh báo: Không thể tạo ví cho user mới!");
     }
@@ -86,8 +85,7 @@ bool AuthService::registerUserByAdmin(const std::string& username,
     }
 
     // Tự động tạo ví cho user mới
-    controllers::WalletController walletController;
-    if (!walletController.createWallet(newUser.getId(), 0.0)) {
+    if (!WalletService::createWallet(newUser.getId(), 0.0)) {
       utils::MessageHandler::logWarning(
           "Cảnh báo: Không thể tạo ví cho user mới!");
     }
