@@ -7,7 +7,6 @@ using json = nlohmann::json;
 
 namespace utils {
 namespace storage {
-
 // Đọc JSON từ file
 json readJsonFile(const std::string& path);
 
@@ -19,6 +18,10 @@ bool fileExists(const std::string& path);
 
 // Tạo thư mục nếu chưa tồn tại
 bool ensureDirectoryExists(const std::string& path);
+
+// Create file
+bool createFile(const std::string& path,
+                const json& defaultValue = json::array());
 
 // Lấy ID tiếp theo
 int getNextUserId(const json& users);

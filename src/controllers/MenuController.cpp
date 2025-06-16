@@ -8,7 +8,7 @@ namespace controllers {
 
 void MenuController::handleLogin(const std::string& username,
                                  const std::string& password) {
-  auto [success, userId, isAdmin] = authController.login(username, password);
+  auto [success, userId, isAdmin] = AuthController::login(username, password);
 
   if (success) {
     if (isAdmin) {

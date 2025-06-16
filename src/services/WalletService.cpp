@@ -8,7 +8,8 @@ using json = nlohmann::json;
 
 namespace services {
 
-bool WalletService::createWallet(int userId, double initialBalance) {
+bool WalletService::createWallet(int userId, double initialBalance,
+                                 models::WalletType walletType) {
   try {
     // Kiểm tra xem user đã có ví chưa
     if (getWalletByUserId(userId)) {
@@ -16,17 +17,18 @@ bool WalletService::createWallet(int userId, double initialBalance) {
       return false;
     }
 
-    // Tạo ví mới
-    models::Wallet newWallet(userId, initialBalance);
-
-    // Lưu thông tin ví
     json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+    // Tạo ví mới
+    int newWalletId = utils::storage::getNextWalletId(wallets);
+    models::Wallet newWallet(newWalletId, userId, initialBalance, walletType);
 
     json walletData;
     walletData["id"] = newWallet.getId();
     walletData["userId"] = newWallet.getUserId();
     walletData["point"] = newWallet.getPoint();
     walletData["createdAt"] = newWallet.getCreatedAt();
+    walletData["walletType"] = newWallet.getWalletType();
 
     wallets.push_back(walletData);
 

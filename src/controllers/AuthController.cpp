@@ -3,40 +3,44 @@
 #include <iostream>
 #include <tuple>
 
+#include "services/AuthService.hpp"
 #include "services/OtpService.hpp"
+#include "services/UserService.hpp"
 #include "utils/MessageHandler.hpp"
 
 namespace controllers {
 
 std::tuple<bool, int, bool> AuthController::login(const std::string& username,
                                                   const std::string& password) {
-  return authService.login(username, password);
+  return services::AuthService::login(username, password);
 }
 
 bool AuthController::registerUser(const std::string& username,
                                   const std::string& password,
                                   const std::string& email,
                                   const std::string& fullName) {
-  return authService.registerUser(username, password, email, fullName);
+  return services::AuthService::registerUser(username, password, email,
+                                             fullName);
 }
 
 bool AuthController::registerUserByAdmin(const std::string& username,
                                          const std::string& email,
                                          const std::string& fullName,
                                          std::string& generatedPassword) {
-  return authService.registerUserByAdmin(username, email, fullName,
-                                         generatedPassword);
+  return services::AuthService::registerUserByAdmin(username, email, fullName,
+                                                    generatedPassword);
 }
 
 bool AuthController::changePassword(const int userId,
                                     const std::string& currentPassword,
                                     const std::string& newPassword) {
-  return authService.changePassword(userId, currentPassword, newPassword);
+  return services::AuthService::changePassword(userId, currentPassword,
+                                               newPassword);
 }
 
 bool AuthController::sendOTPInfoChange(const int userId) {
   try {
-    std::string email = userService.getUserEmail(userId);
+    std::string email = services::UserService::getUserEmail(userId);
     if (email.empty()) {
       utils::MessageHandler::logError("Không tìm thấy email của người dùng!");
       return false;
@@ -57,7 +61,8 @@ bool AuthController::verifyOTPAndChangePassword(
                                          models::OTPType::INFO_CHANGE)) {
       return false;
     }
-    return authService.changePassword(userId, currentPassword, newPassword);
+    return services::AuthService::changePassword(userId, currentPassword,
+                                                 newPassword);
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi xác thực OTP và đổi mật khẩu: " +
                                     std::string(e.what()));

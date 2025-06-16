@@ -8,25 +8,30 @@
 namespace controllers {
 
 class AuthController {
- private:
-  services::AuthService authService;
-  services::UserService userService;
-
  public:
-  std::tuple<bool, int, bool> login(const std::string& username,
-                                    const std::string& password);
-  bool registerUser(const std::string& username, const std::string& password,
-                    const std::string& email, const std::string& fullName);
-  bool registerUserByAdmin(const std::string& username,
+  static std::tuple<bool, int, bool> login(const std::string& username,
+                                           const std::string& password);
+
+  static bool registerUser(const std::string& username,
+                           const std::string& password,
                            const std::string& email,
-                           const std::string& fullName,
-                           std::string& generatedPassword);
-  bool changePassword(const int userId, const std::string& currentPassword,
-                      const std::string& newPassword);
-  bool sendOTPInfoChange(const int userId);
-  bool verifyOTPAndChangePassword(const int userId, const std::string& otpCode,
-                                  const std::string& currentPassword,
-                                  const std::string& newPassword);
+                           const std::string& fullName);
+
+  static bool registerUserByAdmin(const std::string& username,
+                                  const std::string& email,
+                                  const std::string& fullName,
+                                  std::string& generatedPassword);
+
+  static bool changePassword(const int userId,
+                             const std::string& currentPassword,
+                             const std::string& newPassword);
+
+  static bool sendOTPInfoChange(const int userId);
+
+  static bool verifyOTPAndChangePassword(const int userId,
+                                         const std::string& otpCode,
+                                         const std::string& currentPassword,
+                                         const std::string& newPassword);
 };
 
 }  // namespace controllers

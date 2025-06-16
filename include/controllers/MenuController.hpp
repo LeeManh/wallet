@@ -6,12 +6,11 @@
 namespace controllers {
 
 class MenuController {
- private:
-  AuthController authController;
-
  public:
-  void handleLogin(const std::string& username, const std::string& password);
-  void handleRegistration();
+  static void handleLogin(const std::string& username,
+                          const std::string& password);
+
+  static void handleRegistration();
 };
 
 }  // namespace controllers

@@ -3,19 +3,19 @@
 namespace controllers {
 
 bool WalletController::createWallet(int userId, double initialBalance) {
-  return walletService.createWallet(userId, initialBalance);
+  return services::WalletService::createWallet(userId, initialBalance);
 }
 
 std::optional<models::Wallet> WalletController::getWalletByUserId(int userId) {
-  return walletService.getWalletByUserId(userId);
+  return services::WalletService::getWalletByUserId(userId);
 }
 
 std::optional<models::Wallet> WalletController::getSystemWallet() {
-  return walletService.getSystemWallet();
+  return services::WalletService::getSystemWallet();
 }
 
 std::vector<models::Wallet> WalletController::getAllWallets() {
-  return walletService.getAllWallets();
+  return services::WalletService::getAllWallets();
 }
 
 }  // namespace controllers
