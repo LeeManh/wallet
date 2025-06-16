@@ -100,3 +100,5 @@ enable_testing()
 # Tạo một test case tên là wallet_test
 # Test case này sẽ chạy file thực thi tests trong thư mục bin
 add_test(NAME wallet_test COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/tests) 
+
+# test message

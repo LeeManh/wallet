@@ -22,6 +22,7 @@ std::tuple<bool, int, bool> AuthService::login(const std::string& username,
             utils::hash::validatePassword(password, user["passwordHash"]);
         if (!isMatchPassword) break;
 
+        utils::MessageHandler::logSuccess("Đăng nhập thành công");
         return {true, user["id"], user["isAdmin"]};
       }
     }
