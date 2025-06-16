@@ -39,10 +39,6 @@ json readJsonFile(const std::string& path) {
 
 bool writeJsonFile(const std::string& path, const json& data) {
   try {
-    // Đảm bảo thư mục tồn tại
-    std::filesystem::path filePath(path);
-    std::filesystem::create_directories(filePath.parent_path());
-
     // Mở file với mode binary để tránh vấn đề với line endings
     std::ofstream file(path, std::ios::binary);
     if (!file.is_open()) {
@@ -69,6 +65,26 @@ bool ensureDirectoryExists(const std::string& path) {
     return std::filesystem::create_directories(path);
   } catch (const std::exception& e) {
     std::cerr << "Error creating directory: " << e.what() << std::endl;
+    return false;
+  }
+}
+
+bool createFile(const std::string& path, const json& defaultValue) {
+  try {
+    std::filesystem::path filePath(path);
+
+    // Tạo thư mục cha nếu chưa tồn tại
+    std::filesystem::create_directories(filePath.parent_path());
+
+    // Kiểm tra xem file đã tồn tại chưa
+    if (std::filesystem::exists(filePath)) {
+      return true;
+    }
+
+    // Tạo file mới với giá trị mặc định
+    return writeJsonFile(path, defaultValue);
+  } catch (const std::exception& e) {
+    std::cerr << "Lỗi khi tạo file: " << e.what() << std::endl;
     return false;
   }
 }

@@ -9,23 +9,28 @@ namespace services {
 
 class AuthService {
  public:
-  // Authentication methods
-  std::tuple<bool, int, bool> login(const std::string& username,
-                                    const std::string& password);
-  bool registerUser(const std::string& username, const std::string& password,
-                    const std::string& email, const std::string& fullName);
-  bool registerUserByAdmin(const std::string& username,
+  // Đăng nhập
+  static std::tuple<bool, int, bool> login(const std::string& username,
+                                           const std::string& password);
+
+  // Người dùng đăng kí
+  static bool registerUser(const std::string& username,
+                           const std::string& password,
                            const std::string& email,
-                           const std::string& fullName,
-                           std::string& generatedPassword);
+                           const std::string& fullName);
 
-  // Password management
-  bool changePassword(int userId, const std::string& currentPassword,
-                      const std::string& newPassword);
-  bool updateUserPassword(int userId, const std::string& newPassword);
+  // Admin tạo tài khoản
+  static bool registerUserByAdmin(const std::string& username,
+                                  const std::string& email,
+                                  const std::string& fullName,
+                                  std::string& generatedPassword);
 
- private:
-  UserService userService;
+  // Người dùng tự đổi mật khẩu
+  static bool changePassword(int userId, const std::string& currentPassword,
+                             const std::string& newPassword);
+
+  // Admin cập nhập mật khẩu cho người dùng
+  static bool updateUserPassword(int userId, const std::string& newPassword);
 };
 
 }  // namespace services
