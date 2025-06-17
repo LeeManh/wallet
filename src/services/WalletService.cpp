@@ -1,6 +1,7 @@
 #include "services/WalletService.hpp"
 
 #include "models/Wallet.hpp"
+#include "utils/Format.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Storage.hpp"
 
@@ -109,6 +110,62 @@ std::vector<models::Wallet> WalletService::getAllWallets() {
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi đọc danh sách ví", e);
     return std::vector<models::Wallet>();
+  }
+}
+
+void WalletService::printListWallet() {
+  auto wallets = getAllWallets();
+
+  if (wallets.empty()) {
+    utils::MessageHandler::logWarning("Không có ví nào trong hệ thống!");
+  } else {
+    utils::MessageHandler::logMessage("");
+
+    int count = 1;
+    for (const auto& wallet : wallets) {
+      char createdStr[20];
+      struct tm* timeinfo;
+
+      time_t createdAt = wallet.getCreatedAt();
+      timeinfo = localtime(&createdAt);
+      strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
+
+      std::string walletTypeStr =
+          (wallet.getWalletType() == models::WalletType::SYSTEM) ? "SYSTEM"
+                                                                 : "USER";
+
+      utils::MessageHandler::logMessage(
+          "[" + std::to_string(count) +
+          "] Ví ID: " + std::to_string(wallet.getId()) +
+          " | User: " + std::to_string(wallet.getUserId()) + " | Số điểm: " +
+          utils::format::formatPoint(wallet.getPoint()) + " điểm" +
+          " | Loại: " + walletTypeStr + " | Tạo: " + std::string(createdStr));
+      count++;
+    }
+
+    utils::MessageHandler::logMessage(std::string(60, '-'));
+    utils::MessageHandler::logMessage("Tổng số ví: " +
+                                      std::to_string(wallets.size()));
+
+    double totalPoint = 0;
+    int userWallets = 0;
+    int systemWallets = 0;
+
+    for (const auto& wallet : wallets) {
+      totalPoint += wallet.getPoint();
+      if (wallet.getWalletType() == models::WalletType::SYSTEM) {
+        systemWallets++;
+      } else {
+        userWallets++;
+      }
+    }
+
+    utils::MessageHandler::logMessage(
+        "Tổng số điểm hệ thống: " + utils::format::formatPoint(totalPoint) +
+        " điểm");
+    utils::MessageHandler::logMessage(
+        "Ví người dùng: " + std::to_string(userWallets) +
+        " | Ví hệ thống: " + std::to_string(systemWallets));
   }
 }
 

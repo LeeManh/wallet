@@ -12,12 +12,12 @@ class AuthController {
   static std::tuple<bool, int, bool> login(const std::string& username,
                                            const std::string& password);
 
-  static bool registerUser(const std::string& username,
+  static void registerUser(const std::string& username,
                            const std::string& password,
                            const std::string& email,
                            const std::string& fullName);
 
-  static bool registerUserByAdmin(const std::string& username,
+  static void registerUserByAdmin(const std::string& username,
                                   const std::string& email,
                                   const std::string& fullName,
                                   std::string& generatedPassword);
@@ -26,9 +26,9 @@ class AuthController {
                              const std::string& currentPassword,
                              const std::string& newPassword);
 
-  static bool sendOTPInfoChange(const int userId);
+  static void sendOTPInfoChange(const int userId);
 
-  static bool verifyOTPAndChangePassword(const int userId,
+  static void verifyOTPAndChangePassword(const int userId,
                                          const std::string& otpCode,
                                          const std::string& currentPassword,
                                          const std::string& newPassword);

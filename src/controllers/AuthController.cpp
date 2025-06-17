@@ -15,20 +15,29 @@ std::tuple<bool, int, bool> AuthController::login(const std::string& username,
   return services::AuthService::login(username, password);
 }
 
-bool AuthController::registerUser(const std::string& username,
+void AuthController::registerUser(const std::string& username,
                                   const std::string& password,
                                   const std::string& email,
                                   const std::string& fullName) {
-  return services::AuthService::registerUser(username, password, email,
-                                             fullName);
+  if (services::AuthService::registerUser(username, password, email,
+                                          fullName)) {
+    utils::MessageHandler::logSuccess("Đăng ký tài khoản thành công!");
+  }
 }
 
-bool AuthController::registerUserByAdmin(const std::string& username,
+void AuthController::registerUserByAdmin(const std::string& username,
                                          const std::string& email,
                                          const std::string& fullName,
                                          std::string& generatedPassword) {
-  return services::AuthService::registerUserByAdmin(username, email, fullName,
-                                                    generatedPassword);
+  if (services::AuthService::registerUserByAdmin(username, email, fullName,
+                                                 generatedPassword)) {
+    utils::MessageHandler::logSuccess("\nTạo tài khoản thành công!");
+    utils::MessageHandler::logMessage("Tên đăng nhập: " + username);
+    utils::MessageHandler::logMessage("Email: " + email);
+    utils::MessageHandler::logMessage("Mật khẩu: " + generatedPassword);
+    utils::MessageHandler::logMessage(
+        "Vui lòng lưu lại mật khẩu này để đăng nhập lần đầu!");
+  }
 }
 
 bool AuthController::changePassword(const int userId,
@@ -38,35 +47,32 @@ bool AuthController::changePassword(const int userId,
                                                newPassword);
 }
 
-bool AuthController::sendOTPInfoChange(const int userId) {
+void AuthController::sendOTPInfoChange(const int userId) {
   try {
     std::string email = services::UserService::getUserEmail(userId);
     if (email.empty()) {
       utils::MessageHandler::logError("Không tìm thấy email của người dùng!");
-      return false;
     }
-    return services::OtpService::generateAndSendOTP(userId, email);
+    services::OtpService::generateAndSendOTP(userId, email);
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi gửi OTP: " +
                                     std::string(e.what()));
-    return false;
   }
 }
 
-bool AuthController::verifyOTPAndChangePassword(
+void AuthController::verifyOTPAndChangePassword(
     const int userId, const std::string& otpCode,
     const std::string& currentPassword, const std::string& newPassword) {
   try {
     if (!services::OtpService::verifyOTP(userId, otpCode,
                                          models::OTPType::INFO_CHANGE)) {
-      return false;
+      utils::MessageHandler::logError("Lỗi khi xác thực OTP và đổi mật khẩu");
     }
-    return services::AuthService::changePassword(userId, currentPassword,
-                                                 newPassword);
+    services::AuthService::changePassword(userId, currentPassword, newPassword);
+    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công!");
   } catch (const std::exception& e) {
     utils::MessageHandler::logError("Lỗi khi xác thực OTP và đổi mật khẩu: " +
                                     std::string(e.what()));
-    return false;
   }
 }
 
