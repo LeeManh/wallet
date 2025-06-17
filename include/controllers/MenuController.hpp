@@ -1,5 +1,4 @@
-#ifndef MENU_CONTROLLER_HPP
-#define MENU_CONTROLLER_HPP
+#pragma once
 
 #include "controllers/AuthController.hpp"
 
@@ -14,5 +13,3 @@ class MenuController {
 };
 
 }  // namespace controllers
-
-#endif

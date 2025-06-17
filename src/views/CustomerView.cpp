@@ -45,20 +45,7 @@ void CustomerView::display() {
 void CustomerView::handleViewBalance() {
   utils::MessageHandler::logMessage("\n=== XEM SỐ DƯ ĐIỂM ===");
 
-  try {
-    controllers::WalletController walletController;
-    auto wallet = walletController.getWalletByUserId(userId);
-    if (!wallet) {
-      utils::MessageHandler::logError("Không tìm thấy ví của bạn");
-    } else {
-      utils::MessageHandler::logMessage(
-          "Số dư điểm hiện tại của bạn: " +
-          utils::format::formatPoint(wallet.value().getPoint()) + " điểm");
-    }
-
-  } catch (const std::exception& e) {
-    utils::MessageHandler::logError("Không thể lấy thông tin số dư!");
-  }
+  controllers::WalletController::getWalletByUserId(userId);
 
   utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
   std::cin.get();
@@ -89,26 +76,11 @@ void CustomerView::handleChangePassword() {
   }
 
   utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
-
-  controllers::AuthController authController;
-  bool otpSent = authController.sendOTPInfoChange(userId);
-
-  if (!otpSent) {
-    utils::MessageHandler::logError("Không thể gửi mã OTP. Vui lòng thử lại!");
-    return;
-  }
+  controllers::AuthController::sendOTPInfoChange(userId);
 
   std::string otp = getInput("Nhập mã OTP: ");
-
-  bool success = authController.verifyOTPAndChangePassword(
+  controllers::AuthController::verifyOTPAndChangePassword(
       userId, otp, currentPassword, newPassword);
-
-  if (success) {
-    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công!");
-  } else {
-    utils::MessageHandler::logError(
-        "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!");
-  }
 }
 
 }  // namespace views

@@ -63,18 +63,10 @@ void AdminView::handleCreateAccount() {
   std::string email = getInput("Nhập email: ");
   std::string fullName = getInput("Nhập họ tên đầy đủ: ");
 
-  controllers::AuthController authController;
   std::string generatedPassword;
 
-  if (authController.registerUserByAdmin(username, email, fullName,
-                                         generatedPassword)) {
-    utils::MessageHandler::logSuccess("\nTạo tài khoản thành công!");
-    utils::MessageHandler::logMessage("Tên đăng nhập: " + username);
-    utils::MessageHandler::logMessage("Email: " + email);
-    utils::MessageHandler::logMessage("Mật khẩu: " + generatedPassword);
-    utils::MessageHandler::logMessage(
-        "Vui lòng lưu lại mật khẩu này để đăng nhập lần đầu!");
-  }
+  controllers::AuthController::registerUserByAdmin(username, email, fullName,
+                                                   generatedPassword);
 }
 
 void AdminView::handleViewAllUsers() {
@@ -85,60 +77,7 @@ void AdminView::handleViewAllWallets() {
   utils::MessageHandler::logMessage(
       "\n=== DANH SÁCH TẤT CẢ VÍ TRONG HỆ THỐNG ===");
 
-  controllers::WalletController walletController;
-  auto wallets = walletController.getAllWallets();
-
-  if (wallets.empty()) {
-    utils::MessageHandler::logWarning("Không có ví nào trong hệ thống!");
-  } else {
-    utils::MessageHandler::logMessage("");
-
-    int count = 1;
-    for (const auto& wallet : wallets) {
-      char createdStr[20];
-      struct tm* timeinfo;
-
-      time_t createdAt = wallet.getCreatedAt();
-      timeinfo = localtime(&createdAt);
-      strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
-
-      std::string walletTypeStr =
-          (wallet.getWalletType() == models::WalletType::SYSTEM) ? "SYSTEM"
-                                                                 : "USER";
-
-      utils::MessageHandler::logMessage(
-          "[" + std::to_string(count) +
-          "] Ví ID: " + std::to_string(wallet.getId()) +
-          " | User: " + std::to_string(wallet.getUserId()) + " | Số điểm: " +
-          utils::format::formatPoint(wallet.getPoint()) + " điểm" +
-          " | Loại: " + walletTypeStr + " | Tạo: " + std::string(createdStr));
-      count++;
-    }
-
-    utils::MessageHandler::logMessage(std::string(60, '-'));
-    utils::MessageHandler::logMessage("Tổng số ví: " +
-                                      std::to_string(wallets.size()));
-
-    double totalPoint = 0;
-    int userWallets = 0;
-    int systemWallets = 0;
-
-    for (const auto& wallet : wallets) {
-      totalPoint += wallet.getPoint();
-      if (wallet.getWalletType() == models::WalletType::SYSTEM) {
-        systemWallets++;
-      } else {
-        userWallets++;
-      }
-    }
-
-    utils::MessageHandler::logMessage(
-        "Tổng số điểm hệ thống: " + utils::format::formatPoint(totalPoint) +
-        " điểm");
-    utils::MessageHandler::logMessage(
-        "Ví người dùng: " + std::to_string(userWallets) +
-        " | Ví hệ thống: " + std::to_string(systemWallets));
-  }
+  controllers::WalletController::printListWallet();
 
   utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
   std::cin.ignore();
@@ -156,19 +95,7 @@ void AdminView::handleEditUserInfo() {
 void AdminView::handleManageTotalWallet() {
   utils::MessageHandler::logMessage("\n=== XEM SỐ DƯ VÍ HỆ THỐNG ===");
 
-  controllers::WalletController walletController;
-  auto systemWallet = walletController.getSystemWallet();
-
-  if (systemWallet) {
-    utils::MessageHandler::logMessage(
-        "Số dư ví hệ thống hiện tại: " +
-        utils::format::formatPoint(systemWallet.value().getPoint()) + " điểm");
-  } else {
-    utils::MessageHandler::logError(
-        "Không tìm thấy ví hệ thống hoặc có lỗi xảy ra!");
-    utils::MessageHandler::logMessage(
-        "Vui lòng kiểm tra lại cấu hình hệ thống.");
-  }
+  controllers::WalletController::getSystemWallet();
 
   utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
   std::cin.ignore();
@@ -187,23 +114,12 @@ void AdminView::handleChangePassword() {
     return;
   }
 
-  controllers::AuthController authController;
-
-  utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
-  if (!authController.sendOTPInfoChange(userId)) {
-    utils::MessageHandler::logError("Không thể gửi mã OTP. Vui lòng thử lại!");
-    return;
-  }
+    utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
+  controllers::AuthController::sendOTPInfoChange(userId);
 
   std::string otpCode = getInput("Nhập mã OTP đã được gửi: ");
-
-  if (authController.verifyOTPAndChangePassword(userId, otpCode,
-                                                currentPassword, newPassword)) {
-    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công!");
-  } else {
-    utils::MessageHandler::logError(
-        "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại thông tin!");
-  }
+  controllers::AuthController::verifyOTPAndChangePassword(
+      userId, otpCode, currentPassword, newPassword);
 }
 
 }  // namespace views

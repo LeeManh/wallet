@@ -27,7 +27,7 @@ bool Seed::initialize() {
 }
 
 bool Seed::seedFiles() {
-  std::vector<std::string> requiredFiles = {"data/opts.json", "data/users.json",
+  std::vector<std::string> requiredFiles = {"data/otps.json", "data/users.json",
                                             "data/wallets.json"};
 
   utils::MessageHandler::logMessage("\n📁 Đang tạo các file cần thiết:");

@@ -1,11 +1,14 @@
 #ifndef WALLET_SERVICE_HPP
 #define WALLET_SERVICE_HPP
 
+#include <nlohmann/json.hpp>
 #include <optional>
 #include <string>
 #include <vector>
 
 #include "models/Wallet.hpp"
+
+using json = nlohmann::json;
 
 namespace services {
 
@@ -24,6 +27,9 @@ class WalletService {
 
   // Lấy danh sách tất cả ví
   static std::vector<models::Wallet> getAllWallets();
+
+  // In ra danh sách ví
+  static void printListWallet();
 };
 
 }  // namespace services

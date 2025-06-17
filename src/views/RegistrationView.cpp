@@ -20,10 +20,8 @@ void RegistrationView::display() {
   std::string email = getInput("Nhập email: ");
   std::string fullName = getInput("Nhập họ tên đầy đủ: ");
 
-  controllers::AuthController authController;
-  if (authController.registerUser(username, password, email, fullName)) {
-    utils::MessageHandler::logSuccess("Đăng ký tài khoản thành công!");
-  }
+  controllers::AuthController::registerUser(username, password, email,
+                                            fullName);
 }
 
 }  // namespace views
