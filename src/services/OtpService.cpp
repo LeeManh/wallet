@@ -7,6 +7,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "exceptions/Exception.hpp"
 #include "models/Otp.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Storage.hpp"
@@ -44,7 +45,8 @@ bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
     return true;
 
   } catch (const std::exception& e) {
-    utils::MessageHandler::logError("Lỗi khi tạo OTP", e);
+    utils::MessageHandler::logError("Lỗi khi tạo OTP: " +
+                                    std::string(e.what()));
     return false;
   }
 }
@@ -52,44 +54,37 @@ bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
 // Xác thực OTP
 bool OtpService::verifyOTP(int userId, const std::string& otpCode,
                            models::OTPType otpType) {
-  try {
-    auto otps = loadOTPs();
-    time_t currentTime = time(nullptr);
+  auto otps = loadOTPs();
+  time_t currentTime = time(nullptr);
 
-    for (size_t i = 0; i < otps.size(); ++i) {
-      if (otps[i].getUserId() == userId && otps[i].getOtpCode() == otpCode &&
-          otps[i].getOtpType() == otpType &&
-          otps[i].getExpiresAt() > currentTime) {
-        // OTP hợp lệ, xóa nó khỏi danh sách
-        otps.erase(otps.begin() + i);
+  for (size_t i = 0; i < otps.size(); ++i) {
+    if (otps[i].getUserId() == userId && otps[i].getOtpCode() == otpCode &&
+        otps[i].getOtpType() == otpType &&
+        otps[i].getExpiresAt() > currentTime) {
+      // OTP hợp lệ, xóa nó khỏi danh sách
+      otps.erase(otps.begin() + i);
 
-        // Lưu lại danh sách OTP đã cập nhật
-        json otpArray = json::array();
-        for (const auto& otpItem : otps) {
-          json otpJson;
-          otpJson["id"] = otpItem.getId();
-          otpJson["userId"] = otpItem.getUserId();
-          otpJson["otpCode"] = otpItem.getOtpCode();
-          otpJson["otpType"] = static_cast<int>(otpItem.getOtpType());
-          otpJson["createdAt"] = otpItem.getCreatedAt();
-          otpJson["expiresAt"] = otpItem.getExpiresAt();
-          otpArray.push_back(otpJson);
-        }
-
-        utils::storage::writeJsonFile("data/otps.json", otpArray);
-
-        utils::MessageHandler::logSuccess("OTP xác thực thành công!");
-        return true;
+      // Lưu lại danh sách OTP đã cập nhật
+      json otpArray = json::array();
+      for (const auto& otpItem : otps) {
+        json otpJson;
+        otpJson["id"] = otpItem.getId();
+        otpJson["userId"] = otpItem.getUserId();
+        otpJson["otpCode"] = otpItem.getOtpCode();
+        otpJson["otpType"] = static_cast<int>(otpItem.getOtpType());
+        otpJson["createdAt"] = otpItem.getCreatedAt();
+        otpJson["expiresAt"] = otpItem.getExpiresAt();
+        otpArray.push_back(otpJson);
       }
+
+      utils::storage::writeJsonFile("data/otps.json", otpArray);
+
+      utils::MessageHandler::logSuccess("OTP xác thực thành công!");
+      return true;
     }
-
-    utils::MessageHandler::logError("OTP không hợp lệ hoặc đã hết hạn!");
-    return false;
-
-  } catch (const std::exception& e) {
-    utils::MessageHandler::logError("Lỗi khi xác thực OTP", e);
-    return false;
   }
+
+  throw exceptions::ValidationException("OTP không hợp lệ hoặc đã hết hạn!");
 }
 
 std::string OtpService::generateOTPCode() {
@@ -143,7 +138,7 @@ bool OtpService::saveOTP(const models::OTP& otp) {
     return true;
   } catch (const std::exception& e) {
     // In lỗi ra console nếu có ngoại lệ xảy ra khi đọc/ghi file
-    utils::MessageHandler::logError("Lỗi khi lưu OTP", e);
+    utils::MessageHandler::logError("Lỗi khi lưu OTP");
     return false;
   }
 }

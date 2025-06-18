@@ -7,7 +7,6 @@ namespace utils {
 
 class MessageHandler {
  public:
-  static void logError(const std::string& context, const std::exception& error);
   static void logError(const std::string& message);
 
   static void logWarning(const std::string& message);

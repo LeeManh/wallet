@@ -1,7 +1,10 @@
 #include "views/MainView.hpp"
 
-#include "controllers/MenuController.hpp"
+#include "controllers/AuthController.hpp"
 #include "utils/MessageHandler.hpp"
+#include "views/AdminView.hpp"
+#include "views/CustomerView.hpp"
+#include "views/RegistrationView.hpp"
 
 namespace views {
 
@@ -35,13 +38,25 @@ void MainView::handleLogin() {
   std::string username = getInput("Nhập tên đăng nhập: ");
   std::string password = getInput("Nhập mật khẩu: ");
 
-  controllers::MenuController menuController;
-  menuController.handleLogin(username, password);
+  auto [success, userId, isAdmin] =
+      controllers::AuthController::login(username, password);
+
+  if (!success) return;
+
+  if (isAdmin) {
+    views::AdminView adminView;
+    adminView.userId = userId;
+    adminView.display();
+  } else {
+    views::CustomerView customerView;
+    customerView.userId = userId;
+    customerView.display();
+  }
 }
 
 void MainView::handleRegistration() {
-  controllers::MenuController menuController;
-  menuController.handleRegistration();
+  views::RegistrationView registrationView;
+  registrationView.display();
 }
 
 }  // namespace views
