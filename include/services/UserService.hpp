@@ -15,7 +15,7 @@ namespace services {
 class UserService {
  public:
   // User data validation
-  static bool validateUserData(const std::string& username,
+  static void validateUserData(const std::string& username,
                                const std::string& email);
 
   // User creation

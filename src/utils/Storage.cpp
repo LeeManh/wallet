@@ -2,38 +2,28 @@
 
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+
+#include "exceptions/Exception.hpp"
 
 namespace utils {
 namespace storage {
-
-std::string getPathSeparator() {
-#ifdef _WIN32
-  return "\\";
-#else
-  return "/";
-#endif
-}
-
-std::string joinPaths(const std::string& path1, const std::string& path2) {
-  return path1 + getPathSeparator() + path2;
-}
 
 json readJsonFile(const std::string& path) {
   json data = json::array();  // Default to empty array
   std::ifstream file(path);
 
-  if (file.is_open()) {
-    try {
-      file >> data;
-    } catch (const std::exception& e) {
-      std::cerr << "Lỗi đọc file " << path << ": " << e.what() << std::endl;
-    }
-    file.close();
-  } else {
-    std::cerr << "Không thể mở file " << path << std::endl;
+  if (!file.is_open())
+    throw exceptions::StorageException("Không thể mở file: " + path);
+
+  try {
+    file >> data;
+  } catch (const std::exception& e) {
+    throw e;
   }
 
+  file.close();
   return data;
 }
 
@@ -42,8 +32,8 @@ bool writeJsonFile(const std::string& path, const json& data) {
     // Mở file với mode binary để tránh vấn đề với line endings
     std::ofstream file(path, std::ios::binary);
     if (!file.is_open()) {
-      std::cerr << "Không thể mở file " << path << " để ghi" << std::endl;
-      return false;
+      throw exceptions::StorageException(std::string("Không thể mở file ") +
+                                         path + " để ghi");
     }
 
     // Ghi dữ liệu với định dạng đẹp
@@ -51,8 +41,7 @@ bool writeJsonFile(const std::string& path, const json& data) {
     file.close();
     return true;
   } catch (const std::exception& e) {
-    std::cerr << "Lỗi ghi file " << path << ": " << e.what() << std::endl;
-    return false;
+    throw e;
   }
 }
 
@@ -62,10 +51,10 @@ bool fileExists(const std::string& path) {
 
 bool ensureDirectoryExists(const std::string& path) {
   try {
-    return std::filesystem::create_directories(path);
+    std::filesystem::create_directories(path);
+    return true;
   } catch (const std::exception& e) {
-    std::cerr << "Error creating directory: " << e.what() << std::endl;
-    return false;
+    throw e;
   }
 }
 
@@ -84,8 +73,7 @@ bool createFile(const std::string& path, const json& defaultValue) {
     // Tạo file mới với giá trị mặc định
     return writeJsonFile(path, defaultValue);
   } catch (const std::exception& e) {
-    std::cerr << "Lỗi khi tạo file: " << e.what() << std::endl;
-    return false;
+    throw e;
   }
 }
 

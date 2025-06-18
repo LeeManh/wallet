@@ -1,22 +1,21 @@
 #include "services/UserService.hpp"
 
+#include "exceptions/Exception.hpp"
+#include "utils/ExceptionHandler.hpp"
+
 namespace services {
 
-bool UserService::validateUserData(const std::string& username,
+void UserService::validateUserData(const std::string& username,
                                    const std::string& email) {
   json users = utils::storage::readJsonFile("data/users.json");
 
   for (const auto& user : users) {
-    if (user["username"] == username) {
-      utils::MessageHandler::logError("Tên đăng nhập đã tồn tại!");
-      return false;
-    }
-    if (user["email"] == email) {
-      utils::MessageHandler::logError("Email đã tồn tại!");
-      return false;
-    }
+    if (user["username"] == username)
+      throw exceptions::ValidationException("Tên đăng nhập đã tồn tại!");
+
+    if (user["email"] == email)
+      throw exceptions::ValidationException("Email đã tồn tại");
   }
-  return true;
 }
 
 models::User UserService::createUser(const std::string& username,
@@ -49,9 +48,9 @@ bool UserService::saveUser(const models::User& user) {
   users.push_back(userData);
 
   if (!utils::storage::writeJsonFile("data/users.json", users)) {
-    utils::MessageHandler::logError("Không thể lưu thông tin người dùng!");
-    return false;
+    throw exceptions::StorageException("Không thể lưu thông tin người dùng!");
   }
+
   return true;
 }
 
