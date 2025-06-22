@@ -4,6 +4,7 @@
 #include <string>
 #include <tuple>
 
+#include "enums/Enums.hpp"
 #include "services/AuthService.hpp"
 #include "services/OtpService.hpp"
 #include "services/UserService.hpp"
@@ -73,7 +74,7 @@ void AuthController::changePasswordWithOTP(const int userId,
     // Tạo và xác minh OTP
     std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
     services::OtpService::verifyOTP(userId, otpCode,
-                                    models::OTPType::INFO_CHANGE);
+                                    enums::OTPType::INFO_CHANGE);
 
     // Message thành công
     utils::MessageHandler::logMessage("Đổi mật khẩu thành công.");

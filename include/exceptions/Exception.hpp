@@ -3,19 +3,19 @@
 #include <stdexcept>
 #include <string>
 
-#include "exceptions/ExceptionType.hpp"
+#include "enums/Enums.hpp"
 
 namespace exceptions {
 
 class BaseException : public std::exception {
  protected:
-  ExceptionType type;
+  enums::ExceptionType type;
   std::string msg;
 
  public:
-  BaseException(ExceptionType type, const std::string& msg);
+  BaseException(enums::ExceptionType type, const std::string& msg);
   const char* what() const noexcept override;
-  ExceptionType getType() const;
+  enums::ExceptionType getType() const;
 };
 
 class AuthException : public BaseException {

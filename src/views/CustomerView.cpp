@@ -1,11 +1,11 @@
 #include "views/CustomerView.hpp"
 
 #include "controllers/AuthController.hpp"
+#include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
-
 namespace views {
 
 void CustomerView::display() {
@@ -25,7 +25,7 @@ void CustomerView::display() {
         handleViewBalance();
         break;
       case 2:
-        handleTransfer();
+        handleTransferPoints();
         break;
       case 3:
         handleViewTransactionHistory();
@@ -51,8 +51,12 @@ void CustomerView::handleViewBalance() {
   std::cin.get();
 }
 
-void CustomerView::handleTransfer() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+void CustomerView::handleTransferPoints() {
+  std::string toUserId = utils::input::getInput("Nhập id người nhận nhận: ");
+  std::string points = utils::input::getInput("Nhập số điểm cần chuyển: ");
+
+  controllers::TransactionController::transferPoints(
+      userId, std::stoi(toUserId), std::stod(points));
 }
 
 void CustomerView::handleViewTransactionHistory() {

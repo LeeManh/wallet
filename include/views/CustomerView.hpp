@@ -12,7 +12,7 @@ class CustomerView {
 
   // Các phương thức xử lý menu customer
   void handleViewBalance();
-  void handleTransfer();
+  void handleTransferPoints();
   void handleViewTransactionHistory();
   void handleEditProfile();
   void handleChangePassword();
