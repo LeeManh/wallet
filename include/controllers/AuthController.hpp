@@ -22,16 +22,9 @@ class AuthController {
                                   const std::string& fullName,
                                   std::string& generatedPassword);
 
-  static bool changePassword(const int userId,
-                             const std::string& currentPassword,
-                             const std::string& newPassword);
-
-  static void sendOTPInfoChange(const int userId);
-
-  static void verifyOTPAndChangePassword(const int userId,
-                                         const std::string& otpCode,
-                                         const std::string& currentPassword,
-                                         const std::string& newPassword);
+  static void changePasswordWithOTP(const int userId,
+                                    const std::string& currentPassword,
+                                    const std::string& newPassword);
 };
 
 }  // namespace controllers

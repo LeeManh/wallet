@@ -1,12 +1,14 @@
 #include "controllers/AuthController.hpp"
 
 #include <iostream>
+#include <string>
 #include <tuple>
 
 #include "services/AuthService.hpp"
 #include "services/OtpService.hpp"
 #include "services/UserService.hpp"
 #include "utils/ExceptionHandler.hpp"
+#include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
 
 namespace controllers {
@@ -42,7 +44,8 @@ void AuthController::registerUserByAdmin(const std::string& username,
   try {
     services::AuthService::registerUserByAdmin(username, email, fullName,
                                                generatedPassword);
-    utils::MessageHandler::logSuccess("\nTạo tài khoản thành công!");
+    utils::MessageHandler::logMessage("\n");
+    utils::MessageHandler::logSuccess("Tạo tài khoản thành công!");
     utils::MessageHandler::logMessage("Tên đăng nhập: " + username);
     utils::MessageHandler::logMessage("Email: " + email);
     utils::MessageHandler::logMessage("Mật khẩu: " + generatedPassword);
@@ -53,31 +56,29 @@ void AuthController::registerUserByAdmin(const std::string& username,
   }
 }
 
-void AuthController::sendOTPInfoChange(const int userId) {
+void AuthController::changePasswordWithOTP(const int userId,
+                                           const std::string& currentPassword,
+                                           const std::string& newPassword) {
   try {
-    std::string email = services::UserService::getUserEmail(userId);
-    if (email.empty())
+    auto userJson = services::UserService::findUserById(userId);
+    std::string email = userJson.value()["email"];
+
+    if (!userJson.has_value())
       throw exceptions::NotFoundException("Email không tồn tại!");
 
+    // Input OTP
+    utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
     services::OtpService::generateAndSendOTP(userId, email);
-  } catch (const std::exception& e) {
-    utils::ExceptionHandler::handleException(e);
-  }
-}
 
-void AuthController::verifyOTPAndChangePassword(
-    const int userId, const std::string& otpCode,
-    const std::string& currentPassword, const std::string& newPassword) {
-  try {
+    // Tạo và xác minh OTP
+    std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
     services::OtpService::verifyOTP(userId, otpCode,
                                     models::OTPType::INFO_CHANGE);
-    services::AuthService::changePassword(userId, currentPassword, newPassword);
 
-    // Ỉn ra kết quả thành công
-    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công!");
+    // Message thành công
+    utils::MessageHandler::logMessage("Đổi mật khẩu thành công.");
   } catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
   }
 }
-
 }  // namespace controllers

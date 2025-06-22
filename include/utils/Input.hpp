@@ -13,5 +13,11 @@ std::string getValidatedInput(
     const std::function<bool(const std::string&)>& validator,
     const std::string& errorMessage);
 
+std::string getInput(const std::string& prompt);
+
+int getChoice(int min, int max);
+
+void pauseInput();
+
 }  // namespace input
 }  // namespace utils

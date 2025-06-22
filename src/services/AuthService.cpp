@@ -80,13 +80,14 @@ bool AuthService::registerUserByAdmin(const std::string& username,
 
 bool AuthService::changePassword(int userId, const std::string& currentPassword,
                                  const std::string& newPassword) {
-  json userData;
-  if (!UserService::findUserById(userId, userData))
+  auto userJson = UserService::findUserById(userId);
+
+  if (!userJson.has_value())
     throw exceptions::NotFoundException("User không tồn tại");
 
   // Kiểm tra mật khẩu có đúng không
-  bool isMatchPassword =
-      utils::hash::validatePassword(currentPassword, userData["passwordHash"]);
+  bool isMatchPassword = utils::hash::validatePassword(
+      currentPassword, userJson.value()["passwordHash"]);
   if (!isMatchPassword)
     throw exceptions::ValidationException("Mật khẩu hiện tại không đúng!");
 

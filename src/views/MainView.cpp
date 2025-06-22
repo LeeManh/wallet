@@ -1,6 +1,7 @@
 #include "views/MainView.hpp"
 
 #include "controllers/AuthController.hpp"
+#include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
 #include "views/AdminView.hpp"
 #include "views/CustomerView.hpp"
@@ -16,7 +17,7 @@ void MainView::display() {
     utils::MessageHandler::logMessage("[2] Đăng ký");
     utils::MessageHandler::logMessage("[0] Thoát");
 
-    int choice = getChoice(0, 2);
+    int choice = utils::input::getChoice(0, 2);
 
     switch (choice) {
       case 1:
@@ -35,8 +36,8 @@ void MainView::display() {
 
 void MainView::handleLogin() {
   utils::MessageHandler::logMessage("\n=== Đăng nhập ===");
-  std::string username = getInput("Nhập tên đăng nhập: ");
-  std::string password = getInput("Nhập mật khẩu: ");
+  std::string username = utils::input::getInput("Nhập tên đăng nhập: ");
+  std::string password = utils::input::getInput("Nhập mật khẩu: ");
 
   auto [success, userId, isAdmin] =
       controllers::AuthController::login(username, password);

@@ -14,7 +14,6 @@ class OTP {
   int userId;
   std::string otpCode;
   OTPType otpType;
-  time_t createdAt;
   time_t expiresAt;
 
  public:
@@ -26,7 +25,6 @@ class OTP {
   int getUserId() const;
   std::string getOtpCode() const;
   OTPType getOtpType() const;
-  time_t getCreatedAt() const;
   time_t getExpiresAt() const;
 
   // Setters

@@ -22,7 +22,6 @@ class Transaction {
   bool otpVerified;          // Đã xác thực OTP
   std::string otpCode;       // Mã OTP
   time_t otpExpiredAt;       // Thời gian hết hạn OTP
-  time_t createdAt;          // Thời gian tạo
   time_t completedAt;        // Thời gian hoàn thành
 
  public:
@@ -40,7 +39,6 @@ class Transaction {
   bool isOtpVerified() const;
   std::string getOtpCode() const;
   time_t getOtpExpiredAt() const;
-  time_t getCreatedAt() const;
   time_t getCompletedAt() const;
 
   // Setters

@@ -1,15 +1,14 @@
-#ifndef CUSTOMER_VIEW_HPP
-#define CUSTOMER_VIEW_HPP
+#pragma once
 
 #include "models/User.hpp"
-#include "views/View.hpp"
 
 namespace views {
 
-class CustomerView : public View {
+class CustomerView {
  public:
   int userId;
-  void display() override;
+
+  void display();
 
   // Các phương thức xử lý menu customer
   void handleViewBalance();
@@ -20,5 +19,3 @@ class CustomerView : public View {
 };
 
 }  // namespace views
-
-#endif

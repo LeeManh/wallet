@@ -1,15 +1,10 @@
-#ifndef REGISTRATION_VIEW_HPP
-#define REGISTRATION_VIEW_HPP
-
-#include "views/View.hpp"
+#pragma once
 
 namespace views {
 
-class RegistrationView : public View {
+class RegistrationView {
  public:
-  void display() override;
+  void display();
 };
 
 }  // namespace views
-
-#endif

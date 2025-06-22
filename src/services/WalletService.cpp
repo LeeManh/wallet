@@ -27,7 +27,6 @@ bool WalletService::createWallet(int userId, double initialBalance,
   walletData["id"] = newWallet.getId();
   walletData["userId"] = newWallet.getUserId();
   walletData["point"] = newWallet.getPoint();
-  walletData["createdAt"] = newWallet.getCreatedAt();
   walletData["walletType"] = newWallet.getWalletType();
 
   wallets.push_back(walletData);
@@ -102,8 +101,6 @@ void WalletService::printListWallet() {
       char createdStr[20];
       struct tm* timeinfo;
 
-      time_t createdAt = wallet.getCreatedAt();
-      timeinfo = localtime(&createdAt);
       strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
 
       std::string walletTypeStr =
@@ -113,9 +110,9 @@ void WalletService::printListWallet() {
       utils::MessageHandler::logMessage(
           "[" + std::to_string(count) +
           "] Ví ID: " + std::to_string(wallet.getId()) +
-          " | User: " + std::to_string(wallet.getUserId()) + " | Số điểm: " +
-          utils::format::formatPoint(wallet.getPoint()) + " điểm" +
-          " | Loại: " + walletTypeStr + " | Tạo: " + std::string(createdStr));
+          " | User: " + std::to_string(wallet.getUserId()) +
+          " | Số điểm: " + utils::format::formatPoint(wallet.getPoint()) +
+          " điểm" + " | Loại: " + walletTypeStr);
       count++;
     }
 

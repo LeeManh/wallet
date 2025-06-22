@@ -25,7 +25,7 @@ void AdminView::display() {
     utils::MessageHandler::logMessage("[7] Đổi mật khẩu");
     utils::MessageHandler::logMessage("[0] Đăng xuất");
 
-    int choice = getChoice(0, 7);
+    int choice = utils::input::getChoice(0, 7);
 
     switch (choice) {
       case 1:
@@ -59,9 +59,9 @@ void AdminView::handleCreateAccount() {
   utils::MessageHandler::logMessage(
       "\n=== TẠO TÀI KHOẢN MỚI CHO NGƯỜI DÙNG ===");
 
-  std::string username = getInput("Nhập tên đăng nhập: ");
-  std::string email = getInput("Nhập email: ");
-  std::string fullName = getInput("Nhập họ tên đầy đủ: ");
+  std::string username = utils::input::getInput("Nhập tên đăng nhập: ");
+  std::string email = utils::input::getInput("Nhập email: ");
+  std::string fullName = utils::input::getInput("Nhập họ tên đầy đủ: ");
 
   std::string generatedPassword;
 
@@ -79,9 +79,7 @@ void AdminView::handleViewAllWallets() {
 
   controllers::WalletController::printListWallet();
 
-  utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
-  std::cin.ignore();
-  std::cin.get();
+  utils::input::pauseInput();
 }
 
 void AdminView::handleViewTransactionHistory() {
@@ -97,29 +95,27 @@ void AdminView::handleManageTotalWallet() {
 
   controllers::WalletController::getSystemWallet();
 
-  utils::MessageHandler::logMessage("\nNhấn Enter để tiếp tục...");
-  std::cin.ignore();
-  std::cin.get();
+  utils::input::pauseInput();
 }
 
 void AdminView::handleChangePassword() {
   utils::MessageHandler::logMessage("\n=== ĐỔI MẬT KHẨU ===");
 
-  std::string currentPassword = getInput("Nhập mật khẩu hiện tại: ");
-  std::string newPassword = getInput("Nhập mật khẩu mới: ");
-  std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
+  std::string currentPassword =
+      utils::input::getInput("Nhập mật khẩu hiện tại: ");
+  std::string newPassword = utils::input::getInput("Nhập mật khẩu mới: ");
+  std::string confirmPassword =
+      utils::input::getInput("Nhập lại mật khẩu mới: ");
 
   if (newPassword != confirmPassword) {
     utils::MessageHandler::logError("Mật khẩu mới không khớp!");
     return;
   }
 
-    utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
-  controllers::AuthController::sendOTPInfoChange(userId);
+  controllers::AuthController::changePasswordWithOTP(userId, currentPassword,
+                                                     newPassword);
 
-  std::string otpCode = getInput("Nhập mã OTP đã được gửi: ");
-  controllers::AuthController::verifyOTPAndChangePassword(
-      userId, otpCode, currentPassword, newPassword);
+  utils::input::pauseInput();
 }
 
 }  // namespace views
