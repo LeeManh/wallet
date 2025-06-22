@@ -2,30 +2,27 @@
 
 #include <string>
 
-namespace models {
+#include "enums/Enums.hpp"
 
-enum class WalletType {
-  USER,
-  SYSTEM,
-};
+namespace models {
 
 class Wallet {
  private:
   int id;
   int userId;
   double point;
-  WalletType walletType;
+  enums::WalletType walletType;
 
  public:
   // Constructor
   Wallet(int id, int userId, double point = 0.0,
-         WalletType walletType = WalletType::USER);
+         enums::WalletType walletType = enums::WalletType::USER);
 
   // Getters
   int getId() const;
   int getUserId() const;
   double getPoint() const;
-  WalletType getWalletType() const;
+  enums::WalletType getWalletType() const;
 
   // Setters
   void setPoint(double newPoint);

@@ -2,11 +2,13 @@
 
 #include <ctime>
 
+#include "enums/Enums.hpp"
+
 namespace models {
 
 // Constructor
 Transaction::Transaction(int sourceWalletId, int destinationWalletId,
-                         double amount, TransactionStatus status,
+                         double amount, enums::TransactionStatus status,
                          bool otpVerified, int id)
     : id(id),
       sourceWalletId(sourceWalletId),
@@ -14,7 +16,7 @@ Transaction::Transaction(int sourceWalletId, int destinationWalletId,
       amount(amount),
       status(status),
       otpVerified(otpVerified) {
-  time_t now = time(nullptr);
+  // time_t now = time(nullptr);
 
   completedAt = 0;   // Chưa hoàn thành
   otpExpiredAt = 0;  // Chưa có OTP
@@ -25,16 +27,16 @@ int Transaction::getId() const { return id; }
 int Transaction::getSourceWalletId() const { return sourceWalletId; }
 int Transaction::getDestinationWalletId() const { return destinationWalletId; }
 double Transaction::getAmount() const { return amount; }
-TransactionStatus Transaction::getStatus() const { return status; }
+enums::TransactionStatus Transaction::getStatus() const { return status; }
 bool Transaction::isOtpVerified() const { return otpVerified; }
 std::string Transaction::getOtpCode() const { return otpCode; }
 time_t Transaction::getOtpExpiredAt() const { return otpExpiredAt; }
 time_t Transaction::getCompletedAt() const { return completedAt; }
 
 // Setters
-void Transaction::setStatus(TransactionStatus newStatus) {
+void Transaction::setStatus(enums::TransactionStatus newStatus) {
   status = newStatus;
-  if (newStatus == TransactionStatus::COMPLETED) {
+  if (newStatus == enums::TransactionStatus::COMPLETED) {
     completedAt = time(nullptr);
   }
 }

@@ -2,29 +2,27 @@
 
 #include <string>
 
-namespace models {
+#include "enums/Enums.hpp"
 
-enum class OTPType {
-  INFO_CHANGE,
-};
+namespace models {
 
 class OTP {
  private:
   int id;
   int userId;
   std::string otpCode;
-  OTPType otpType;
+  enums::OTPType otpType;
   time_t expiresAt;
 
  public:
   OTP(const int id, const int userId, const std::string& otpCode,
-      const OTPType& otpType);
+      const enums::OTPType& otpType);
 
   // Getters
   int getId() const;
   int getUserId() const;
   std::string getOtpCode() const;
-  OTPType getOtpType() const;
+  enums::OTPType getOtpType() const;
   time_t getExpiresAt() const;
 
   // Setters

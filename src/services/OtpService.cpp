@@ -7,6 +7,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
+#include "enums/Enums.hpp"
 #include "exceptions/Exception.hpp"
 #include "models/Otp.hpp"
 #include "utils/MessageHandler.hpp"
@@ -23,7 +24,7 @@ bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
 
     // Tạo đối tượng OTP
     models::OTP otp(static_cast<int>(time(nullptr)),  // ID dựa trên timestamp
-                    userId, otpCode, models::OTPType::INFO_CHANGE);
+                    userId, otpCode, enums::OTPType::INFO_CHANGE);
 
     // Thiết lập thời gian hết hạn (5 phút)
     time_t expiryTime = time(nullptr) + 300;  // 5 minutes
@@ -53,7 +54,7 @@ bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
 
 // Xác thực OTP
 bool OtpService::verifyOTP(int userId, const std::string& otpCode,
-                           models::OTPType otpType) {
+                           enums::OTPType otpType) {
   auto otps = loadOTPs();
   time_t currentTime = time(nullptr);
 
@@ -149,7 +150,7 @@ std::vector<models::OTP> OtpService::loadOTPs() {
 
     for (const auto& item : otpData) {
       models::OTP otp(item["id"], item["userId"], item["otpCode"],
-                      static_cast<models::OTPType>(item["otpType"]));
+                      static_cast<enums::OTPType>(item["otpType"]));
       otp.setExpiresAt(item["expiresAt"]);
       otps.push_back(otp);
     }

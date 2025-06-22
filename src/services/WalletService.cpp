@@ -1,5 +1,8 @@
 #include "services/WalletService.hpp"
 
+#include <string>
+
+#include "enums/Enums.hpp"
 #include "exceptions/Exception.hpp"
 #include "models/Wallet.hpp"
 #include "utils/Format.hpp"
@@ -11,7 +14,7 @@ using json = nlohmann::json;
 namespace services {
 
 bool WalletService::createWallet(int userId, double initialBalance,
-                                 models::WalletType walletType) {
+                                 enums::WalletType walletType) {
   // Kiểm tra xem user đã có ví chưa
   if (getWalletByUserId(userId)) {
     throw exceptions::ValidationException("User đã có ví!");
@@ -42,7 +45,7 @@ std::optional<models::Wallet> WalletService::getWalletByUserId(int userId) {
     if (walletData["userId"].get<int>() == userId) {
       return models::Wallet(
           walletData["id"].get<int>(), walletData["userId"].get<int>(),
-          walletData["point"].get<double>(), models::WalletType::USER);
+          walletData["point"].get<double>(), enums::WalletType::USER);
     }
   }
 
@@ -57,7 +60,7 @@ std::optional<models::Wallet> WalletService::getSystemWallet() {
         walletData["walletType"].get<int>() == 1) {
       return models::Wallet(
           walletData["id"].get<int>(), walletData["userId"].get<int>(),
-          walletData["point"].get<double>(), models::WalletType::SYSTEM);
+          walletData["point"].get<double>(), enums::WalletType::SYSTEM);
     }
   }
 
@@ -76,9 +79,8 @@ std::vector<models::Wallet> WalletService::getAllWallets() {
       walletTypeValue = walletData["walletType"].get<int>();
     }
 
-    models::WalletType type = (walletTypeValue == 1)
-                                  ? models::WalletType::SYSTEM
-                                  : models::WalletType::USER;
+    enums::WalletType type = (walletTypeValue == 1) ? enums::WalletType::SYSTEM
+                                                    : enums::WalletType::USER;
 
     result.push_back(models::Wallet(walletData["id"].get<int>(),
                                     walletData["userId"].get<int>(),
@@ -104,8 +106,8 @@ void WalletService::printListWallet() {
       strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
 
       std::string walletTypeStr =
-          (wallet.getWalletType() == models::WalletType::SYSTEM) ? "SYSTEM"
-                                                                 : "USER";
+          (wallet.getWalletType() == enums::WalletType::SYSTEM) ? "SYSTEM"
+                                                                : "USER";
 
       utils::MessageHandler::logMessage(
           "[" + std::to_string(count) +
@@ -126,7 +128,7 @@ void WalletService::printListWallet() {
 
     for (const auto& wallet : wallets) {
       totalPoint += wallet.getPoint();
-      if (wallet.getWalletType() == models::WalletType::SYSTEM) {
+      if (wallet.getWalletType() == enums::WalletType::SYSTEM) {
         systemWallets++;
       } else {
         userWallets++;
@@ -140,6 +142,43 @@ void WalletService::printListWallet() {
         "Ví người dùng: " + std::to_string(userWallets) +
         " | Ví hệ thống: " + std::to_string(systemWallets));
   }
+}
+
+bool WalletService::checkHasWallet(int walletId) {
+  json wallets = utils::storage::readJsonFile("data/wallets.json");
+  for (const auto& wallet : wallets) {
+    if (wallet["id"] == walletId) return true;
+  }
+
+  return false;
+}
+
+bool WalletService::checkPoints(int walletId, double points) {
+  json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+  for (const auto& wallet : wallets) {
+    if (wallet["id"] == walletId && wallet["point"] >= points) return true;
+  }
+
+  return false;
+}
+
+void WalletService::updatePoint(int walletId, double points) {
+  json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+  for (auto& wallet : wallets) {
+    if (wallet["id"] == walletId) {
+      double walletPoint = wallet["point"];
+      wallet["point"] = walletPoint + points;
+
+      utils::storage::writeJsonFile("data/wallets.json", wallets);
+      return;
+    }
+  }
+
+  // Only throw if wallet not found
+  throw exceptions::NotFoundException("Không tìm thấy ví " +
+                                      std::to_string(walletId));
 }
 
 }  // namespace services

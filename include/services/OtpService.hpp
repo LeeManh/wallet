@@ -2,6 +2,8 @@
 
 #include <string>
 #include <vector>
+
+#include "enums/Enums.hpp"
 #include "models/Otp.hpp"
 
 namespace services {
@@ -13,7 +15,7 @@ class OtpService {
 
   // Xác thực OTP
   static bool verifyOTP(int userId, const std::string& otpCode,
-                        models::OTPType otpType);
+                        enums::OTPType otpType);
 
  private:
   // Tạo mã OTP 6 chữ số

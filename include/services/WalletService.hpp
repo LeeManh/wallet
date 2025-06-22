@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "enums/Enums.hpp"
 #include "models/Wallet.hpp"
 
 using json = nlohmann::json;
@@ -17,7 +18,7 @@ class WalletService {
   // Tạo ví mới cho user
   static bool createWallet(
       int userId, double initialBalance,
-      models::WalletType walletType = models::WalletType::USER);
+      enums::WalletType walletType = enums::WalletType::USER);
 
   // Lấy ví của user
   static std::optional<models::Wallet> getWalletByUserId(int userId);
@@ -30,6 +31,15 @@ class WalletService {
 
   // In ra danh sách ví
   static void printListWallet();
+
+  // Kiểm tra ví có tồn tại không
+  static bool checkHasWallet(int walletId);
+
+  // Kiểm tra số dư của ví
+  static bool checkPoints(int walletId, double points);
+
+  // Cập nhật điểm của ví
+  static void updatePoint(int walletId, double points);
 };
 
 }  // namespace services
