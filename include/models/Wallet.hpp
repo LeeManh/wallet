@@ -15,8 +15,6 @@ class Wallet {
   int userId;
   double point;
   WalletType walletType;
-  time_t createdAt;
-  time_t lastUpdated;
 
  public:
   // Constructor
@@ -28,14 +26,10 @@ class Wallet {
   int getUserId() const;
   double getPoint() const;
   WalletType getWalletType() const;
-  time_t getCreatedAt() const;
-  time_t getLastUpdated() const;
 
   // Setters
   void setPoint(double newPoint);
-  void updateLastUpdated();
   void setId(int newId);
-  void setCreatedAt(time_t time);
   void setLastUpdated(time_t time);
 };
 

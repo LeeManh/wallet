@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 
 #include "models/User.hpp"
@@ -30,9 +31,9 @@ class UserService {
   static bool saveUser(const models::User& user);
 
   // User queries
-  static bool findUserById(const int userId, json& userData);
-  static bool findUserByUsername(const std::string& username, json& userData);
-  static std::string getUserEmail(int userId);
+  static std::optional<json> findUserById(const int userId);
+  static std::optional<json> findUserByUsername(const std::string& username);
+  static std::optional<json> getUserEmail(int userId);
 
  private:
   static bool isUsernameExists(const json& users, const std::string& username);

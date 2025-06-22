@@ -1,14 +1,14 @@
 #pragma once
 
 #include "utils/Format.hpp"
-#include "views/View.hpp"
 
 namespace views {
 
-class AdminView : public View {
+class AdminView {
  public:
   int userId;
-  void display() override;
+
+  void display();
 
   // Các phương thức xử lý menu admin
   void handleCreateAccount();

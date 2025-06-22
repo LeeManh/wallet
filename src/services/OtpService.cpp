@@ -72,7 +72,6 @@ bool OtpService::verifyOTP(int userId, const std::string& otpCode,
         otpJson["userId"] = otpItem.getUserId();
         otpJson["otpCode"] = otpItem.getOtpCode();
         otpJson["otpType"] = static_cast<int>(otpItem.getOtpType());
-        otpJson["createdAt"] = otpItem.getCreatedAt();
         otpJson["expiresAt"] = otpItem.getExpiresAt();
         otpArray.push_back(otpJson);
       }
@@ -123,7 +122,6 @@ bool OtpService::saveOTP(const models::OTP& otp) {
     otpJson["otpCode"] = otp.getOtpCode();  // Mã OTP
     otpJson["otpType"] =
         static_cast<int>(otp.getOtpType());  // Kiểu OTP (enum chuyển sang int)
-    otpJson["createdAt"] = otp.getCreatedAt();  // Thời điểm tạo OTP
     otpJson["expiresAt"] = otp.getExpiresAt();  // Thời điểm hết hạn
 
     // Thêm bản ghi OTP mới vào danh sách

@@ -16,7 +16,6 @@ Transaction::Transaction(int sourceWalletId, int destinationWalletId,
       otpVerified(otpVerified) {
   time_t now = time(nullptr);
 
-  createdAt = now;
   completedAt = 0;   // Chưa hoàn thành
   otpExpiredAt = 0;  // Chưa có OTP
 }
@@ -30,7 +29,6 @@ TransactionStatus Transaction::getStatus() const { return status; }
 bool Transaction::isOtpVerified() const { return otpVerified; }
 std::string Transaction::getOtpCode() const { return otpCode; }
 time_t Transaction::getOtpExpiredAt() const { return otpExpiredAt; }
-time_t Transaction::getCreatedAt() const { return createdAt; }
 time_t Transaction::getCompletedAt() const { return completedAt; }
 
 // Setters

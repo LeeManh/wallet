@@ -1,12 +1,10 @@
 #pragma once
 
-#include "views/View.hpp"
-
 namespace views {
 
-class MainView : public View {
+class MainView {
  public:
-  void display() override;
+  void display();
 
   // Các phương thức xử lý menu
   void handleLogin();

@@ -18,7 +18,7 @@ void CustomerView::display() {
     utils::MessageHandler::logMessage("[5] Đổi mật khẩu");
     utils::MessageHandler::logMessage("[0] Đăng xuất");
 
-    int choice = getChoice(0, 5);
+    int choice = utils::input::getChoice(0, 5);
 
     switch (choice) {
       case 1:
@@ -66,21 +66,21 @@ void CustomerView::handleEditProfile() {
 void CustomerView::handleChangePassword() {
   utils::MessageHandler::logMessage("\n=== ĐỔI MẬT KHẨU ===");
 
-  std::string currentPassword = getInput("Nhập mật khẩu hiện tại: ");
-  std::string newPassword = getInput("Nhập mật khẩu mới: ");
-  std::string confirmPassword = getInput("Nhập lại mật khẩu mới: ");
+  std::string currentPassword =
+      utils::input::getInput("Nhập mật khẩu hiện tại: ");
+  std::string newPassword = utils::input::getInput("Nhập mật khẩu mới: ");
+  std::string confirmPassword =
+      utils::input::getInput("Nhập lại mật khẩu mới: ");
 
   if (newPassword != confirmPassword) {
     utils::MessageHandler::logError("Mật khẩu mới không khớp!");
     return;
   }
 
-  utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
-  controllers::AuthController::sendOTPInfoChange(userId);
+  controllers::AuthController::changePasswordWithOTP(userId, currentPassword,
+                                                     newPassword);
 
-  std::string otp = getInput("Nhập mã OTP: ");
-  controllers::AuthController::verifyOTPAndChangePassword(
-      userId, otp, currentPassword, newPassword);
+  utils::input::pauseInput();
 }
 
 }  // namespace views
