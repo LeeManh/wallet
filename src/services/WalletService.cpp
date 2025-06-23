@@ -181,4 +181,19 @@ void WalletService::updatePoint(int walletId, double points) {
                                       std::to_string(walletId));
 }
 
+void WalletService::rollbackPoint(int walletId, double points) {
+  json wallets = utils::storage::readJsonFile("data/wallets.json");
+
+  for (auto& wallet : wallets) {
+    if (wallet["id"] == walletId) {
+      wallet["point"] = points;
+
+      utils::storage::writeJsonFile("data/wallets.json", wallets);
+      return;
+    }
+  }
+
+  throw exceptions::NotFoundException("Không tìm thấy ví " +
+                                      std::to_string(walletId));
+}
 }  // namespace services

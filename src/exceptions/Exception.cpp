@@ -23,4 +23,7 @@ NotFoundException::NotFoundException(const std::string& msg)
 StorageException::StorageException(const std::string& msg)
     : BaseException(enums::ExceptionType::STORAGE_ERROR, msg) {}
 
+TransactionException::TransactionException(const std::string& msg)
+    : BaseException(enums::ExceptionType::TRANSACTION_ERROR, msg) {}
+
 }  // namespace exceptions
