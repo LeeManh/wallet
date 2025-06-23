@@ -7,6 +7,7 @@
 #include <sstream>
 
 #include "controllers/AuthController.hpp"
+#include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
@@ -23,9 +24,10 @@ void AdminView::display() {
     utils::MessageHandler::logMessage("[5] Điều chỉnh thông tin người dùng");
     utils::MessageHandler::logMessage("[6] Xem số dư ví tổng");
     utils::MessageHandler::logMessage("[7] Đổi mật khẩu");
+    utils::MessageHandler::logMessage("[8] Chuyển điểm");
     utils::MessageHandler::logMessage("[0] Đăng xuất");
 
-    int choice = utils::input::getChoice(0, 7);
+    int choice = utils::input::getChoice(0, 8);
 
     switch (choice) {
       case 1:
@@ -48,6 +50,9 @@ void AdminView::display() {
         break;
       case 7:
         handleChangePassword();
+        break;
+      case 8:
+        handleTransferPoints();
         break;
       case 0:
         return;
@@ -116,6 +121,23 @@ void AdminView::handleChangePassword() {
                                                      newPassword);
 
   utils::input::pauseInput();
+}
+
+void AdminView::handleTransferPoints() {
+  std::string toUserId = utils::input::getInput("Nhập id người nhận nhận: ");
+  if (!utils::validation::isPositiveNumber(toUserId)) {
+    utils::MessageHandler::logError("ID người nhận không hợp lệ!");
+    return;
+  }
+
+  std::string points = utils::input::getInput("Nhập số điểm cần chuyển: ");
+  if (!utils::validation::isPositiveNumber(points)) {
+    utils::MessageHandler::logError("Số điểm không hợp lệ!");
+    return;
+  }
+
+  controllers::TransactionController::transferPoints(
+      userId, std::stoi(toUserId), std::stod(points));
 }
 
 }  // namespace views
