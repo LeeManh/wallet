@@ -15,7 +15,9 @@ namespace controllers {
 
 void TransactionController::transferPoints(int fromUserId, int toUserId,
                                            double points) {
-  int transactionId = 0;  // Lưu transaction ID để update khi có lỗi
+  int transactionId = 0;  // Placeholder transaction ID để update khi có lỗi
+  models::Wallet* fromWalletSnapshot = nullptr;
+  models::Wallet* toWalletSnapshot = nullptr;
 
   try {
     // Không được gửi cho chính mình
@@ -59,9 +61,21 @@ void TransactionController::transferPoints(int fromUserId, int toUserId,
     services::OtpService::verifyOTP(fromUserId, otpCode,
                                     enums::OTPType::TRANSFER_POINTS);
 
-    // Thực hiện chuyển điểm
-    services::WalletService::updatePoint(fromWallet.value().getId(), -points);
-    services::WalletService::updatePoint(toWallet.value().getId(), +points);
+    try {
+      // Snapshot data của 2 ví trước khi thực hiện chuyển điểm
+      fromWalletSnapshot = new models::Wallet(fromWallet.value());
+      toWalletSnapshot = new models::Wallet(toWallet.value());
+
+      // Thực hiện chuyển điểm
+      services::WalletService::updatePoint(fromWallet.value().getId(), -points);
+      services::WalletService::updatePoint(toWallet.value().getId(), +points);
+
+      // Thử throw lỗi
+      throw exceptions::TransactionException("Lỗi khi chuyển điểm!");
+
+    } catch (const std::exception& e) {
+      throw exceptions::TransactionException(e.what());
+    }
 
     // Cập nhật transaction trạng thái thành công
     services::TransactionService::updateTransaction(
@@ -75,6 +89,18 @@ void TransactionController::transferPoints(int fromUserId, int toUserId,
       services::TransactionService::updateTransaction(
           transactionId, enums::TransactionStatus::FAILED);
     }
+
+    // Rollback nếu có snapshot
+    if (fromWalletSnapshot && toWalletSnapshot &&
+        dynamic_cast<const exceptions::TransactionException*>(&e)) {
+      services::WalletService::rollbackPoint(fromWalletSnapshot->getId(),
+                                             fromWalletSnapshot->getPoint());
+      services::WalletService::rollbackPoint(toWalletSnapshot->getId(),
+                                             toWalletSnapshot->getPoint());
+    }
+
+    delete fromWalletSnapshot;
+    delete toWalletSnapshot;
 
     utils::ExceptionHandler::handleException(e);
   }

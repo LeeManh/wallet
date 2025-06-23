@@ -40,6 +40,9 @@ class WalletService {
 
   // Cập nhật điểm của ví
   static void updatePoint(int walletId, double points);
+
+  // Rollback điểm của ví
+  static void rollbackPoint(int walletId, double points);
 };
 
 }  // namespace services

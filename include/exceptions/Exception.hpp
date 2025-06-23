@@ -43,4 +43,9 @@ class UnknownException : public BaseException {
   explicit UnknownException(const std::string& msg);
 };
 
+class TransactionException : public BaseException {
+ public:
+  explicit TransactionException(const std::string& msg);
+};
+
 }  // namespace exceptions

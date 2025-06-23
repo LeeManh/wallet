@@ -7,7 +7,8 @@ enum class ExceptionType {
   VALIDATION_ERROR,
   NOT_FOUND_ERROR,
   STORAGE_ERROR,
-  UNKNOWN_ERROR
+  UNKNOWN_ERROR,
+  TRANSACTION_ERROR,
 };
 
 enum class OTPType {
