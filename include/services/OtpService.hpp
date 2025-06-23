@@ -11,7 +11,8 @@ namespace services {
 class OtpService {
  public:
   // Tạo và gửi OTP cho việc thay đổi thông tin
-  static bool generateAndSendOTP(int userId, const std::string& email);
+  static bool generateAndSendOTP(int userId, const std::string& email,
+                                 enums::OTPType otpType);
 
   // Xác thực OTP
   static bool verifyOTP(int userId, const std::string& otpCode,

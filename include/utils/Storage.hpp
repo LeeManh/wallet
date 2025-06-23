@@ -27,6 +27,7 @@ bool createFile(const std::string& path,
 int getNextUserId(const json& users);
 int getNextWalletId(const json& wallets);
 int getNextOtpId(const json& otps);
+int getNextTransactionId();
 
 }  // namespace storage
 }  // namespace utils

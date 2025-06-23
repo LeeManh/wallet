@@ -86,13 +86,13 @@ int getNextUserId(const json& users) {
 int getNextWalletId(const json& wallets) {
   if (wallets.empty()) return 1;
 
-  int maxId = 0;
-  for (const auto& wallet : wallets) {
-    if (wallet["id"].get<int>() > maxId) {
-      maxId = wallet["id"].get<int>();
-    }
-  }
-  return maxId + 1;
+  return wallets.back()["id"].get<int>() + 1;
+}
+
+int getNextTransactionId() {
+  json transactions = readJsonFile("data/transactions.json");
+  if (transactions.empty()) return 1;
+  return transactions.back()["id"].get<int>() + 1;
 }
 
 }  // namespace storage

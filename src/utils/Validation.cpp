@@ -15,5 +15,11 @@ bool isValidPassword(const std::string& password) {
   return password.length() >= 6 && !password.empty();
 }
 
+bool isPositiveNumber(const std::string& number) {
+  return std::regex_match(number, std::regex("^[0-9]+$"));
+}
+
+bool isPositiveNumber(const int& number) { return number > 0; }
+
 }  // namespace validation
 }  // namespace utils
