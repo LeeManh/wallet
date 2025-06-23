@@ -1,102 +1,39 @@
-# 🛠️ Hướng Dẫn Setup & Làm Việc Trên WSL
+# 🪟 Hướng Dẫn Cài Đặt trên Windows (Native)
 
-## 1. 🚀 Cài Đặt WSL và Ubuntu
+## 1. Cài Đặt Visual Studio
 
-### Cài WSL (trên Windows)
+- Tải về **Visual Studio Installer** từ [trang chủ của Microsoft](https://visualstudio.microsoft.com/downloads/).
+- Khi cài đặt, chọn Workload **"Desktop development with C++"**. Workload này đã bao gồm:
+  - Trình biên dịch MSVC C++.
+  - **CMake**.
+  - **Git for Windows**.
 
-```bash
-wsl --install
-```
-### Mở WSL đã cài sẵn (trên Windows)
+## 2. Clone Project
 
-```bash
-wsl
-```
-> Lệnh này sẽ mở default Linux distro (e.g: Ubuntu) trên terminal
-
-Sau khi cài đặt xong và đã vào WSL terminal (Ubuntu), chạy:
+Mở **Git Bash** (được cài cùng với Git for Windows) hoặc Command Prompt và chạy:
 
 ```bash
-sudo apt update
-sudo apt install libgcrypt20-dev cmake g++ make
+git clone https://github.com/LeeManh/wallet.git
+cd wallet
 ```
-> Lệnh này sẽ cài đặt:
-> GNU compilers (gcc/g++)
-> pkg-config (required cho việc tìm kiếm libraries)
-> libgcrypt20-dev (cài đặt GCRYPT_LIBRARIES và GCRYPT_INCLUDE_DIR)
----
 
-## 2. 🔐 Tạo SSH Key để Kết Nối với GitHub
+## 3. Build Project (Sử dụng Visual Studio)
 
-### Tạo SSH Key trong WSL
+1.  Mở Visual Studio.
+2.  Chọn **"Open a local folder"** và trỏ đến thư mục `wallet` bạn vừa clone.
+3.  Visual Studio sẽ tự động nhận diện `CMakeLists.txt` và cấu hình project.
+4.  Để build, chọn **Build > Build All** từ menu.
+5.  File thực thi `wallet.exe` sẽ được tạo trong thư mục `build/Debug` (hoặc `build/Release`).
 
-Mở terminal trong WSL và chạy:
+## 4. Build Project (Sử dụng Command Line)
+
+Mở **Developer Command Prompt for VS** (tìm trong Start Menu) và chạy các lệnh sau:
 
 ```bash
-ssh-keygen -t ed25519 -C "your_email@example.com"
+mkdir build
+cd build
+cmake ..
+cmake --build .
 ```
 
-> 📝 **Lưu ý**: Thay `your_email@example.com` bằng email bạn đã dùng để đăng ký GitHub.
-
-Sau đó lấy nội dung public key:
-
-```bash
-cd ~/.ssh
-cat id_ed25519.pub
-```
-
-> 📋 Copy toàn bộ nội dung public key hiển thị.
-
----
-
-### Thêm SSH Key vào GitHub
-
-1. Đăng nhập GitHub.
-2. Click vào avatar → **Settings**.
-3. Chọn **SSH and GPG keys** → click **New SSH key**.
-4. Điền:
-   - **Title**: tùy chọn
-   - **Key type**: Authentication Key
-   - **Key**: Dán public key đã copy
-5. Click **Add SSH key**.
-
----
-
-## 3. 📦 Clone Project về WSL
-
-Tạo thư mục và clone dự án:
-
-```bash
-mkdir -p ~/projects/wallet
-cd ~/projects/wallet
-git clone git@github.com:LeeManh/wallet.git
-```
-
----
-
-## 4. 💻 Mở Dự Án trong VS Code (Kết Nối qua WSL)
-
-### ✅ Cách 1: Mở từ Terminal
-
-```bash
-cd ~/projects/wallet/wallet
-code .
-```
-> Khi VS code được mở, chọn đường dẫn:  
-> `/home/<your_wsl_username>/projects/wallet/wallet`
-
----
-
-### ✅ Cách 2: Mở Từ Giao Diện VS Code
-
-1. Mở **VS Code** (trên Windows).
-2. Trong trang Welcome → chọn **Connect to WSL**.
-3. Sau khi vào WSL, chọn **File > Open Folder**.
-4. Điều hướng đến:  
-   `/home/<your_wsl_username>/projects/wallet/wallet`
-
----
-
-## ✅ Hoàn Tất
-
-Giờ bạn có thể build và phát triển dự án ngay bên trong WSL + VS Code.
+File thực thi `wallet.exe` sẽ được tạo trong thư_mục `build/Debug` (hoặc `build/Release`).
