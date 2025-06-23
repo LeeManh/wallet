@@ -53,7 +53,16 @@ void CustomerView::handleViewBalance() {
 
 void CustomerView::handleTransferPoints() {
   std::string toUserId = utils::input::getInput("Nhập id người nhận nhận: ");
+  if (!utils::validation::isPositiveNumber(toUserId)) {
+    utils::MessageHandler::logError("ID người nhận không hợp lệ!");
+    return;
+  }
+
   std::string points = utils::input::getInput("Nhập số điểm cần chuyển: ");
+  if (!utils::validation::isPositiveNumber(points)) {
+    utils::MessageHandler::logError("Số điểm không hợp lệ!");
+    return;
+  }
 
   controllers::TransactionController::transferPoints(
       userId, std::stoi(toUserId), std::stod(points));

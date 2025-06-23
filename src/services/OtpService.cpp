@@ -17,14 +17,15 @@ using json = nlohmann::json;
 
 namespace services {
 
-bool OtpService::generateAndSendOTP(int userId, const std::string& email) {
+bool OtpService::generateAndSendOTP(int userId, const std::string& email,
+                                    enums::OTPType otpType) {
   try {
     // Tạo mã OTP
     std::string otpCode = generateOTPCode();
 
     // Tạo đối tượng OTP
     models::OTP otp(static_cast<int>(time(nullptr)),  // ID dựa trên timestamp
-                    userId, otpCode, enums::OTPType::INFO_CHANGE);
+                    userId, otpCode, otpType);
 
     // Thiết lập thời gian hết hạn (5 phút)
     time_t expiryTime = time(nullptr) + 300;  // 5 minutes

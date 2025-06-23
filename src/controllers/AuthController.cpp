@@ -69,7 +69,8 @@ void AuthController::changePasswordWithOTP(const int userId,
 
     // Input OTP
     utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
-    services::OtpService::generateAndSendOTP(userId, email);
+    services::OtpService::generateAndSendOTP(userId, email,
+                                             enums::OTPType::INFO_CHANGE);
 
     // Tạo và xác minh OTP
     std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");

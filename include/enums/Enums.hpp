@@ -12,13 +12,13 @@ enum class ExceptionType {
 
 enum class OTPType {
   INFO_CHANGE,
+  TRANSFER_POINTS,
 };
 
 enum class TransactionStatus {
-  PENDING,    // Đang chờ xử lý
-  COMPLETED,  // Hoàn thành
-  FAILED,     // Thất bại
-  CANCELLED   // Đã hủy
+  PENDING,  // Đang chờ xử lý = 0
+  SUCCESS,  // Thành công = 1
+  FAILED,   // Thất bại = 2
 };
 
 enum class WalletType {
