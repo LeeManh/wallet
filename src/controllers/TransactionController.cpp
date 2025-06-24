@@ -71,7 +71,7 @@ void TransactionController::transferPoints(int fromUserId, int toUserId,
       services::WalletService::updatePoint(toWallet.value().getId(), +points);
 
       // Thử throw lỗi
-      throw exceptions::TransactionException("Lỗi khi chuyển điểm!");
+      // throw exceptions::TransactionException("Lỗi khi chuyển điểm!");
 
     } catch (const std::exception& e) {
       throw exceptions::TransactionException(e.what());
