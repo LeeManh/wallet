@@ -27,7 +27,7 @@ brew install cmake
 ## 4. Clone Project
 
 ```bash
-git clone https://github.com/LeeManh/wallet.git
+git clone https://gitlab.com/LeeManh/wallet.git
 cd wallet
 ```
 
