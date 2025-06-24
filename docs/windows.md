@@ -13,7 +13,7 @@
 Mở **Git Bash** (được cài cùng với Git for Windows) hoặc Command Prompt và chạy:
 
 ```bash
-git clone https://github.com/LeeManh/wallet.git
+git clone https://gitlab.com/LeeManh/wallet.git
 cd wallet
 ```
 
