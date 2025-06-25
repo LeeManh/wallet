@@ -165,13 +165,18 @@ std::vector<models::OTP> OtpService::loadOTPs() {
 
 bool OtpService::sendOTPEmail(const std::string& email,
                               const std::string& otpCode) {
-  utils::MessageHandler::logMessage("=====================================");
-  utils::MessageHandler::logMessage("        GỬI OTP QUA EMAIL");
-  utils::MessageHandler::logMessage("=====================================");
-  utils::MessageHandler::logMessage("Đến: " + email);
-  utils::MessageHandler::logMessage("Mã OTP: " + otpCode);
-  utils::MessageHandler::logMessage("Thời gian hiệu lực: 5 phút");
-  utils::MessageHandler::logMessage("=====================================");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│              GỬI OTP QUA EMAIL              │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  utils::MessageHandler::logMessage("- Đến: " + email);
+  utils::MessageHandler::logMessage("- Mã OTP: " + otpCode);
+  utils::MessageHandler::logMessage("- Thời gian hiệu lực: 5 phút");
+  utils::MessageHandler::logMessage(
+      "───────────────────────────────────────────────");
 
   return true;
 }

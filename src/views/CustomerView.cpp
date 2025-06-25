@@ -10,13 +10,26 @@ namespace views {
 
 void CustomerView::display() {
   while (true) {
-    utils::MessageHandler::logMessage("\n=== MENU KHÁCH HÀNG ===");
-    utils::MessageHandler::logMessage("[1] Xem số dư");
-    utils::MessageHandler::logMessage("[2] Chuyển điểm");
-    utils::MessageHandler::logMessage("[3] Xem lịch sử giao dịch");
-    utils::MessageHandler::logMessage("[4] Điều chỉnh thông tin cá nhân");
-    utils::MessageHandler::logMessage("[5] Đổi mật khẩu");
-    utils::MessageHandler::logMessage("[0] Đăng xuất");
+    utils::MessageHandler::logMessage(
+        "┌─────────────────────────────────────────────┐");
+    utils::MessageHandler::logMessage(
+        "│              MENU KHÁCH HÀNG                │");
+    utils::MessageHandler::logMessage(
+        "├─────────────────────────────────────────────┤");
+    utils::MessageHandler::logMessage(
+        "│ [1] Xem số dư                               │");
+    utils::MessageHandler::logMessage(
+        "│ [2] Chuyển điểm                             │");
+    utils::MessageHandler::logMessage(
+        "│ [3] Xem lịch sử giao dịch                   │");
+    utils::MessageHandler::logMessage(
+        "│ [4] Điều chỉnh thông tin cá nhân            │");
+    utils::MessageHandler::logMessage(
+        "│ [5] Đổi mật khẩu                            │");
+    utils::MessageHandler::logMessage(
+        "│ [0] Đăng xuất                               │");
+    utils::MessageHandler::logMessage(
+        "└─────────────────────────────────────────────┘");
 
     int choice = utils::input::getChoice(0, 5);
 
@@ -43,7 +56,12 @@ void CustomerView::display() {
 }
 
 void CustomerView::handleViewBalance() {
-  utils::MessageHandler::logMessage("\n=== XEM SỐ DƯ ĐIỂM ===");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│              XEM SỐ DƯ ĐIỂM                 │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   controllers::WalletController::getWalletByUserId(userId);
 
@@ -52,6 +70,13 @@ void CustomerView::handleViewBalance() {
 }
 
 void CustomerView::handleTransferPoints() {
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│                CHUYỂN ĐIỂM                  │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
   std::string toUserId = utils::input::getInput("Nhập id người nhận nhận: ");
   if (!utils::validation::isPositiveNumber(toUserId)) {
     utils::MessageHandler::logError("ID người nhận không hợp lệ!");
@@ -77,7 +102,12 @@ void CustomerView::handleEditProfile() {
 }
 
 void CustomerView::handleChangePassword() {
-  utils::MessageHandler::logMessage("\n=== ĐỔI MẬT KHẨU ===");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│                 ĐỔI MẬT KHẨU                │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   std::string currentPassword =
       utils::input::getInput("Nhập mật khẩu hiện tại: ");

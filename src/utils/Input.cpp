@@ -25,7 +25,7 @@ std::string getValidatedInput(
 }
 
 std::string getInput(const std::string& prompt) {
-  std::cout << prompt;
+  std::cout << "- " << prompt;
   std::string input;
   std::getline(std::cin, input);
   return input;
@@ -35,7 +35,7 @@ int getChoice(int min, int max) {
   int choice;
 
   while (true) {
-    std::cout << "Nhập lựa chọn: ";
+    std::cout << "- Nhập lựa chọn: ";
 
     if (!(std::cin >> choice)) {
       utils::MessageHandler::logError(

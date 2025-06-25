@@ -68,18 +68,26 @@ void AuthController::changePasswordWithOTP(const int userId,
       throw exceptions::NotFoundException("Email không tồn tại!");
 
     // Input OTP
-    utils::MessageHandler::logMessage("\nGửi mã OTP để xác thực...");
+    utils::MessageHandler::logMessage("Gửi mã OTP để xác thực...");
     services::OtpService::generateAndSendOTP(userId, email,
                                              enums::OTPType::INFO_CHANGE);
 
     // Tạo và xác minh OTP
     std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
+    utils::MessageHandler::logMessage(
+        "───────────────────────────────────────────────");
+
     services::OtpService::verifyOTP(userId, otpCode,
                                     enums::OTPType::INFO_CHANGE);
 
+    // Cập nhật mật khẩu mới
+    services::AuthService::updateUserPassword(userId, newPassword);
+
     // Message thành công
-    utils::MessageHandler::logMessage("Đổi mật khẩu thành công.");
+    utils::MessageHandler::logSuccess("Đổi mật khẩu thành công.");
   } catch (const std::exception& e) {
+    utils::MessageHandler::logMessage(
+        "───────────────────────────────────────────────");
     utils::ExceptionHandler::handleException(e);
   }
 }

@@ -16,16 +16,32 @@ namespace views {
 
 void AdminView::display() {
   while (true) {
-    utils::MessageHandler::logMessage("\n=== MENU QUẢN TRỊ VIÊN ===");
-    utils::MessageHandler::logMessage("[1] Xem danh sách người dùng");
-    utils::MessageHandler::logMessage("[2] Xem danh sách ví");
-    utils::MessageHandler::logMessage("[3] Xem lịch sử giao dịch");
-    utils::MessageHandler::logMessage("[4] Tạo tài khoản mới cho người dùng");
-    utils::MessageHandler::logMessage("[5] Điều chỉnh thông tin người dùng");
-    utils::MessageHandler::logMessage("[6] Xem số dư ví tổng");
-    utils::MessageHandler::logMessage("[7] Đổi mật khẩu");
-    utils::MessageHandler::logMessage("[8] Chuyển điểm");
-    utils::MessageHandler::logMessage("[0] Đăng xuất");
+    utils::MessageHandler::logMessage(
+        "┌─────────────────────────────────────────────┐");
+    utils::MessageHandler::logMessage(
+        "│              MENU QUẢN TRỊ VIÊN             │");
+    utils::MessageHandler::logMessage(
+        "├─────────────────────────────────────────────┤");
+    utils::MessageHandler::logMessage(
+        "│ [1] Xem danh sách người dùng                │");
+    utils::MessageHandler::logMessage(
+        "│ [2] Xem danh sách ví                        │");
+    utils::MessageHandler::logMessage(
+        "│ [3] Xem lịch sử giao dịch                   │");
+    utils::MessageHandler::logMessage(
+        "│ [4] Tạo tài khoản mới cho người dùng        │");
+    utils::MessageHandler::logMessage(
+        "│ [5] Điều chỉnh thông tin người dùng         │");
+    utils::MessageHandler::logMessage(
+        "│ [6] Xem số dư ví tổng                       │");
+    utils::MessageHandler::logMessage(
+        "│ [7] Đổi mật khẩu                            │");
+    utils::MessageHandler::logMessage(
+        "│ [8] Chuyển điểm                             │");
+    utils::MessageHandler::logMessage(
+        "│ [0] Đăng xuất                               │");
+    utils::MessageHandler::logMessage(
+        "└─────────────────────────────────────────────┘");
 
     int choice = utils::input::getChoice(0, 8);
 
@@ -62,7 +78,11 @@ void AdminView::display() {
 
 void AdminView::handleCreateAccount() {
   utils::MessageHandler::logMessage(
-      "\n=== TẠO TÀI KHOẢN MỚI CHO NGƯỜI DÙNG ===");
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│         TẠO TÀI KHOẢN MỚI CHO NGƯỜI DÙNG    │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   std::string username = utils::input::getInput("Nhập tên đăng nhập: ");
   std::string email = utils::input::getInput("Nhập email: ");
@@ -80,7 +100,11 @@ void AdminView::handleViewAllUsers() {
 
 void AdminView::handleViewAllWallets() {
   utils::MessageHandler::logMessage(
-      "\n=== DANH SÁCH TẤT CẢ VÍ TRONG HỆ THỐNG ===");
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│      DANH SÁCH TẤT CẢ VÍ TRONG HỆ THỐNG     │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   controllers::WalletController::printListWallet();
 
@@ -96,7 +120,12 @@ void AdminView::handleEditUserInfo() {
 }
 
 void AdminView::handleManageTotalWallet() {
-  utils::MessageHandler::logMessage("\n=== XEM SỐ DƯ VÍ HỆ THỐNG ===");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│              XEM SỐ DƯ VÍ HỆ THỐNG          │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   controllers::WalletController::getSystemWallet();
 
@@ -104,7 +133,12 @@ void AdminView::handleManageTotalWallet() {
 }
 
 void AdminView::handleChangePassword() {
-  utils::MessageHandler::logMessage("\n=== ĐỔI MẬT KHẨU ===");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│                 ĐỔI MẬT KHẨU                │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   std::string currentPassword =
       utils::input::getInput("Nhập mật khẩu hiện tại: ");
@@ -124,6 +158,13 @@ void AdminView::handleChangePassword() {
 }
 
 void AdminView::handleTransferPoints() {
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│                CHUYỂN ĐIỂM                  │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
   std::string toUserId = utils::input::getInput("Nhập id người nhận nhận: ");
   if (!utils::validation::isPositiveNumber(toUserId)) {
     utils::MessageHandler::logError("ID người nhận không hợp lệ!");
