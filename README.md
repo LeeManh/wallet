@@ -40,29 +40,6 @@ cmake --build . --target clean
 rm -rf build
 ```
 
-## 🔐 Vấn Đề Thường Gặp
-
-### Lỗi quyền truy cập files
-
-Nếu gặp lỗi "Không thể mở file: data/users.json", hãy tham khảo:
-
-- **[🔧 Troubleshooting](docs/troubleshooting.md)** - Hướng dẫn chi tiết
-- **[🍎 macOS](docs/macos.md#6--cấp-quyền-tạo-files-và-chạy-seed-data)** - Cấp quyền trên macOS
-- **[🪟 Windows](docs/windows.md#5--cấp-quyền-tạo-files-và-chạy-seed-data)** - Cấp quyền trên Windows
-- **[🛠️ WSL](docs/wsl.md#6--cấp-quyền-tạo-files-và-chạy-seed-data)** - Cấp quyền trên WSL
-
-### Lỗi build
-
-Nếu gặp lỗi duplicate symbol hoặc build fail, hãy:
-
-```bash
-rm -rf build
-mkdir build
-cd build
-cmake ..
-make
-```
-
 ## Thành viên tham gia
 
 - [Tên thành viên] - [Công việc được giao]
