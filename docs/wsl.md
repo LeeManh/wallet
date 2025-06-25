@@ -7,11 +7,13 @@
 ```bash
 wsl --install
 ```
+
 ### Mở WSL đã cài sẵn (trên Windows)
 
 ```bash
 wsl
 ```
+
 > Lệnh này sẽ mở default Linux distro (e.g: Ubuntu) trên terminal
 
 Sau khi cài đặt xong và đã vào WSL terminal (Ubuntu), chạy:
@@ -20,10 +22,12 @@ Sau khi cài đặt xong và đã vào WSL terminal (Ubuntu), chạy:
 sudo apt update
 sudo apt install libgcrypt20-dev cmake g++ make
 ```
+
 > Lệnh này sẽ cài đặt:
 > GNU compilers (gcc/g++)
 > pkg-config (required cho việc tìm kiếm libraries)
 > libgcrypt20-dev (cài đặt GCRYPT_LIBRARIES và GCRYPT_INCLUDE_DIR)
+
 ---
 
 ## 2. 🔐 Tạo SSH Key để Kết Nối với GitHub
@@ -82,6 +86,7 @@ git clone git@github.com:LeeManh/wallet.git
 cd ~/projects/wallet/wallet
 code .
 ```
+
 > Khi VS code được mở, chọn đường dẫn:  
 > `/home/<your_wsl_username>/projects/wallet/wallet`
 
@@ -94,6 +99,86 @@ code .
 3. Sau khi vào WSL, chọn **File > Open Folder**.
 4. Điều hướng đến:  
    `/home/<your_wsl_username>/projects/wallet/wallet`
+
+---
+
+## 5. 🔨 Build Project
+
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
+
+---
+
+## 6. 🔐 Cấp Quyền Tạo Files và Chạy Seed Data
+
+### Kiểm tra quyền hiện tại
+
+```bash
+ls -la
+```
+
+### Tạo thư mục data với quyền đầy đủ
+
+```bash
+mkdir -p data
+chmod 755 data
+```
+
+### Kiểm tra quyền ghi
+
+```bash
+touch data/test.txt
+rm data/test.txt
+```
+
+### Nếu gặp lỗi quyền truy cập, thử các cách sau:
+
+**Cách 1: Thay đổi quyền sở hữu**
+
+```bash
+sudo chown $USER:$USER data/
+```
+
+**Cách 2: Chạy với sudo (tạm thời)**
+
+```bash
+sudo ./build/bin/wallet
+```
+
+**Cách 3: Kiểm tra quyền thư mục cha**
+
+```bash
+ls -la ../
+chmod 755 ../
+```
+
+**Cách 4: Kiểm tra quyền WSL**
+
+```bash
+# Nếu WSL không có quyền ghi vào Windows filesystem
+# Chuyển project vào WSL filesystem
+cp -r /mnt/c/path/to/wallet ~/wallet
+cd ~/wallet
+```
+
+## 7. 🚀 Chạy Chương Trình
+
+```bash
+cd build
+./wallet
+```
+
+Nếu thành công, bạn sẽ thấy thông báo:
+
+```
+✅ Khởi tạo dữ liệu thành công!
+```
+
+Nếu gặp lỗi quyền truy cập, hãy thực hiện các bước trong phần 6.
 
 ---
 

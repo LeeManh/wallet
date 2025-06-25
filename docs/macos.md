@@ -43,3 +43,61 @@ make
 ```
 
 Sau khi build thành công, file thực thi `wallet` sẽ nằm trong thư mục `build`.
+
+## 6. 🔐 Cấp Quyền Tạo Files và Chạy Seed Data
+
+### Kiểm tra quyền hiện tại
+
+```bash
+ls -la
+```
+
+### Tạo thư mục data với quyền đầy đủ
+
+```bash
+mkdir -p data
+chmod 755 data
+```
+
+### Kiểm tra quyền ghi
+
+```bash
+touch data/test.txt
+rm data/test.txt
+```
+
+### Nếu gặp lỗi quyền truy cập, thử các cách sau:
+
+**Cách 1: Thay đổi quyền sở hữu**
+
+```bash
+sudo chown $USER:$USER data/
+```
+
+**Cách 2: Chạy với sudo (tạm thời)**
+
+```bash
+sudo ./build/bin/wallet
+```
+
+**Cách 3: Kiểm tra quyền thư mục cha**
+
+```bash
+ls -la ../
+chmod 755 ../
+```
+
+## 7. 🚀 Chạy Chương Trình
+
+```bash
+cd build
+./wallet
+```
+
+Nếu thành công, bạn sẽ thấy thông báo:
+
+```
+✅ Khởi tạo dữ liệu thành công!
+```
+
+Nếu gặp lỗi quyền truy cập, hãy thực hiện các bước trong phần 6.
