@@ -12,10 +12,19 @@ namespace views {
 void MainView::display() {
   while (true) {
     utils::MessageHandler::logMessage(
-        "\n=== Hệ thống quản lý ví điểm thưởng ===");
-    utils::MessageHandler::logMessage("[1] Đăng nhập");
-    utils::MessageHandler::logMessage("[2] Đăng ký");
-    utils::MessageHandler::logMessage("[0] Thoát");
+        "┌─────────────────────────────────────────────┐");
+    utils::MessageHandler::logMessage(
+        "│      HỆ THỐNG QUẢN LÝ VÍ ĐIỂM THƯỞNG        │");
+    utils::MessageHandler::logMessage(
+        "├─────────────────────────────────────────────┤");
+    utils::MessageHandler::logMessage(
+        "│ [1] Đăng nhập                               │");
+    utils::MessageHandler::logMessage(
+        "│ [2] Đăng ký                                 │");
+    utils::MessageHandler::logMessage(
+        "│ [0] Thoát                                   │");
+    utils::MessageHandler::logMessage(
+        "└─────────────────────────────────────────────┘");
 
     int choice = utils::input::getChoice(0, 2);
 
@@ -35,7 +44,13 @@ void MainView::display() {
 }
 
 void MainView::handleLogin() {
-  utils::MessageHandler::logMessage("\n=== Đăng nhập ===");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│                 ĐĂNG NHẬP                   │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
   std::string username = utils::input::getInput("Nhập tên đăng nhập: ");
   std::string password = utils::input::getInput("Nhập mật khẩu: ");
 

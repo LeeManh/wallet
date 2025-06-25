@@ -100,11 +100,6 @@ void WalletService::printListWallet() {
 
     int count = 1;
     for (const auto& wallet : wallets) {
-      char createdStr[20];
-      struct tm* timeinfo;
-
-      strftime(createdStr, sizeof(createdStr), "%d/%m/%Y %H:%M", timeinfo);
-
       std::string walletTypeStr =
           (wallet.getWalletType() == enums::WalletType::SYSTEM) ? "SYSTEM"
                                                                 : "USER";

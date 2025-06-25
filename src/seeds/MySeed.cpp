@@ -55,23 +55,20 @@ bool Seed::seedData() {
   try {
     // Tạo admin user
     models::User admin = services::UserService::createUser(
-        "admin", "admin123", "admin@wallet.com", "Administrator", true);
+        "admin", "123456", "admin@wallet.com", "Administrator", true);
 
     services::UserService::saveUser(admin);
 
-    // Tạo ví cho admin
+    // Tạo ví hệ thống (chính là ví của admin)
     services::WalletService::createWallet(admin.getId(), 1000.0,
-                                          enums::WalletType::USER);
-
-    // Tạo ví hệ thống
-    services::WalletService::createWallet(0, 0.0, enums::WalletType::SYSTEM);
+                                          enums::WalletType::SYSTEM);
 
     // Tạo một số user mẫu
     std::vector<std::tuple<std::string, std::string, std::string, std::string>>
         sampleUsers = {
-            {"user1", "user123", "user1@example.com", "Nguyễn Văn A"},
-            {"user2", "user123", "user2@example.com", "Trần Thị B"},
-            {"user3", "user123", "user3@example.com", "Lê Văn C"},
+            {"user1", "123456", "user1@example.com", "Nguyễn Văn A"},
+            {"user2", "123456", "user2@example.com", "Trần Thị B"},
+            {"user3", "123456", "user3@example.com", "Lê Văn C"},
         };
 
     for (const auto& [username, password, email, fullName] : sampleUsers) {
@@ -80,8 +77,8 @@ bool Seed::seedData() {
 
       services::UserService::saveUser(user);
 
-      // Tạo ví cho user với số điểm ngẫu nhiên
-      double initialBalance = 100.0 + (rand() % 900);  // 100-1000 điểm
+      // Tạo ví cho user với 50 điểm khởi tạo
+      double initialBalance = 50.0;
       services::WalletService::createWallet(user.getId(), initialBalance,
                                             enums::WalletType::USER);
     }

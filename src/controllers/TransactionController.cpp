@@ -58,6 +58,8 @@ void TransactionController::transferPoints(int fromUserId, int toUserId,
 
     // Input OTP
     std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
+    utils::MessageHandler::logMessage(
+        "───────────────────────────────────────────────");
     services::OtpService::verifyOTP(fromUserId, otpCode,
                                     enums::OTPType::TRANSFER_POINTS);
 
