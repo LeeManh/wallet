@@ -22,9 +22,4 @@ int Transaction::getDestinationWalletId() const { return destinationWalletId; }
 double Transaction::getAmount() const { return amount; }
 enums::TransactionStatus Transaction::getStatus() const { return status; }
 
-// Setters
-void Transaction::setStatus(enums::TransactionStatus newStatus) {
-  status = newStatus;
-}
-
 }  // namespace models

@@ -27,9 +27,6 @@ class Transaction {
   int getDestinationWalletId() const;
   double getAmount() const;
   enums::TransactionStatus getStatus() const;
-
-  // Setters
-  void setStatus(enums::TransactionStatus newStatus);
 };
 
 }  // namespace models
