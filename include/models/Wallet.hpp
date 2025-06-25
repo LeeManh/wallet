@@ -23,11 +23,6 @@ class Wallet {
   int getUserId() const;
   double getPoint() const;
   enums::WalletType getWalletType() const;
-
-  // Setters
-  void setPoint(double newPoint);
-  void setId(int newId);
-  void setLastUpdated(time_t time);
 };
 
 }  // namespace models
