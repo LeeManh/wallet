@@ -57,8 +57,6 @@ bool Seed::seedData() {
     models::User admin = services::UserService::createUser(
         "admin", "123456", "admin@wallet.com", "Administrator", true);
 
-    services::UserService::saveUser(admin);
-
     // Tạo ví hệ thống (chính là ví của admin)
     services::WalletService::createWallet(admin.getId(), 1000.0,
                                           enums::WalletType::SYSTEM);
@@ -75,9 +73,7 @@ bool Seed::seedData() {
       models::User user = services::UserService::createUser(username, password,
                                                             email, fullName);
 
-      services::UserService::saveUser(user);
-
-      // Tạo ví cho user với 50 điểm khởi tạo
+           // Tạo ví cho user với 50 điểm khởi tạo
       double initialBalance = 50.0;
       services::WalletService::createWallet(user.getId(), initialBalance,
                                             enums::WalletType::USER);
