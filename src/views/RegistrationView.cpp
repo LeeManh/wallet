@@ -8,7 +8,13 @@
 namespace views {
 
 void RegistrationView::display() {
-  utils::MessageHandler::logMessage("\n=== Đăng ký tài khoản ===");
+  utils::MessageHandler::logMessage("");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│             ĐĂNG KÝ TÀI KHOẢN               │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
 
   std::string username = utils::input::getInput("Nhập tên đăng nhập: ");
   std::string password = utils::input::getInput("Nhập mật khẩu: ");
