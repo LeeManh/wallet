@@ -84,4 +84,24 @@ bool UserService::isEmailExists(const json& users, const std::string& email) {
   return false;
 }
 
+void UserService::deleteUser(const int userId) {
+  json users = utils::storage::readJsonFile("data/users.json");
+  json newUsers = json::array();
+  bool found = false;
+
+  for (const auto& user : users) {
+    if (user["id"] == userId) {
+      found = true;
+    } else {
+      newUsers.push_back(user);
+    }
+  }
+
+  if (!found) {
+    throw exceptions::NotFoundException("User not found");
+  }
+
+  utils::storage::writeJsonFile("data/users.json", newUsers);
+}
+
 }  // namespace services

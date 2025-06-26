@@ -64,16 +64,13 @@ bool Seed::seedData() {
     // Tạo một số user mẫu
     std::vector<std::tuple<std::string, std::string, std::string, std::string>>
         sampleUsers = {
-            {"user1", "123456", "user1@example.com", "Nguyễn Văn A"},
-            {"user2", "123456", "user2@example.com", "Trần Thị B"},
-            {"user3", "123456", "user3@example.com", "Lê Văn C"},
-        };
+            {"user1", "123456", "user1@example.com", "Nguyễn Văn A"}};
 
     for (const auto& [username, password, email, fullName] : sampleUsers) {
       models::User user = services::UserService::createUser(username, password,
                                                             email, fullName);
 
-           // Tạo ví cho user với 50 điểm khởi tạo
+      // Tạo ví cho user với 50 điểm khởi tạo
       double initialBalance = 50.0;
       services::WalletService::createWallet(user.getId(), initialBalance,
                                             enums::WalletType::USER);
