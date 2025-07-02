@@ -17,6 +17,14 @@ void UserService::validateUserData(const std::string& username,
       throw exceptions::ValidationException("Email đã tồn tại");
   }
 }
+void UserService::validateUserEmail(const int userId, const std::string& email) {
+  json users = utils::storage::readJsonFile("data/users.json");
+
+  for (const auto& user : users) {
+    if (user["email"] == email && user["id"] != userId)
+      throw exceptions::ValidationException("Email đã tồn tại");
+  }
+}
 
 models::User UserService::createUser(const std::string& username,
                                      const std::string& password,

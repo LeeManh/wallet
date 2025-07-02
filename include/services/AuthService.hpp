@@ -10,7 +10,7 @@ namespace services {
 class AuthService {
  public:
   // Đăng nhập
-  static std::tuple<bool, int, bool> login(const std::string& username,
+  static std::tuple<bool, int, bool, bool> login(const std::string& username,
                                            const std::string& password);
 
   // Người dùng đăng kí
@@ -31,6 +31,9 @@ class AuthService {
 
   // Admin cập nhập mật khẩu cho người dùng
   static bool updateUserPassword(int userId, const std::string& newPassword);
+  static bool editUserInfo(int userId, 
+                                  const std::string& newFullName, 
+                                  const std::string& newEmail);
+  static void otpValidation(const int userId, const std::string& email);
 };
-
 }  // namespace services
