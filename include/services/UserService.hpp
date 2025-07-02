@@ -29,6 +29,8 @@ class UserService {
 
   // User deletion
   static void deleteUser(const int userId);
+  // User update
+  static void validateUserEmail(const int userId, const std::string& email);
 
   // User queries
   static std::optional<json> findUserById(const int userId);
