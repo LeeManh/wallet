@@ -98,7 +98,22 @@ void CustomerView::handleViewTransactionHistory() {
 }
 
 void CustomerView::handleEditProfile() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│         ĐIỀU CHỈNH THÔNG TIN CÁ NHÂN        │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  // Lấy thông tin hiện tại
+  controllers::AuthController::getProfile(userId);
+
+  std::string newFullName = utils::input::getInput("Nhập họ tên mới (bỏ trống nếu không đổi): ");
+  std::string newEmail = utils::input::getInput("Nhập email mới (bỏ trống nếu không đổi): ");
+
+  controllers::AuthController::updateProfile(userId, newFullName, newEmail);
+
+  utils::input::pauseInput();
 }
 
 void CustomerView::handleChangePassword() {

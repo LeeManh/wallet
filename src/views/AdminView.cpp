@@ -116,7 +116,31 @@ void AdminView::handleViewTransactionHistory() {
 }
 
 void AdminView::handleEditUserInfo() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│         ĐIỀU CHỈNH THÔNG TIN NGƯỜI DÙNG     │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  std::string userIdStr = utils::input::getInput("Nhập ID người dùng cần chỉnh sửa: ");
+  if (!utils::validation::isPositiveNumber(userIdStr)) {
+    utils::MessageHandler::logError("ID người dùng không hợp lệ!");
+    return;
+  }
+  int userId = std::stoi(userIdStr);
+
+  std::string newFullName = utils::input::getInput("Nhập họ tên mới (bỏ trống nếu không đổi): ");
+  std::string newEmail = utils::input::getInput("Nhập email mới (bỏ trống nếu không đổi): ");
+
+  if (newFullName.empty() && newEmail.empty()) {
+    utils::MessageHandler::logMessage("Không có thông tin nào được thay đổi.");
+    return;
+  }
+
+  controllers::AuthController::editUserInfoByAdmin(userId, newFullName, newEmail);
+
+  utils::input::pauseInput();
 }
 
 void AdminView::handleManageTotalWallet() {

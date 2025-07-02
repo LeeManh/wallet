@@ -14,7 +14,7 @@
 
 namespace controllers {
 
-std::tuple<bool, int, bool> AuthController::login(const std::string& username,
+std::tuple<bool, int, bool, bool> AuthController::login(const std::string& username,
                                                   const std::string& password) {
   try {
     auto response = services::AuthService::login(username, password);
@@ -22,7 +22,7 @@ std::tuple<bool, int, bool> AuthController::login(const std::string& username,
     return response;
   } catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
-    return {false, -1, false};
+    return {false, -1, false, false};
   }
 }
 
@@ -56,6 +56,42 @@ void AuthController::registerUserByAdmin(const std::string& username,
     utils::ExceptionHandler::handleException(e);
   }
 }
+void AuthController::getProfile(const int userId) {
+  try {
+    auto userJson = services::UserService::findUserById(userId);
+    if (!userJson.has_value())
+      throw exceptions::NotFoundException("Người dùng không tồn tại!");
+
+    utils::MessageHandler::logMessage("Thông tin người dùng:");
+    utils::MessageHandler::logMessage("Họ tên: " + std::string(userJson.value()["fullName"]));
+    utils::MessageHandler::logMessage("Email: " + std::string(userJson.value()["email"]));
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+  }
+}
+
+void AuthController::updateProfile(const int userId,
+                                   const std::string& newFullName,
+                                   const std::string& newEmail) {
+  try {
+    services::AuthService::editUserInfo(userId, newFullName, newEmail);
+    utils::MessageHandler::logSuccess("Cập nhật thông tin thành công!");
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+  }
+}
+
+void AuthController::editUserInfoByAdmin(const int userId,
+                                   const std::string& newFullName,
+                                  const std::string& newEmail){
+  try {
+    services::AuthService::editUserInfo(userId, newFullName, newEmail);
+    utils::MessageHandler::logSuccess("Cập nhật thông tin người dùng thành công!");
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+  }
+};
+
 
 void AuthController::changePasswordWithOTP(const int userId,
                                            const std::string& currentPassword,
