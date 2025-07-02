@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <tuple>
+#include <sstream>
 
 #include "enums/Enums.hpp"
 #include "services/AuthService.hpp"
@@ -11,6 +12,7 @@
 #include "utils/ExceptionHandler.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "utils/Format.hpp"
 
 namespace controllers {
 
@@ -66,6 +68,33 @@ void AuthController::getProfile(const int userId) {
     utils::MessageHandler::logMessage("Họ tên: " + std::string(userJson.value()["fullName"]));
     utils::MessageHandler::logMessage("Email: " + std::string(userJson.value()["email"]));
   } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+  }
+}
+void AuthController::printListUsers() {
+  try {
+    auto users = services::UserService::getAllUsers();
+
+    utils::MessageHandler::logMessage(
+      "+----+----------------+------------------------+------------------------+");
+    utils::MessageHandler::logMessage(
+      "| ID | Tên đăng nhập  | Email                  | Họ tên                 |");
+    utils::MessageHandler::logMessage(
+      "+----+----------------+------------------------+------------------------+");
+    for (const auto& user : users) {
+      std::ostringstream oss;
+      oss << "| "
+        << std::setw(2) << std::left << user.getId() << " "
+        << "| " << utils::format::formatCell(user.getUsername(), 15)
+        << "| " << utils::format::formatCell(user.getEmail(), 23)
+        << "| " << utils::format::formatCell(user.getFullName(), 23)
+        << "|";
+      utils::MessageHandler::logMessage(oss.str());
+    }
+    utils::MessageHandler::logMessage(
+      "+----+----------------+------------------------+------------------------+");
+  }
+  catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
   }
 }
