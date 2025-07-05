@@ -8,6 +8,7 @@
 #include "utils/Hash.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Storage.hpp"
+#include "enums/Enums.hpp"
 
 using json = nlohmann::json;
 
@@ -33,10 +34,12 @@ class UserService {
   static void validateUserEmail(const int userId, const std::string& email);
 
   // User queries
+  static std::string getUserInfo(const models::User& user, enums::UserInfo info);
   static std::optional<json> findUserById(const int userId);
   static std::optional<json> findUserByUsername(const std::string& username);
   static std::optional<json> getUserEmail(int userId);
   static std::vector<models::User> getAllUsers(const bool isAdmin = false);
+
 
  private:
   static bool isUsernameExists(const json& users, const std::string& username);

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace enums {
 
@@ -27,4 +28,37 @@ enum class WalletType {
   SYSTEM,
 };
 
+enum class UserInfo {
+  USERNAME,
+  EMAIL,
+  FULL_NAME,
+  ID,
+};
+
+enum class CellSize {
+  ID = 2,
+  USERNAME = 15,
+  EMAIL = 23,
+  FULL_NAME = 23,
+};
+
+inline std::string to_string(UserInfo info) {
+  switch (info) {
+    case UserInfo::USERNAME: return "Tên đăng nhập";
+    case UserInfo::EMAIL: return "Email";
+    case UserInfo::FULL_NAME: return "Họ và tên";
+    case UserInfo::ID: return "ID";
+    default: return "UNKNOWN";
+  }
+}
+
+inline int getCellSize(UserInfo info) {
+    switch (info) {
+        case UserInfo::ID: return static_cast<int>(CellSize::ID);
+        case UserInfo::USERNAME: return static_cast<int>(CellSize::USERNAME);
+        case UserInfo::EMAIL: return static_cast<int>(CellSize::EMAIL);
+        case UserInfo::FULL_NAME: return static_cast<int>(CellSize::FULL_NAME);
+        default: return 0;
+    }
+}
 }  // namespace enums

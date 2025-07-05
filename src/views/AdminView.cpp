@@ -9,6 +9,7 @@
 #include "controllers/AuthController.hpp"
 #include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
+#include "controllers/LogController.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
 
@@ -102,7 +103,10 @@ void AdminView::handleViewAllUsers() {
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
   auto users = services::UserService::getAllUsers();
-  controllers::AuthController::printListUsers(users);
+  std::vector<enums::UserInfo> userInfo = {
+      enums::UserInfo::ID, enums::UserInfo::USERNAME,
+      enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
+  controllers::LogController::printListUsers(users, userInfo);
 
   utils::input::pauseInput();
 }

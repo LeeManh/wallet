@@ -71,6 +71,21 @@ std::vector<models::User> UserService::getAllUsers(bool isAdmin) {
   return userList;
 }
 
+std::string UserService::getUserInfo(const models::User& user, enums::UserInfo info) {
+  switch (info) {
+    case enums::UserInfo::ID:
+      return std::to_string(user.getId());
+    case enums::UserInfo::USERNAME:
+      return user.getUsername();
+    case enums::UserInfo::EMAIL:
+      return user.getEmail();
+    case enums::UserInfo::FULL_NAME:
+      return user.getFullName();
+    default:
+      return "";
+  }
+}
+
 std::optional<json> UserService::findUserById(int userId) {
   json users = utils::storage::readJsonFile("data/users.json");
   for (const auto& user : users) {
