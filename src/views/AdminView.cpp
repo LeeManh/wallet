@@ -101,8 +101,8 @@ void AdminView::handleViewAllUsers() {
       "│         DANH SÁCH TẤT CẢ NGƯỜI DÙNG         │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
-
-  controllers::AuthController::printListUsers();
+  auto users = services::UserService::getAllUsers();
+  controllers::AuthController::printListUsers(users);
 
   utils::input::pauseInput();
 }

@@ -71,10 +71,8 @@ void AuthController::getProfile(const int userId) {
     utils::ExceptionHandler::handleException(e);
   }
 }
-void AuthController::printListUsers() {
+void AuthController::printListUsers(std::vector<models::User> users) {
   try {
-    auto users = services::UserService::getAllUsers();
-
     utils::MessageHandler::logMessage(
       "+----+----------------+------------------------+------------------------+");
     utils::MessageHandler::logMessage(
