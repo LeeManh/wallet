@@ -7,10 +7,10 @@
 #include "models/User.hpp"
 #include "services/UserService.hpp"
 #include "services/WalletService.hpp"
-#include "controllers/AuthController.hpp"
 #include "utils/ExceptionHandler.hpp"
 #include "utils/Format.hpp"
 #include "utils/Storage.hpp"
+#include "controllers/LogController.hpp"
 
 using json = nlohmann::json;
 namespace seeds {
@@ -49,7 +49,10 @@ void Seed::printSeededData(const bool isAdmin, const bool isUser) {
       auto uUsers = services::UserService::getAllUsers(false);
       users.insert(users.end(), uUsers.begin(), uUsers.end());
     }
-    controllers::AuthController::printListUsers(users);
+    std::vector<enums::UserInfo> userInfo = {
+        enums::UserInfo::ID, enums::UserInfo::USERNAME,
+        enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
+    controllers::LogController::printListUsers(users, userInfo);
   } catch (const std::exception& e) {
     throw e;
   }

@@ -30,6 +30,5 @@ class AuthController {
   static void getProfile(const int userId);
   static void updateProfile(const int userId, const std::string& newFullName,
                             const std::string& newEmail);
-  static void printListUsers(std::vector<models::User> users);
 };
 }  // namespace controllers

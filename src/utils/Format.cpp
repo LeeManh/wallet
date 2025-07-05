@@ -36,4 +36,7 @@ std::string formatCell(const std::string& value, int space) {
     }
     return result;
 }
+std::string formatBorder(int width) {
+    return std::string(width, '-');
+}
 }  // namespace utils::format

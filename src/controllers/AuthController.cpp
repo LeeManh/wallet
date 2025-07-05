@@ -71,31 +71,6 @@ void AuthController::getProfile(const int userId) {
     utils::ExceptionHandler::handleException(e);
   }
 }
-void AuthController::printListUsers(std::vector<models::User> users) {
-  try {
-    utils::MessageHandler::logMessage(
-      "+----+----------------+------------------------+------------------------+");
-    utils::MessageHandler::logMessage(
-      "| ID | Tên đăng nhập  | Email                  | Họ tên                 |");
-    utils::MessageHandler::logMessage(
-      "+----+----------------+------------------------+------------------------+");
-    for (const auto& user : users) {
-      std::ostringstream oss;
-      oss << "| "
-        << std::setw(2) << std::left << user.getId() << " "
-        << "| " << utils::format::formatCell(user.getUsername(), 15)
-        << "| " << utils::format::formatCell(user.getEmail(), 23)
-        << "| " << utils::format::formatCell(user.getFullName(), 23)
-        << "|";
-      utils::MessageHandler::logMessage(oss.str());
-    }
-    utils::MessageHandler::logMessage(
-      "+----+----------------+------------------------+------------------------+");
-  }
-  catch (const std::exception& e) {
-    utils::ExceptionHandler::handleException(e);
-  }
-}
 
 void AuthController::updateProfile(const int userId,
                                    const std::string& newFullName,
