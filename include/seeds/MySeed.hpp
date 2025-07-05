@@ -22,6 +22,7 @@ class Seed {
   static bool seedFiles();
   static bool seedData();
   static bool isSeeded();
+  static void printSeededData(const bool isAdmin, const bool isUser);
 };
 
 }  // namespace seeds

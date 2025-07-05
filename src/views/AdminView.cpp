@@ -95,7 +95,16 @@ void AdminView::handleCreateAccount() {
 }
 
 void AdminView::handleViewAllUsers() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│         DANH SÁCH TẤT CẢ NGƯỜI DÙNG         │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+  auto users = services::UserService::getAllUsers();
+  controllers::AuthController::printListUsers(users);
+
+  utils::input::pauseInput();
 }
 
 void AdminView::handleViewAllWallets() {
