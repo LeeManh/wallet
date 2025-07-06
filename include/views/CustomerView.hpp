@@ -16,6 +16,7 @@ class CustomerView {
   void handleViewTransactionHistory();
   void handleEditProfile();
   void handleChangePassword();
+  void handleViewProfile();
 };
 
 }  // namespace views

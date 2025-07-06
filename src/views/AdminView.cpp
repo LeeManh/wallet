@@ -40,11 +40,13 @@ void AdminView::display() {
     utils::MessageHandler::logMessage(
         "│ [8] Chuyển điểm                             │");
     utils::MessageHandler::logMessage(
+        "│ [9] Xem thông tin cá nhân                   │");
+    utils::MessageHandler::logMessage(
         "│ [0] Đăng xuất                               │");
     utils::MessageHandler::logMessage(
         "└─────────────────────────────────────────────┘");
 
-    int choice = utils::input::getChoice(0, 8);
+    int choice = utils::input::getChoice(0, 9);
 
     switch (choice) {
       case 1:
@@ -70,6 +72,9 @@ void AdminView::display() {
         break;
       case 8:
         handleTransferPoints();
+        break;
+      case 9:
+        handleViewProfile();
         break;
       case 0:
         return;
@@ -216,6 +221,19 @@ void AdminView::handleTransferPoints() {
 
   controllers::TransactionController::transferPoints(
       userId, std::stoi(toUserId), std::stod(points));
+}
+
+void AdminView::handleViewProfile() {
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│           THÔNG TIN CÁ NHÂN CỦA BẠN         │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  controllers::AuthController::getProfile(userId);
+
+  utils::input::pauseInput();
 }
 
 }  // namespace views

@@ -19,6 +19,7 @@ class AdminView {
   void handleManageTotalWallet();
   void handleChangePassword();
   void handleTransferPoints();
+  void handleViewProfile();
 };
 
 }  // namespace views

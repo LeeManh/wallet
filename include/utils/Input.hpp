@@ -2,7 +2,7 @@
 
 #include <functional>
 #include <string>
-
+#include <limits>
 #include "utils/Validation.hpp"
 
 namespace utils {
