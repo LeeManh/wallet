@@ -24,11 +24,15 @@ Sử dụng Homebrew để cài đặt CMake:
 brew install cmake
 ```
 
-## 4. Clone Project
+## 4. Clone Project và Tải Dependencies
 
 ```bash
+# Clone project
 git clone https://gitlab.com/LeeManh/wallet.git
 cd wallet
+
+# Tải về các dependencies (submodules)
+git submodule update --init --recursive
 ```
 
 ## 5. Build Project

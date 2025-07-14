@@ -8,13 +8,17 @@
   - **CMake**.
   - **Git for Windows**.
 
-## 2. Clone Project
+## 2. Clone Project và Tải Dependencies
 
 Mở **Git Bash** (được cài cùng với Git for Windows) hoặc Command Prompt và chạy:
 
 ```bash
+# Clone project
 git clone https://gitlab.com/LeeManh/wallet.git
 cd wallet
+
+# Tải về các dependencies (submodules)
+git submodule update --init --recursive
 ```
 
 ## 3. Build Project (Sử dụng Visual Studio)

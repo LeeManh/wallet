@@ -66,7 +66,7 @@ cat id_ed25519.pub
 
 ---
 
-## 3. 📦 Clone Project về WSL
+## 3. 📦 Clone Project và Tải Dependencies về WSL
 
 Tạo thư mục và clone dự án:
 
@@ -74,6 +74,10 @@ Tạo thư mục và clone dự án:
 mkdir -p ~/projects/wallet
 cd ~/projects/wallet
 git clone git@github.com:LeeManh/wallet.git
+cd wallet
+
+# Tải về các dependencies (submodules)
+git submodule update --init --recursive
 ```
 
 ---
