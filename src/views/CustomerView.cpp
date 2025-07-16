@@ -27,11 +27,13 @@ void CustomerView::display() {
     utils::MessageHandler::logMessage(
         "│ [5] Đổi mật khẩu                            │");
     utils::MessageHandler::logMessage(
+        "│ [6] Xem thông tin cá nhân                   │");
+    utils::MessageHandler::logMessage(
         "│ [0] Đăng xuất                               │");
     utils::MessageHandler::logMessage(
         "└─────────────────────────────────────────────┘");
 
-    int choice = utils::input::getChoice(0, 5);
+    int choice = utils::input::getChoice(0, 6);
 
     switch (choice) {
       case 1:
@@ -48,6 +50,9 @@ void CustomerView::display() {
         break;
       case 5:
         handleChangePassword();
+        break;
+      case 6:
+        handleViewProfile();
         break;
       case 0:
         return;
@@ -137,6 +142,19 @@ void CustomerView::handleChangePassword() {
 
   controllers::AuthController::changePasswordWithOTP(userId, currentPassword,
                                                      newPassword);
+
+  utils::input::pauseInput();
+}
+
+void CustomerView::handleViewProfile() {
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│           THÔNG TIN CÁ NHÂN CỦA BẠN         │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  controllers::AuthController::getProfile(userId);
 
   utils::input::pauseInput();
 }

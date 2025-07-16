@@ -65,6 +65,7 @@ void AuthController::getProfile(const int userId) {
       throw exceptions::NotFoundException("Người dùng không tồn tại!");
 
     utils::MessageHandler::logMessage("Thông tin người dùng:");
+    utils::MessageHandler::logMessage("User ID: " + std::to_string(userId));
     utils::MessageHandler::logMessage("Họ tên: " + std::string(userJson.value()["fullName"]));
     utils::MessageHandler::logMessage("Email: " + std::string(userJson.value()["email"]));
   } catch (const std::exception& e) {
