@@ -14,7 +14,7 @@ Mở **Git Bash** (được cài cùng với Git for Windows) hoặc Command Pro
 
 ```bash
 # Clone project
-git clone https://gitlab.com/LeeManh/wallet.git
+git clone https://github.com/LeeManh/wallet.git
 cd wallet
 
 # Tải về các dependencies (submodules)
