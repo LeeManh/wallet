@@ -1,6 +1,6 @@
 # Hệ thống quản lý ví điểm thưởng
 
-## Giới thiệu
+## Giới thiệu dự án
 
 Hệ thống quản lý ví điểm thưởng là một ứng dụng cho phép người dùng quản lý điểm thưởng của họ. Hệ thống cung cấp các chức năng như đăng ký, đăng nhập, và quản lý điểm thưởng.
 
