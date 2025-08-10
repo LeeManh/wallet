@@ -16,6 +16,22 @@ using json = nlohmann::json;
 namespace seeds {
 bool isUser = false;
 bool isAdmin = false;
+
+/**
+ * @brief Khởi tạo dữ liệu ban đầu của hệ thống (seed).
+ *
+ * Input: Không có.
+ * Output: 
+ *   - true nếu khởi tạo thành công hoặc dữ liệu đã tồn tại.
+ *   - false nếu xảy ra lỗi.
+ *
+ * Thủ tục xử lý:
+ *   1. Kiểm tra nếu dữ liệu đã được seed trước đó → trả về true.
+ *   2. Gọi seedFiles() để tạo thư mục và file dữ liệu trống.
+ *   3. Gọi seedData() để thêm dữ liệu mặc định (admin và user mẫu).
+ *   4. Hiển thị dữ liệu vừa được khởi tạo bằng printSeededData().
+ *   5. Ghi log thành công hoặc bắt lỗi và xử lý.
+ */
 bool Seed::initialize() {
   try {
     if (isSeeded()) return true;
@@ -32,6 +48,20 @@ bool Seed::initialize() {
   }
 }
 
+/**
+ * @brief Hiển thị danh sách người dùng đã được seed vào hệ thống.
+ *
+ * Input:
+ *   - isAdmin: true nếu hiển thị tài khoản admin.
+ *   - isUser: true nếu hiển thị tài khoản user.
+ *
+ * Output: Không trả về giá trị, in danh sách ra màn hình.
+ *
+ * Thủ tục xử lý:
+ *   1. In tiêu đề “KHỞI TẠO DỮ LIỆU”.
+ *   2. Lấy danh sách user từ UserService tùy theo isAdmin/isUser.
+ *   3. Gọi LogController để in danh sách user.
+ */
 void Seed::printSeededData(const bool isAdmin, const bool isUser) {
   utils::MessageHandler::logMessage(
       "┌─────────────────────────────────────────────┐");
@@ -59,6 +89,17 @@ void Seed::printSeededData(const bool isAdmin, const bool isUser) {
 
 }
 
+/**
+ * @brief Tạo thư mục và các file dữ liệu JSON trống để lưu thông tin hệ thống.
+ *
+ * Input: Không có.
+ * Output: true nếu tạo thành công, ném exception nếu lỗi.
+ *
+ * Thủ tục xử lý:
+ *   1. Đảm bảo thư mục "data" tồn tại.
+ *   2. Tạo các file users.json, wallets.json, transactions.json, otps.json
+ *      với dữ liệu mặc định là mảng rỗng.
+ */
 bool Seed::seedFiles() {
   try {
     // Tạo thư mục data nếu chưa tồn tại
@@ -79,6 +120,18 @@ bool Seed::seedFiles() {
   }
 }
 
+/**
+ * @brief Thêm dữ liệu mặc định vào hệ thống.
+ *
+ * Input: Không có.
+ * Output: true nếu thêm thành công, ném exception nếu lỗi.
+ *
+ * Thủ tục xử lý:
+ *   1. Tạo tài khoản admin với mật khẩu mặc định và gán isAdmin = true.
+ *   2. Tạo ví hệ thống cho admin với số dư 1000.
+ *   3. Tạo danh sách user mẫu, thêm vào hệ thống và gán isUser = true.
+ *   4. Mỗi user được tạo ví với số dư khởi tạo 50.
+ */
 bool Seed::seedData() {
   try {
     // Tạo admin user
@@ -111,7 +164,19 @@ bool Seed::seedData() {
   }
 }
 
-
+/**
+ * @brief Kiểm tra dữ liệu đã được seed hay chưa.
+ *
+ * Input: Không có.
+ * Output:
+ *   - true nếu đã tồn tại dữ liệu admin.
+ *   - false nếu chưa seed hoặc có lỗi khi đọc file.
+ *
+ * Thủ tục xử lý:
+ *   1. Kiểm tra file data/users.json có tồn tại không.
+ *   2. Đọc dữ liệu và tìm user có username = "admin".
+ *   3. Nếu tìm thấy → trả về true, ngược lại trả về false.
+ */
 bool Seed::isSeeded() {
   try {
     // Kiểm tra xem file có tồn tại không
