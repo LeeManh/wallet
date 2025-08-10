@@ -21,5 +21,11 @@ bool isPositiveNumber(const std::string& number) {
 
 bool isPositiveNumber(const int& number) { return number > 0; }
 
+bool isValidEmail(const std::string& email) {
+  std::regex pattern(
+      R"((\w+)(\.?\w+)*@(\w+\.)+\w{2,})");
+  return std::regex_match(email, pattern);
+}
+
 }  // namespace validation
 }  // namespace utils
