@@ -19,6 +19,23 @@
 
 namespace services {
 
+/**
+ * @brief Xác thực đăng nhập người dùng.
+ *
+ * Input:
+ *   - username: Tên đăng nhập.
+ *   - password: Mật khẩu.
+ *
+ * Output:
+ *   - Trả về tuple (đăng nhập thành công?, id người dùng, có phải admin?, mật khẩu tự động?).
+ *   - Ném AuthException nếu tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản không tồn tại.
+ *
+ * Thủ tục xử lý:
+ *   1. Đọc danh sách người dùng từ file users.json.
+ *   2. Tìm người dùng trùng username.
+ *   3. So khớp mật khẩu băm.
+ *   4. Nếu hợp lệ, trả về thông tin đăng nhập; nếu sai, ném ngoại lệ.
+ */
 std::tuple<bool, int, bool, bool> AuthService::login(const std::string& username,
                                                const std::string& password) {
   json users = utils::storage::readJsonFile("data/users.json");
@@ -40,6 +57,25 @@ std::tuple<bool, int, bool, bool> AuthService::login(const std::string& username
   throw exceptions::AuthException("Tài khoản không tồn tại");
 }
 
+/**
+ * @brief Đăng ký tài khoản mới.
+ *
+ * Input:
+ *   - username: Tên đăng nhập.
+ *   - password: Mật khẩu.
+ *   - email: Địa chỉ email.
+ *   - fullName: Họ và tên đầy đủ.
+ *
+ * Output:
+ *   - Trả về true nếu tạo tài khoản và ví thành công.
+ *   - Ném ngoại lệ nếu dữ liệu không hợp lệ hoặc tạo ví thất bại.
+ *
+ * Thủ tục xử lý:
+ *   1. Kiểm tra dữ liệu hợp lệ.
+ *   2. Tạo người dùng mới.
+ *   3. Tạo ví với số dư ban đầu = 0.
+ *   4. Nếu lỗi khi tạo ví, rollback và ném ngoại lệ.
+ */
 bool AuthService::registerUser(const std::string& username,
                                const std::string& password,
                                const std::string& email,
@@ -64,6 +100,26 @@ bool AuthService::registerUser(const std::string& username,
   return true;
 }
 
+/**
+ * @brief Tạo mới một người dùng bởi admin và gán mật khẩu ngẫu nhiên.
+ *
+ * Input:
+ *   - username: Tên đăng nhập.
+ *   - email: Địa chỉ email.
+ *   - fullName: Họ và tên đầy đủ.
+ *   - generatedPassword: Biến tham chiếu để trả mật khẩu tự sinh.
+ *
+ * Output:
+ *   - Trả về true nếu tạo tài khoản và ví thành công.
+ *   - Ném ngoại lệ nếu dữ liệu không hợp lệ hoặc tạo ví thất bại.
+ *
+ * Thủ tục xử lý:
+ *   1. Kiểm tra dữ liệu hợp lệ.
+ *   2. Sinh mật khẩu ngẫu nhiên 8 ký tự.
+ *   3. Tạo tài khoản.
+ *   4. Tạo ví số dư = 0.
+ *   5. Nếu lỗi khi tạo ví, rollback và ném ngoại lệ.
+ */
 bool AuthService::registerUserByAdmin(const std::string& username,
                                       const std::string& email,
                                       const std::string& fullName,
@@ -89,6 +145,20 @@ bool AuthService::registerUserByAdmin(const std::string& username,
   return true;
 }
 
+/**
+ * @brief Xác thực OTP khi thay đổi thông tin người dùng.
+ *
+ * Input:
+ *   - userId: ID người dùng.
+ *   - email: Email để gửi OTP.
+ *
+ * Output: Không trả về giá trị, ném ngoại lệ nếu OTP không hợp lệ.
+ *
+ * Thủ tục xử lý:
+ *   1. Gửi OTP đến email người dùng.
+ *   2. Yêu cầu nhập OTP từ bàn phím.
+ *   3. Xác minh OTP.
+ */
 void AuthService::otpValidation(const int userId, const std::string& email) {
     // Input OTP
     utils::MessageHandler::logMessage("Gửi mã OTP để xác thực...");
@@ -104,6 +174,25 @@ void AuthService::otpValidation(const int userId, const std::string& email) {
                                     enums::OTPType::INFO_CHANGE);
 }
 
+/**
+ * @brief Chỉnh sửa thông tin cá nhân của người dùng.
+ *
+ * Input:
+ *   - userId: ID người dùng.
+ *   - newFullName: Họ tên mới (có thể bỏ trống).
+ *   - newEmail: Email mới (có thể bỏ trống).
+ *
+ * Output:
+ *   - Trả về true nếu cập nhật thành công.
+ *   - Ném NotFoundException nếu user không tồn tại.
+ *
+ * Thủ tục xử lý:
+ *   1. Xác thực email mới (nếu có).
+ *   2. Tìm user trong file users.json.
+ *   3. Nếu có họ tên mới, cập nhật.
+ *   4. Nếu có email mới, yêu cầu xác thực OTP trước khi cập nhật.
+ *   5. Lưu thay đổi vào file.
+ */
 bool AuthService::editUserInfo(int userId, 
                     const std::string& newFullName, 
                     const std::string& newEmail) {
@@ -135,6 +224,23 @@ bool AuthService::editUserInfo(int userId,
   return true;
 }
 
+/**
+ * @brief Đổi mật khẩu người dùng.
+ *
+ * Input:
+ *   - userId: ID người dùng.
+ *   - currentPassword: Mật khẩu hiện tại.
+ *   - newPassword: Mật khẩu mới.
+ *
+ * Output:
+ *   - Trả về true nếu đổi thành công.
+ *   - Ném ngoại lệ nếu mật khẩu hiện tại sai hoặc user không tồn tại.
+ *
+ * Thủ tục xử lý:
+ *   1. Tìm user theo ID.
+ *   2. So khớp mật khẩu hiện tại.
+ *   3. Nếu đúng, gọi updateUserPassword.
+ */
 bool AuthService::changePassword(int userId, const std::string& currentPassword,
                                  const std::string& newPassword) {
   auto userJson = UserService::findUserById(userId);
@@ -151,6 +257,23 @@ bool AuthService::changePassword(int userId, const std::string& currentPassword,
   return updateUserPassword(userId, newPassword);
 }
 
+/**
+ * @brief Cập nhật mật khẩu mới cho người dùng.
+ *
+ * Input:
+ *   - userId: ID người dùng.
+ *   - newPassword: Mật khẩu mới.
+ *
+ * Output:
+ *   - Trả về true nếu cập nhật thành công.
+ *   - Ném NotFoundException nếu user không tồn tại.
+ *
+ * Thủ tục xử lý:
+ *   1. Đọc danh sách user từ file.
+ *   2. Tìm user theo ID.
+ *   3. Hash mật khẩu mới, cập nhật cờ isPasswordAutoGenerated = false.
+ *   4. Lưu lại file.
+ */
 bool AuthService::updateUserPassword(int userId,
                                      const std::string& newPassword) {
   json users = utils::storage::readJsonFile("data/users.json");

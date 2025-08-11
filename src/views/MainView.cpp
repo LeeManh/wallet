@@ -9,6 +9,19 @@
 
 namespace views {
 
+/**
+ * @brief Hiển thị menu chính của hệ thống.
+ *
+ * Mục đích:
+ *   Hiển thị giao diện lựa chọn để người dùng có thể đăng nhập, đăng ký hoặc thoát chương trình.
+ *
+ * Input:
+ *   - Không có tham số đầu vào.
+ *
+ * Output:
+ *   - Không trả về giá trị.
+ *   - Thực hiện điều hướng sang chức năng tương ứng dựa trên lựa chọn của người dùng.
+ */
 void MainView::display() {
   while (true) {
     utils::MessageHandler::logMessage(
@@ -43,6 +56,20 @@ void MainView::display() {
   }
 }
 
+/**
+ * @brief Xử lý quá trình đăng nhập của người dùng.
+ *
+ * Mục đích:
+ *   Nhận thông tin đăng nhập, xác thực tài khoản, và điều hướng tới giao diện tương ứng
+ *   (quản trị hoặc khách hàng) khi đăng nhập thành công.
+ *
+ * Input:
+ *   - Không có tham số đầu vào (thông tin được nhập từ bàn phím).
+ *
+ * Output:
+ *   - Không trả về giá trị.
+ *   - Mở giao diện phù hợp nếu đăng nhập thành công.
+ */
 void MainView::handleLogin() {
   utils::MessageHandler::logMessage(
       "┌─────────────────────────────────────────────┐");
@@ -88,6 +115,19 @@ while (true) {
   }
 }
 
+/**
+ * @brief Điều hướng người dùng sang giao diện đăng ký tài khoản.
+ *
+ * Mục đích:
+ *   Cho phép người dùng tạo mới tài khoản trong hệ thống.
+ *
+ * Input:
+ *   - Không có tham số đầu vào.
+ *
+ * Output:
+ *   - Không trả về giá trị.
+ *   - Hiển thị giao diện đăng ký tài khoản.
+ */
 void MainView::handleRegistration() {
   views::RegistrationView registrationView;
   registrationView.display();
