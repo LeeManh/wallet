@@ -13,6 +13,15 @@ using json = nlohmann::json;
 
 namespace services {
 
+/**
+ * @brief Tạo một ví mới cho user.
+ * 
+ * @param userId ID của user cần tạo ví.
+ * @param initialBalance Số điểm ban đầu của ví.
+ * @param walletType Loại ví (USER hoặc SYSTEM).
+ * @return true nếu tạo thành công.
+ * @throws ValidationException nếu user đã có ví.
+ */
 bool WalletService::createWallet(int userId, double initialBalance,
                                  enums::WalletType walletType) {
   // Kiểm tra xem user đã có ví chưa
@@ -38,6 +47,12 @@ bool WalletService::createWallet(int userId, double initialBalance,
   return true;
 }
 
+/**
+ * @brief Lấy ví của user dựa vào userId.
+ * 
+ * @param userId ID của user.
+ * @return Wallet nếu tồn tại, std::nullopt nếu không tìm thấy.
+ */
 std::optional<models::Wallet> WalletService::getWalletByUserId(int userId) {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -52,6 +67,11 @@ std::optional<models::Wallet> WalletService::getWalletByUserId(int userId) {
   return std::nullopt;
 }
 
+/**
+ * @brief Lấy ví hệ thống (SYSTEM wallet).
+ * 
+ * @return Wallet nếu tồn tại, std::nullopt nếu không tìm thấy.
+ */
 std::optional<models::Wallet> WalletService::getSystemWallet() {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -67,6 +87,11 @@ std::optional<models::Wallet> WalletService::getSystemWallet() {
   return std::nullopt;
 }
 
+/**
+ * @brief Lấy danh sách tất cả ví trong hệ thống.
+ * 
+ * @return Vector chứa các Wallet.
+ */
 std::vector<models::Wallet> WalletService::getAllWallets() {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
   std::vector<models::Wallet> result;
@@ -90,6 +115,11 @@ std::vector<models::Wallet> WalletService::getAllWallets() {
   return result;
 }
 
+/**
+ * @brief In danh sách ví ra màn hình console.
+ * 
+ * @note Không có giá trị trả về.
+ */
 void WalletService::printListWallet() {
   auto wallets = getAllWallets();
 
@@ -139,6 +169,12 @@ void WalletService::printListWallet() {
   }
 }
 
+/**
+ * @brief Kiểm tra ví có tồn tại không dựa vào walletId.
+ * 
+ * @param walletId ID của ví.
+ * @return true nếu tồn tại, false nếu không.
+ */
 bool WalletService::checkHasWallet(int walletId) {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
   for (const auto& wallet : wallets) {
@@ -148,6 +184,13 @@ bool WalletService::checkHasWallet(int walletId) {
   return false;
 }
 
+/**
+ * @brief Kiểm tra ví có đủ điểm để giao dịch hay không.
+ * 
+ * @param walletId ID của ví.
+ * @param points Số điểm cần kiểm tra.
+ * @return true nếu đủ, false nếu không.
+ */
 bool WalletService::checkPoints(int walletId, double points) {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -158,6 +201,13 @@ bool WalletService::checkPoints(int walletId, double points) {
   return false;
 }
 
+/**
+ * @brief Cập nhật số điểm của ví bằng cách cộng thêm.
+ * 
+ * @param walletId ID của ví.
+ * @param points Số điểm cộng thêm (có thể âm để trừ).
+ * @throws NotFoundException nếu không tìm thấy ví.
+ */
 void WalletService::updatePoint(int walletId, double points) {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
 
@@ -176,6 +226,13 @@ void WalletService::updatePoint(int walletId, double points) {
                                       std::to_string(walletId));
 }
 
+/**
+ * @brief Hoàn tác số điểm của ví về một giá trị cụ thể.
+ * 
+ * @param walletId ID của ví.
+ * @param points Giá trị điểm cần khôi phục.
+ * @throws NotFoundException nếu không tìm thấy ví.
+ */
 void WalletService::rollbackPoint(int walletId, double points) {
   json wallets = utils::storage::readJsonFile("data/wallets.json");
 

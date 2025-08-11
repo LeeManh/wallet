@@ -5,6 +5,18 @@
 
 namespace services {
 
+/**
+ * @brief Tạo một giao dịch mới và lưu vào file dữ liệu.
+ *
+ * @param sourceWalletId   ID ví nguồn.
+ * @param destinationWalletId ID ví đích.
+ * @param amount           Số tiền giao dịch.
+ * @param status           Trạng thái giao dịch (enum TransactionStatus).
+ *
+ * @return models::Transaction Đối tượng giao dịch vừa được tạo.
+ *
+ * @throw exceptions::StorageException Nếu không thể lưu dữ liệu giao dịch.
+ */
 models::Transaction TransactionService::createTransaction(
     int sourceWalletId, int destinationWalletId, double amount,
     enums::TransactionStatus status) {
@@ -31,6 +43,16 @@ models::Transaction TransactionService::createTransaction(
   return transaction;
 }
 
+/**
+ * @brief Cập nhật trạng thái của một giao dịch theo ID.
+ *
+ * @param transactionId    ID của giao dịch cần cập nhật.
+ * @param status           Trạng thái mới (enum TransactionStatus).
+ *
+ * @return models::Transaction Đối tượng giao dịch sau khi được cập nhật.
+ *
+ * @throw exceptions::NotFoundException Nếu không tìm thấy giao dịch.
+ */
 models::Transaction TransactionService::updateTransaction(
     int transactionId, enums::TransactionStatus status) {
   json transactions = utils::storage::readJsonFile("data/transactions.json");
