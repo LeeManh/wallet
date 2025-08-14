@@ -189,31 +189,52 @@ void AuthService::otpValidation(const int userId, const std::string& email) {
  * Thủ tục xử lý:
  *   1. Xác thực email mới (nếu có).
  *   2. Tìm user trong file users.json.
- *   3. Nếu có họ tên mới, cập nhật.
- *   4. Nếu có email mới, yêu cầu xác thực OTP trước khi cập nhật.
- *   5. Lưu thay đổi vào file.
+ *   3. Nếu có họ tên mới hoặc email mới: 
+      - Hiển thị danh sách thay đổi
+      - Gửi OTP xác nhận thay đổi.
+ *   4. Nếu OTP xác thực thành công, lưu thay đổi vào file.
  */
 bool AuthService::editUserInfo(int userId, 
                     const std::string& newFullName, 
                     const std::string& newEmail) {
   // Validate new email 
-  UserService::validateUserEmail(userId, newEmail);
+  if (!newEmail.empty()){
+    UserService::validateUserEmail(userId, newEmail);
+  }
 
   json users = utils::storage::readJsonFile("data/users.json");
   bool found = false;
   
   for (auto& user : users) {
-  if (user["id"] == userId) {
-    if (!newFullName.empty()) {
-      user["fullName"] = newFullName;
-    } 
-    if (!newEmail.empty()) {
-      otpValidation(userId, newEmail);
-      user["email"] = newEmail;
-    } 
-    found = true;
-    break;
-  }
+    if (user["id"] == userId) {
+      std::string oldFullName = user["fullName"];
+      std::string oldEmail    = user["email"];
+
+      // Xây dựng thông báo thay đổi
+      std::ostringstream changeMsg;
+      if (!newFullName.empty() && newFullName != oldFullName) {
+        changeMsg << "Họ tên: " << oldFullName << " -> " << newFullName << "\n";
+      } 
+      if (!newEmail.empty() && newEmail != oldEmail) {
+        changeMsg << "Email: " << oldEmail << " -> " << newEmail << "\n";
+      } 
+      // Nếu có thay đổi, gửi OTP xác nhận
+      if (!changeMsg.str().empty()) {
+        utils::MessageHandler::logMessage(
+          "Hệ thống sẽ cập nhật thông tin sau khi bạn xác nhận OTP.\n"
+          "Các thay đổi:\n" + changeMsg.str());
+        otpValidation(userId, user["email"]);
+      }
+      // Cập nhật thông tin mới nếu đã xác thực OTP thành công
+      if (!newFullName.empty()) {
+        user["fullName"] = newFullName;
+      }
+      if (!newEmail.empty()) {
+        user["email"] = newEmail;
+      }
+      found = true;
+      break;
+    }
   }
 
   if (!found) {
