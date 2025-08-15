@@ -53,6 +53,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)  # Thư mục chứa
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)  # Thư mục chứa file thư viện tĩnh (.a)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)  # Thư mục chứa file thư viện động (.so/.dll)
 
+# Macro đường dẫn tuyệt đối (dùng được trên Win/mac/Linux)
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  DATA_DIR="${CMAKE_SOURCE_DIR}/data"
+  BACKUP_DIR="${CMAKE_SOURCE_DIR}/backup"
+
 # Tạo file thực thi từ các file nguồn
 # ${PROJECT_NAME} sẽ được thay thế bằng "wallet"
 add_executable(${PROJECT_NAME} ${SOURCES})
