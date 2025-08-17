@@ -16,7 +16,7 @@ namespace models {
 class Transaction {
  private:
   int id;                           // Primary key
-  int sourceWalletId;               // Ví nguồn
+  int sourceWalletId  ;               // Ví nguồn
   int destinationWalletId;          // Ví đích
   double amount;                    // Số tiền giao dịch
   enums::TransactionStatus status;  // Trạng thái giao dịch
