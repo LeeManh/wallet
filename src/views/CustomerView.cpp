@@ -152,7 +152,100 @@ void CustomerView::handleTransferPoints() {
  *   - In thông tin lịch sử giao dịch ra màn hình.
  */
 void CustomerView::handleViewTransactionHistory() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage(
+      "┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage(
+      "│           TRA CỨU LỊCH SỬ GIAO DỊCH         │");
+  utils::MessageHandler::logMessage(
+      "└─────────────────────────────────────────────┘");
+
+  // Nhập Wallet ID
+  std::string widStr = utils::input::getInput("Nhập Wallet ID: ");
+  if (!utils::validation::isPositiveNumber(widStr)) {
+    utils::MessageHandler::logError("Wallet ID không hợp lệ!");
+    utils::input::pauseInput();
+    return;
+  }
+  int walletId = std::stoi(widStr);
+
+  // 🔒 CHẶN TRUY CẬP VÍ KHÔNG PHẢI CỦA MÌNH
+  if (!controllers::WalletController::isWalletOwnedByUser(userId, walletId)) {
+    utils::MessageHandler::logError("Bạn chỉ được xem lịch sử của ví của mình.");
+    utils::input::pauseInput();
+    return;
+  }
+  // Chọn hướng giao dịch
+  utils::MessageHandler::logMessage(
+      "[1] Tất cả   [2] Nhận vào (incoming)   [3] Chuyển đi (outgoing)");
+  int opt = utils::input::getChoice(1, 3);
+  std::string direction = (opt == 2 ? "incoming" : (opt == 3 ? "outgoing" : "all"));
+
+  // Bộ lọc số tiền (Enter để bỏ qua)
+  std::string minStr = utils::input::getInput("Min amount (Enter để bỏ qua): ");
+  std::string maxStr = utils::input::getInput("Max amount (Enter để bỏ qua): ");
+
+  // Sắp xếp & phân trang
+  utils::MessageHandler::logMessage("[1] Mới→cũ (id_desc)\n[2] Cũ→mới (id_asc)");
+  int sortOpt = utils::input::getChoice(1, 2);
+  std::string sort = (sortOpt == 2 ? "id_asc" : "id_desc");
+
+  std::string pg = utils::input::getInput("Trang (mặc định 1): ");
+  if (pg.empty()) pg = "1";
+  std::string ps = utils::input::getInput("Số dòng/trang (mặc định 10): ");
+  if (ps.empty()) ps = "10";
+
+  services::TxQuery q;
+  q.direction = direction;
+  if (!minStr.empty()) q.minAmount = std::stod(minStr);
+  if (!maxStr.empty()) q.maxAmount = std::stod(maxStr);
+  q.sort     = sort;
+  q.page     = std::stoi(pg);
+  q.pageSize = std::stoi(ps);
+
+  services::TransactionHistory history; // mặc định đọc DATA_DIR/transactions.json
+  auto rows = history.queryByWallet(walletId, q);
+
+  if (rows.empty()) {
+    utils::MessageHandler::logMessage("Không có giao dịch phù hợp.");
+    utils::input::pauseInput();
+    return;
+  }
+
+// In bảng kết quả
+utils::MessageHandler::logMessage(
+    "┌────┬──────────┬──────────┬──────────┬──────────────┬──────────┐");
+utils::MessageHandler::logMessage(
+    "│ ID │   From   │    To    │  Amount  │  Trạng thái  │ Tăng/Giảm│");
+utils::MessageHandler::logMessage(
+    "├────┼──────────┼──────────┼──────────┼──────────────┼──────────┤");
+
+for (const auto& tx : rows) {
+  int    id  = tx.value("id", 0);
+  int    src = tx.value("sourceWalletId", -1);
+  int    dst = tx.value("destinationWalletId", -1);
+  double amt = tx.value("amount", 0.0);
+  int    st  = tx.value("status", -1);
+
+  std::ostringstream line;
+  line << " │ " << std::setw(2) << id
+       << " │ " << std::setw(8) << src
+       << " │ " << std::setw(8) << dst
+       << " │ " << std::setw(8) << std::fixed << std::setprecision(2) << amt
+       << " │ " << std::setw(12) << statusText(st)
+       << " │ " << std::setw(8)  << deltaText(walletId, src, dst)
+       << " │";
+  utils::MessageHandler::logMessage(line.str());
+}
+
+utils::MessageHandler::logMessage(
+    "└────┴──────────┴──────────┴──────────┴──────────────┴──────────┘");
+
+// In số dư hiện tại (tận dụng controller có sẵn của bạn)
+
+utils::MessageHandler::logMessage("Số dư hiện tại:");
+controllers::WalletController::getWalletByUserId(userId);  // in số dư
+
+utils::input::pauseInput();
 }
 
 /**
