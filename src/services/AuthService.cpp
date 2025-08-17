@@ -1,6 +1,7 @@
 
 #include "services/AuthService.hpp"
 
+#include <sstream>
 #include <tuple>
 
 #include "exceptions/Exception.hpp"
@@ -14,8 +15,6 @@
 #include "utils/MessageHandler.hpp"
 #include "utils/Password.hpp"
 #include "utils/Storage.hpp"
-#include "services/OtpService.hpp"
-#include "utils/Input.hpp"
 
 namespace services {
 
@@ -27,8 +26,10 @@ namespace services {
  *   - password: Mật khẩu.
  *
  * Output:
- *   - Trả về tuple (đăng nhập thành công?, id người dùng, có phải admin?, mật khẩu tự động?).
- *   - Ném AuthException nếu tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản không tồn tại.
+ *   - Trả về tuple (đăng nhập thành công?, id người dùng, có phải admin?, mật
+ * khẩu tự động?).
+ *   - Ném AuthException nếu tên đăng nhập hoặc mật khẩu không đúng, hoặc tài
+ * khoản không tồn tại.
  *
  * Thủ tục xử lý:
  *   1. Đọc danh sách người dùng từ file users.json.
@@ -36,8 +37,8 @@ namespace services {
  *   3. So khớp mật khẩu băm.
  *   4. Nếu hợp lệ, trả về thông tin đăng nhập; nếu sai, ném ngoại lệ.
  */
-std::tuple<bool, int, bool, bool> AuthService::login(const std::string& username,
-                                               const std::string& password) {
+std::tuple<bool, int, bool, bool> AuthService::login(
+    const std::string& username, const std::string& password) {
   json users = utils::storage::readJsonFile("data/users.json");
 
   for (const auto& user : users) {
@@ -160,18 +161,17 @@ bool AuthService::registerUserByAdmin(const std::string& username,
  *   3. Xác minh OTP.
  */
 void AuthService::otpValidation(const int userId, const std::string& email) {
-    // Input OTP
-    utils::MessageHandler::logMessage("Gửi mã OTP để xác thực...");
-    services::OtpService::generateAndSendOTP(userId, email,
-                                             enums::OTPType::INFO_CHANGE);
+  // Input OTP
+  utils::MessageHandler::logMessage("Gửi mã OTP để xác thực...");
+  services::OtpService::generateAndSendOTP(userId, email,
+                                           enums::OTPType::INFO_CHANGE);
 
-    // Tạo và xác minh OTP
-    std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
-    utils::MessageHandler::logMessage(
-        "───────────────────────────────────────────────");
+  // Tạo và xác minh OTP
+  std::string otpCode = utils::input::getInput("Nhập mã OTP đã được gửi: ");
+  utils::MessageHandler::logMessage(
+      "───────────────────────────────────────────────");
 
-    services::OtpService::verifyOTP(userId, otpCode,
-                                    enums::OTPType::INFO_CHANGE);
+  services::OtpService::verifyOTP(userId, otpCode, enums::OTPType::INFO_CHANGE);
 }
 
 /**
@@ -189,40 +189,40 @@ void AuthService::otpValidation(const int userId, const std::string& email) {
  * Thủ tục xử lý:
  *   1. Xác thực email mới (nếu có).
  *   2. Tìm user trong file users.json.
- *   3. Nếu có họ tên mới hoặc email mới: 
+ *   3. Nếu có họ tên mới hoặc email mới:
       - Hiển thị danh sách thay đổi
       - Gửi OTP xác nhận thay đổi.
  *   4. Nếu OTP xác thực thành công, lưu thay đổi vào file.
  */
-bool AuthService::editUserInfo(int userId, 
-                    const std::string& newFullName, 
-                    const std::string& newEmail) {
-  // Validate new email 
-  if (!newEmail.empty()){
+bool AuthService::editUserInfo(int userId, const std::string& newFullName,
+                               const std::string& newEmail) {
+  // Validate new email
+  if (!newEmail.empty()) {
     UserService::validateUserEmail(userId, newEmail);
   }
 
   json users = utils::storage::readJsonFile("data/users.json");
   bool found = false;
-  
+
   for (auto& user : users) {
     if (user["id"] == userId) {
       std::string oldFullName = user["fullName"];
-      std::string oldEmail    = user["email"];
+      std::string oldEmail = user["email"];
 
       // Xây dựng thông báo thay đổi
       std::ostringstream changeMsg;
       if (!newFullName.empty() && newFullName != oldFullName) {
         changeMsg << "Họ tên: " << oldFullName << " -> " << newFullName << "\n";
-      } 
+      }
       if (!newEmail.empty() && newEmail != oldEmail) {
         changeMsg << "Email: " << oldEmail << " -> " << newEmail << "\n";
-      } 
+      }
       // Nếu có thay đổi, gửi OTP xác nhận
       if (!changeMsg.str().empty()) {
         utils::MessageHandler::logMessage(
-          "Hệ thống sẽ cập nhật thông tin sau khi bạn xác nhận OTP.\n"
-          "Các thay đổi:\n" + changeMsg.str());
+            "Hệ thống sẽ cập nhật thông tin sau khi bạn xác nhận OTP.\n"
+            "Các thay đổi:\n" +
+            changeMsg.str());
         otpValidation(userId, user["email"]);
       }
       // Cập nhật thông tin mới nếu đã xác thực OTP thành công
@@ -238,7 +238,7 @@ bool AuthService::editUserInfo(int userId,
   }
 
   if (!found) {
-  throw exceptions::NotFoundException("User không tồn tại");
+    throw exceptions::NotFoundException("User không tồn tại");
   }
 
   utils::storage::writeJsonFile("data/users.json", users);
