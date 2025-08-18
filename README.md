@@ -47,3 +47,5 @@ rm -rf build
 ## Tài liệu tham khảo
 
 - [Tên tài liệu] - [Link tài liệu]
+
+## Các chức năng
