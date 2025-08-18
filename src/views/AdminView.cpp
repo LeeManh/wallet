@@ -1,17 +1,23 @@
 #include "views/AdminView.hpp"
-
+#include <filesystem>
+#include <chrono>
 #include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <sstream>
-
+#include <unordered_map>
+#include <unordered_set>
+#include <tuple>
+#include "services/TransactionHistory.hpp"  
 #include "controllers/AuthController.hpp"
 #include "controllers/LogController.hpp"
 #include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "services/UserService.hpp"
+#include "utils/Utf8Console.hpp"
 
 namespace views {
 
@@ -85,7 +91,7 @@ void AdminView::display() {
         handleViewAllWallets();  // Xem danh sách ví
         break;
       case 3:
-        handleViewTransactionHistory();  // Xem lịch sử giao dịch
+        handleSearchTransactions();// Xem lịch sử giao dịch
         break;
       case 4:
         handleCreateAccount();  // Tạo tài khoản mới
@@ -194,12 +200,178 @@ void AdminView::handleViewAllWallets() {
 }
 
 /**
- * @brief Hiển thị lịch sử giao dịch (đang phát triển).
+ * @brief Hiển thị chức năng tra cứu các giao dịch của các ví
  *
- * Input/Output: Hiện tại chỉ thông báo chức năng đang phát triển.
  */
-void AdminView::handleViewTransactionHistory() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+void AdminView::handleSearchTransactions() {
+  utils::MessageHandler::logMessage("┌─────────────────────────────────────────────┐");
+  utils::MessageHandler::logMessage("│      TRA CỨU LỊCH SỬ GIAO DỊCH (ADMIN)      │");
+  utils::MessageHandler::logMessage("└─────────────────────────────────────────────┘");
+
+  std::string key = utils::input::getInput("Nhập Wallet ID (gõ 'all' để xem tất cả): ");
+
+  services::TxQuery query;
+  query.direction = "all";
+  query.sort      = "id_desc";
+  services::TransactionHistory history;
+
+  // Cache tên user theo walletId
+  std::unordered_map<int, std::string> nameCache;
+  auto fullNameOfWallet = [&](int wid) -> const std::string& {
+    auto it = nameCache.find(wid);
+    if (it != nameCache.end()) return it->second;
+
+    std::string name = "Unknown";
+    if (auto ownerId = controllers::WalletController::getOwnerIdByWalletId(wid)) {
+      if (auto u = services::UserService::findUserById(*ownerId)) {
+        name = u->value("fullName", "user#" + std::to_string(*ownerId));
+      } else {
+        name = "user#" + std::to_string(*ownerId);
+      }
+    } else {
+      name = "W#" + std::to_string(wid);
+    }
+    return nameCache.emplace(wid, std::move(name)).first->second;
+  };
+
+  // ===== cấu hình bảng + helpers in header/footer =====
+  constexpr int W_STT  = 3;
+  constexpr int W_FROM = 20;
+  constexpr int W_TO   = 20;
+  constexpr int W_AMT  = 12;
+
+  auto make_hline = [=]() {
+    return std::string("+")
+      + std::string(static_cast<std::size_t>(W_STT  + 2), '-') + "+"
+      + std::string(static_cast<std::size_t>(W_FROM + 2), '-') + "+"
+      + std::string(static_cast<std::size_t>(W_TO   + 2), '-') + "+"
+      + std::string(static_cast<std::size_t>(W_AMT  + 2), '-') + "+";
+  };
+
+  auto printHeader = [&]() {
+    utils::MessageHandler::logMessage(make_hline());
+    std::ostringstream hdr;
+    hdr << "| " << vnconsole::pad_right("STT",            W_STT)
+        << " | " << vnconsole::pad_right("Từ người dùng",  W_FROM)
+        << " | " << vnconsole::pad_right("Đến người dùng", W_TO)
+        << " | " << vnconsole::pad_right("Số điểm",        W_AMT)
+        << " |";
+    utils::MessageHandler::logMessage(hdr.str());
+    utils::MessageHandler::logMessage(make_hline());
+  };
+
+  auto printFooter = [&]() { utils::MessageHandler::logMessage(make_hline()); };
+
+  // ================== CHẾ ĐỘ ALL (khử trùng theo id) ==================
+  if (key == "all" || key == "ALL" || key == "All") {
+    auto wallets = controllers::WalletController::getAllWallets();
+
+    struct Row { int id; int src; int dst; double amt; };
+    std::vector<Row> rowsAll;
+    std::unordered_set<int> seenIds;
+
+    for (const auto& w : wallets) {
+      int wid = w.getId();                         // đổi getter nếu khác tên
+      auto rows = history.queryByWallet(wid, query);
+      for (const auto& tx : rows) {
+        int id = tx.value("id", 0);
+        if (id > 0 && !seenIds.insert(id).second)  // khử trùng khi đã gặp id
+          continue;
+        rowsAll.push_back(Row{
+          id,
+          tx.value("sourceWalletId", -1),
+          tx.value("destinationWalletId", -1),
+          tx.value("amount", 0.0)
+        });
+      }
+    }
+
+    std::sort(rowsAll.begin(), rowsAll.end(),
+              [](const Row& a, const Row& b){ return a.id > b.id; });
+
+    if (rowsAll.empty()) {
+      utils::MessageHandler::logMessage("Không có giao dịch nào.");
+      utils::input::pauseInput();
+      return;
+    }
+
+    printHeader();
+    int no = 1;
+    for (const auto& r : rowsAll) {
+      std::ostringstream amtss; amtss << std::fixed << std::setprecision(2) << r.amt;
+      std::ostringstream line;
+      line << "| " << vnconsole::pad_left(std::to_string(no++), W_STT)
+           << " | " << vnconsole::pad_right(fullNameOfWallet(r.src), W_FROM)
+           << " | " << vnconsole::pad_right(fullNameOfWallet(r.dst), W_TO)
+           << " | " << vnconsole::pad_left(amtss.str(), W_AMT)
+           << " |";
+      utils::MessageHandler::logMessage(line.str());
+    }
+    printFooter();
+    utils::input::pauseInput();
+    return;
+  }
+
+  // ================== CHẾ ĐỘ 1 VÍ ==================
+  if (!utils::validation::isPositiveNumber(key)) {
+    utils::MessageHandler::logError("Wallet ID không hợp lệ!");
+    utils::input::pauseInput();
+    return;
+  }
+  int walletId = std::stoi(key);
+
+  auto rows = history.queryByWallet(walletId, query);
+  std::sort(rows.begin(), rows.end(),
+            [](const auto& a, const auto& b){ return a.value("id",0) > b.value("id",0); });
+
+  if (rows.empty()) {
+    utils::MessageHandler::logMessage("Không có giao dịch nào.");
+    utils::input::pauseInput();
+    return;
+  }
+
+  printHeader();
+
+  int stt = 1;
+  for (const auto& tx : rows) {
+    int    src = tx.value("sourceWalletId", -1);
+    int    dst = tx.value("destinationWalletId", -1);
+    double amt = tx.value("amount", 0.0);
+
+    std::ostringstream amtss; amtss << std::fixed << std::setprecision(2) << amt;
+
+    std::ostringstream line;
+    line << "| " << vnconsole::pad_left(std::to_string(stt++), W_STT)
+         << " | " << vnconsole::pad_right(fullNameOfWallet(src), W_FROM)
+         << " | " << vnconsole::pad_right(fullNameOfWallet(dst), W_TO)
+         << " | " << vnconsole::pad_left(amtss.str(), W_AMT)
+         << " |";
+    utils::MessageHandler::logMessage(line.str());
+  }
+
+  printFooter();
+
+  // Lấy SỐ DƯ HIỆN TẠI từ service
+  double currentBalance = 0.0;
+  bool found = false;
+  for (const auto& w : controllers::WalletController::getAllWallets()) {
+    if (w.getId() == walletId) {           // đổi getter cho khớp model nếu cần
+      currentBalance = w.getPoint();       // getter point hiện có
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    utils::MessageHandler::logError("Không tìm thấy ví!");
+  } else {
+    std::ostringstream balanceLine;
+    balanceLine << "Số dư hiện tại của ví [Wallet ID: "
+                << walletId <<"]: "
+                << std::fixed << std::setprecision(2) << currentBalance;
+    utils::MessageHandler::logMessage(balanceLine.str());
+  }
+
+  utils::input::pauseInput();
 }
 
 /**

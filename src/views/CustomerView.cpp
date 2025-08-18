@@ -1,11 +1,17 @@
 #include "views/CustomerView.hpp"
-
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
+#include <unordered_map>
+#include "services/TransactionHistory.hpp"  
 #include "controllers/AuthController.hpp"
 #include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "utils/Utf8Console.hpp"
+
 namespace views {
 
 /**
@@ -152,7 +158,112 @@ void CustomerView::handleTransferPoints() {
  *   - In thông tin lịch sử giao dịch ra màn hình.
  */
 void CustomerView::handleViewTransactionHistory() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage("+-------------------------------------------------------------+");
+  utils::MessageHandler::logMessage("|                  LỊCH SỬ GIAO DỊCH                          |");
+  utils::MessageHandler::logMessage("+-------------------------------------------------------------+");
+
+  std::string widStr = utils::input::getInput("Nhập Wallet ID: ");
+  if (!utils::validation::isPositiveNumber(widStr)) {
+    utils::MessageHandler::logError("Wallet ID không hợp lệ!");
+    utils::input::pauseInput();
+    return;
+  }
+
+  int walletId = std::stoi(widStr);
+  if (!controllers::WalletController::isWalletOwnedByUser(userId, walletId)) {
+    utils::MessageHandler::logError("Bạn chỉ xem được lịch sử giao dịch ví của mình");
+    utils::input::pauseInput();
+    return;
+  }
+
+  services::TxQuery q; q.direction = "all"; q.sort = "id_desc";
+  services::TransactionHistory history;
+  auto rows = history.queryByWallet(walletId, q);
+
+  std::sort(rows.begin(), rows.end(),
+            [](const auto& a, const auto& b){ return a.value("id",0) > b.value("id",0); });
+
+  if (rows.empty()) {
+    utils::MessageHandler::logMessage("Không có giao dịch nào.");
+    utils::input::pauseInput();
+    return;
+  }
+
+  // ===== cấu hình cột =====
+  constexpr int W_STT  = 3;
+  constexpr int W_MOVE = 12;
+  constexpr int W_DESC = 40;
+
+  auto hline = [&](){
+    return std::string("+")
+      + std::string(W_STT+2, '-') + "+"
+      + std::string(W_MOVE+2,'-') + "+"
+      + std::string(W_DESC+2,'-') + "+";
+  };
+
+  // Cache tên user theo walletId
+  std::unordered_map<int,std::string> nameCache;
+  auto fullNameOfWallet = [&](int wid)->const std::string&{
+    auto it = nameCache.find(wid);
+    if (it != nameCache.end()) return it->second;
+    auto ownerIdOpt = controllers::WalletController::getOwnerIdByWalletId(wid);
+    std::string name = "Unknown";
+    if (ownerIdOpt) {
+      if (auto u = services::UserService::findUserById(*ownerIdOpt))
+        name = u->value("fullName", "user#" + std::to_string(*ownerIdOpt));
+      else
+        name = "user#" + std::to_string(*ownerIdOpt);
+    } else name = "W#" + std::to_string(wid);
+    return nameCache.emplace(wid, std::move(name)).first->second;
+  };
+
+  // ===== header =====
+  utils::MessageHandler::logMessage(hline());
+  {
+    std::ostringstream hdr;
+    hdr << "| " << vnconsole::pad_right("STT", W_STT)
+        << " | " << vnconsole::pad_right("Biến động", W_MOVE)
+        << " | " << vnconsole::pad_right("Mô tả", W_DESC)
+        << " |";
+    utils::MessageHandler::logMessage(hdr.str());
+  }
+  utils::MessageHandler::logMessage(hline());
+
+  // ===== nội dung =====
+  int no = 1;
+  for (const auto& tx : rows) {
+    int    src = tx.value("sourceWalletId", -1);
+    int    dst = tx.value("destinationWalletId", -1);
+    double amt = tx.value("amount", 0.0);
+    int    st  = tx.value("status", -1); // 1=Thành công
+
+    // ±amount
+    std::ostringstream amtss; amtss << std::fixed << std::setprecision(2) << amt;
+    bool in = (dst == walletId);
+    std::string movement = (in ? "+" : "-") + amtss.str();
+
+    // Mô tả
+    const std::string& partner = in ? fullNameOfWallet(src) : fullNameOfWallet(dst);
+    std::string desc = in
+      ? ("Nhận điểm từ " + partner)
+      : ("Chuyển điểm đến " + partner);
+
+    // In 1 dòng
+    std::ostringstream line;
+    line << "| " << vnconsole::pad_left(std::to_string(no++), W_STT)
+         << " | " << vnconsole::pad_left(movement, W_MOVE)
+         << " | " << vnconsole::pad_right(desc, W_DESC)
+         << " |";
+    utils::MessageHandler::logMessage(line.str());
+  }
+
+  // ===== footer + số dư =====
+  utils::MessageHandler::logMessage(hline());
+
+  // Gọi để hiển thị số dư hiện tại
+  controllers::WalletController::getWalletByUserId(userId);
+
+  utils::input::pauseInput();
 }
 
 /**

@@ -66,5 +66,52 @@ void WalletController::printListWallet() {
     utils::ExceptionHandler::handleException(e);
   }
 }
+bool WalletController::isWalletOwnedByUser(int userId, int walletId) {
+  try {
+    // Trường hợp hệ thống mỗi user chỉ có 1 ví:
+    if (auto w = services::WalletService::getWalletByUserId(userId)) {
+      // Ưu tiên dùng getter theo model của bạn; nếu model là getWalletId() thì đổi lại cho khớp
+      return w->getId() == walletId; 
+    }
 
+    // Phòng khi hệ thống có nhiều ví / API khác: quét danh sách để chắc chắn
+    for (const auto& w : services::WalletService::getAllWallets()) {
+      // Nếu model là getUserId()/getId() khác tên, đổi lại cho đúng project của bạn
+      if (w.getUserId() == userId && w.getId() == walletId) {
+        return true;
+      }
+    }
+    return false;
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+    return false;
+  }
+}
+//Gọi user qua wallet ID
+std::optional<int> WalletController::getOwnerIdByWalletId(int walletId) {
+  try {
+    for (const auto& w : services::WalletService::getAllWallets()) {
+      // Đổi getId/getUserId theo đúng getter của model bạn nếu khác tên
+      if (w.getId() == walletId) {
+        return w.getUserId();
+      }
+    }
+    return std::nullopt;
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+    return std::nullopt;
+  }
+}
+
+std::string WalletController::getOwnerNameByWalletId(int walletId) {
+  try {
+    auto ownerId = getOwnerIdByWalletId(walletId);
+    if (!ownerId) return "W#" + std::to_string(walletId);   // không tìm thấy ví
+    // Chưa có UserService -> hiển thị theo userId
+    return "user#" + std::to_string(*ownerId);
+  } catch (const std::exception& e) {
+    utils::ExceptionHandler::handleException(e);
+    return "W#" + std::to_string(walletId);
+  }
+}
 }  // namespace controllers
