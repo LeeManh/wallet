@@ -235,7 +235,6 @@ void CustomerView::handleViewTransactionHistory() {
     int    src = tx.value("sourceWalletId", -1);
     int    dst = tx.value("destinationWalletId", -1);
     double amt = tx.value("amount", 0.0);
-    int    st  = tx.value("status", -1); // 1=Thành công
 
     // ±amount
     std::ostringstream amtss; amtss << std::fixed << std::setprecision(2) << amt;
