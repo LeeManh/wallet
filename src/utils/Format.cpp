@@ -19,12 +19,12 @@ namespace utils::format {
  *   2. Đặt số chữ số thập phân bằng std::setprecision.
  *   3. Ghi giá trị amount vào stream và trả về chuỗi kết quả.
  */
-  std::string formatPoint(double amount, int decimalPlaces) {
-    std::stringstream ss;
-    ss << std::fixed << std::setprecision(decimalPlaces);
-    ss << amount;
-    return ss.str();
-  }
+std::string formatPoint(double amount, int decimalPlaces) {
+  std::stringstream ss;
+  ss << std::fixed << std::setprecision(decimalPlaces);
+  ss << amount;
+  return ss.str();
+}
 
 /**
  * @brief Đếm số ký tự (code point) trong chuỗi UTF-8.
@@ -41,17 +41,22 @@ namespace utils::format {
  *   3. Tăng biến đếm cho mỗi ký tự.
  */
 int utf8_codepoint_count(const std::string& s) {
-    int count = 0;
-    for (size_t i = 0; i < s.size(); ) {
-        unsigned char c = s[i];
-        if      (c < 0x80) i += 1; // ASCII
-        else if (c < 0xE0) i += 2; // 2-byte sequence
-        else if (c < 0xF0) i += 3; // 3-byte sequence
-        else if (c < 0xF8) i += 4; // 4-byte sequence
-        else i += 1; // Invalid UTF-8, skip
-        ++count;
-    }
-    return count;
+  int count = 0;
+  for (size_t i = 0; i < s.size();) {
+    unsigned char c = s[i];
+    if (c < 0x80)
+      i += 1;  // ASCII
+    else if (c < 0xE0)
+      i += 2;  // 2-byte sequence
+    else if (c < 0xF0)
+      i += 3;  // 3-byte sequence
+    else if (c < 0xF8)
+      i += 4;  // 4-byte sequence
+    else
+      i += 1;  // Invalid UTF-8, skip
+    ++count;
+  }
+  return count;
 }
 
 /**
@@ -70,14 +75,14 @@ int utf8_codepoint_count(const std::string& s) {
  *   3. Trả về chuỗi kết quả.
  */
 std::string formatCell(const std::string& value, int space) {
-    int visibleLen = utf8_codepoint_count(value);
-    std::string result = value;
-    // Pad with spaces until visibleLen == space
-    while (visibleLen < space) {
-        result += ' ';
-        ++visibleLen;
-    }
-    return result;
+  int visibleLen = utf8_codepoint_count(value);
+  std::string result = value;
+  // Pad with spaces until visibleLen == space
+  while (visibleLen < space) {
+    result += ' ';
+    ++visibleLen;
+  }
+  return result;
 }
 
 /**
@@ -89,7 +94,23 @@ std::string formatCell(const std::string& value, int space) {
  * Output:
  *   - Chuỗi gồm width ký tự '-'.
  */
-std::string formatBorder(int width) {
-    return std::string(width, '-');
+std::string formatBorder(int width) { return std::string(width, '-'); }
+
+/**
+ * @brief Thêm khoảng trắng vào bên phải chuỗi để đạt độ rộng mong muốn.
+ *
+ * Input:
+ *   - str: Chuỗi gốc.
+ *   - width: Độ rộng mong muốn.
+ *
+ * Output:
+ *   - Chuỗi đã được thêm khoảng trắng bên phải.
+ */
+std::string padRight(const std::string& str, int width) {
+  int visibleLen = utf8_codepoint_count(str);
+  if (visibleLen >= width) {
+    return str;
+  }
+  return str + std::string(width - visibleLen, ' ');
 }
 }  // namespace utils::format

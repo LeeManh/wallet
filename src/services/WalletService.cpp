@@ -15,7 +15,7 @@ namespace services {
 
 /**
  * @brief Tạo một ví mới cho user.
- * 
+ *
  * @param userId ID của user cần tạo ví.
  * @param initialBalance Số điểm ban đầu của ví.
  * @param walletType Loại ví (USER hoặc SYSTEM).
@@ -49,7 +49,7 @@ bool WalletService::createWallet(int userId, double initialBalance,
 
 /**
  * @brief Lấy ví của user dựa vào userId.
- * 
+ *
  * @param userId ID của user.
  * @return Wallet nếu tồn tại, std::nullopt nếu không tìm thấy.
  */
@@ -69,7 +69,7 @@ std::optional<models::Wallet> WalletService::getWalletByUserId(int userId) {
 
 /**
  * @brief Lấy ví hệ thống (SYSTEM wallet).
- * 
+ *
  * @return Wallet nếu tồn tại, std::nullopt nếu không tìm thấy.
  */
 std::optional<models::Wallet> WalletService::getSystemWallet() {
@@ -89,7 +89,7 @@ std::optional<models::Wallet> WalletService::getSystemWallet() {
 
 /**
  * @brief Lấy danh sách tất cả ví trong hệ thống.
- * 
+ *
  * @return Vector chứa các Wallet.
  */
 std::vector<models::Wallet> WalletService::getAllWallets() {
@@ -116,8 +116,8 @@ std::vector<models::Wallet> WalletService::getAllWallets() {
 }
 
 /**
- * @brief In danh sách ví ra màn hình console.
- * 
+ * @brief In danh sách ví ra màn hình console với style bảng đẹp.
+ *
  * @note Không có giá trị trả về.
  */
 void WalletService::printListWallet() {
@@ -126,27 +126,43 @@ void WalletService::printListWallet() {
   if (wallets.empty()) {
     utils::MessageHandler::logWarning("Không có ví nào trong hệ thống!");
   } else {
-    utils::MessageHandler::logMessage("");
+    // Hiển thị bảng danh sách ví
+    utils::MessageHandler::logMessage(
+        "+-------+----------+---------------------+------------------------+");
+    utils::MessageHandler::logMessage(
+        "| Ví ID | User ID  | Số dư               | Loại ví                |");
+    utils::MessageHandler::logMessage(
+        "+-------+----------+---------------------+------------------------+");
 
-    int count = 1;
     for (const auto& wallet : wallets) {
       std::string walletTypeStr =
           (wallet.getWalletType() == enums::WalletType::SYSTEM) ? "SYSTEM"
                                                                 : "USER";
 
+      std::string pointText =
+          utils::format::formatPoint(wallet.getPoint()) + " điểm";
+
       utils::MessageHandler::logMessage(
-          "[" + std::to_string(count) +
-          "] Ví ID: " + std::to_string(wallet.getId()) +
-          " | User: " + std::to_string(wallet.getUserId()) +
-          " | Số điểm: " + utils::format::formatPoint(wallet.getPoint()) +
-          " điểm" + " | Loại: " + walletTypeStr);
-      count++;
+          "| " + utils::format::padRight(std::to_string(wallet.getId()), 5) +
+          " | " +
+          utils::format::padRight(std::to_string(wallet.getUserId()), 8) +
+          " | " + utils::format::padRight(pointText, 19) + " | " +
+          utils::format::padRight(walletTypeStr, 22) + " |");
+      utils::MessageHandler::logMessage(
+          "+-------+----------+---------------------+------------------------"
+          "+");
     }
 
-    utils::MessageHandler::logMessage(std::string(60, '-'));
-    utils::MessageHandler::logMessage("Tổng số ví: " +
-                                      std::to_string(wallets.size()));
+    utils::MessageHandler::logMessage("");
 
+    utils::MessageHandler::logMessage(
+        "┌─────────────────────────────────────────────┐");
+    utils::MessageHandler::logMessage(
+        "│            THỐNG KÉ HỆ THỐNG                │");
+    utils::MessageHandler::logMessage(
+        "└─────────────────────────────────────────────┘");
+
+    // Hiển thị thống kê theo style bảng
     double totalPoint = 0;
     int userWallets = 0;
     int systemWallets = 0;
@@ -161,17 +177,43 @@ void WalletService::printListWallet() {
     }
 
     utils::MessageHandler::logMessage(
-        "Tổng số điểm hệ thống: " + utils::format::formatPoint(totalPoint) +
-        " điểm");
+        "+---------------------------+---------------------------+");
     utils::MessageHandler::logMessage(
-        "Ví người dùng: " + std::to_string(userWallets) +
-        " | Ví hệ thống: " + std::to_string(systemWallets));
+        "| Loại thống kê             | Giá trị                   |");
+    utils::MessageHandler::logMessage(
+        "+---------------------------+---------------------------+");
+
+    utils::MessageHandler::logMessage(
+        "| " + utils::format::padRight("Tổng số ví", 25) + " | " +
+        utils::format::padRight(std::to_string(wallets.size()), 25) + " |");
+    utils::MessageHandler::logMessage(
+        "+---------------------------+---------------------------+");
+
+    std::string totalPointText =
+        utils::format::formatPoint(totalPoint) + " điểm";
+    utils::MessageHandler::logMessage(
+        "| " + utils::format::padRight("Tổng số điểm hệ thống", 25) + " | " +
+        utils::format::padRight(totalPointText, 25) + " |");
+    utils::MessageHandler::logMessage(
+        "+---------------------------+---------------------------+");
+
+    utils::MessageHandler::logMessage(
+        "| " + utils::format::padRight("Tổng số ví người dùng", 25) + " | " +
+        utils::format::padRight(std::to_string(userWallets), 25) + " |");
+    utils::MessageHandler::logMessage(
+        "+---------------------------+---------------------------+");
+
+    utils::MessageHandler::logMessage(
+        "| " + utils::format::padRight("Tổng số ví hệ thống", 25) + " | " +
+        utils::format::padRight(std::to_string(systemWallets), 25) + " |");
+    utils::MessageHandler::logMessage(
+        "+---------------------------+---------------------------+");
   }
 }
 
 /**
  * @brief Kiểm tra ví có tồn tại không dựa vào walletId.
- * 
+ *
  * @param walletId ID của ví.
  * @return true nếu tồn tại, false nếu không.
  */
@@ -186,7 +228,7 @@ bool WalletService::checkHasWallet(int walletId) {
 
 /**
  * @brief Kiểm tra ví có đủ điểm để giao dịch hay không.
- * 
+ *
  * @param walletId ID của ví.
  * @param points Số điểm cần kiểm tra.
  * @return true nếu đủ, false nếu không.
@@ -203,7 +245,7 @@ bool WalletService::checkPoints(int walletId, double points) {
 
 /**
  * @brief Cập nhật số điểm của ví bằng cách cộng thêm.
- * 
+ *
  * @param walletId ID của ví.
  * @param points Số điểm cộng thêm (có thể âm để trừ).
  * @throws NotFoundException nếu không tìm thấy ví.
@@ -228,7 +270,7 @@ void WalletService::updatePoint(int walletId, double points) {
 
 /**
  * @brief Hoàn tác số điểm của ví về một giá trị cụ thể.
- * 
+ *
  * @param walletId ID của ví.
  * @param points Giá trị điểm cần khôi phục.
  * @throws NotFoundException nếu không tìm thấy ví.

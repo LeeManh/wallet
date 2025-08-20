@@ -1,18 +1,18 @@
 #include "controllers/AuthController.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <tuple>
-#include <sstream>
 
 #include "enums/Enums.hpp"
 #include "services/AuthService.hpp"
 #include "services/OtpService.hpp"
 #include "services/UserService.hpp"
 #include "utils/ExceptionHandler.hpp"
+#include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
-#include "utils/Format.hpp"
 
 namespace controllers {
 
@@ -24,14 +24,15 @@ namespace controllers {
  *   - password: Mật khẩu.
  *
  * Output:
- *   - tuple<bool, int, bool, bool>: Kết quả đăng nhập (thành công/thất bại), ID người dùng, quyền admin, trạng thái mật khẩu tự động.
+ *   - tuple<bool, int, bool, bool>: Kết quả đăng nhập (thành công/thất bại), ID
+ * người dùng, quyền admin, trạng thái mật khẩu tự động.
  *
  * Thủ tục xử lý:
  *   1. Gọi AuthService để xác thực tài khoản.
  *   2. In thông báo thành công hoặc bắt và xử lý ngoại lệ.
  */
-std::tuple<bool, int, bool, bool> AuthController::login(const std::string& username,
-                                                  const std::string& password) {
+std::tuple<bool, int, bool, bool> AuthController::login(
+    const std::string& username, const std::string& password) {
   try {
     auto response = services::AuthService::login(username, password);
     utils::MessageHandler::logSuccess("Đăng nhập thành công");
@@ -76,7 +77,8 @@ void AuthController::registerUser(const std::string& username,
  *   - username: Tên đăng nhập.
  *   - email: Địa chỉ email.
  *   - fullName: Họ và tên.
- *   - generatedPassword: Mật khẩu được hệ thống tạo tự động (truyền tham chiếu để nhận giá trị).
+ *   - generatedPassword: Mật khẩu được hệ thống tạo tự động (truyền tham chiếu
+ * để nhận giá trị).
  *
  * Output: Không trả về giá trị, in thông tin tài khoản mới tạo.
  *
@@ -124,8 +126,10 @@ void AuthController::getProfile(const int userId) {
 
     utils::MessageHandler::logMessage("Thông tin người dùng:");
     utils::MessageHandler::logMessage("User ID: " + std::to_string(userId));
-    utils::MessageHandler::logMessage("Họ tên: " + std::string(userJson.value()["fullName"]));
-    utils::MessageHandler::logMessage("Email: " + std::string(userJson.value()["email"]));
+    utils::MessageHandler::logMessage(
+        "Họ tên: " + std::string(userJson.value()["fullName"]));
+    utils::MessageHandler::logMessage("Email: " +
+                                      std::string(userJson.value()["email"]));
   } catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
   }
@@ -171,11 +175,12 @@ void AuthController::updateProfile(const int userId,
  *   2. In thông báo hoặc xử lý ngoại lệ.
  */
 void AuthController::editUserInfoByAdmin(const int userId,
-                                   const std::string& newFullName,
-                                  const std::string& newEmail){
+                                         const std::string& newFullName,
+                                         const std::string& newEmail) {
   try {
     services::AuthService::editUserInfo(userId, newFullName, newEmail);
-    utils::MessageHandler::logSuccess("Cập nhật thông tin người dùng thành công!");
+    utils::MessageHandler::logSuccess(
+        "Cập nhật thông tin người dùng thành công!");
   } catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
   }
