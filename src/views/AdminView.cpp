@@ -200,8 +200,31 @@ void AdminView::handleViewAllWallets() {
 }
 
 /**
- * @brief Hiển thị chức năng tra cứu các giao dịch của các ví
+ * @brief Tra cứu lịch sử giao dịch (dành cho ADMIN).
  *
+ * Input:
+ *  - Wallet ID do admin nhập từ bàn phím.
+ *    + Nếu nhập "all" → hiển thị toàn bộ giao dịch của tất cả ví.
+ *    + Nếu nhập số hợp lệ → hiển thị giao dịch liên quan đến ví đó.
+ *
+ * Output:
+ *  - Hiển thị bảng lịch sử giao dịch ra màn hình.
+ *  - Nếu là 1 ví cụ thể → hiển thị thêm số dư hiện tại của ví đó.
+ *
+ * Thủ tục xử lý:
+ *  1. Hiển thị tiêu đề "TRA CỨU LỊCH SỬ GIAO DỊCH (ADMIN)".
+ *  2. Yêu cầu admin nhập Wallet ID hoặc "all".
+ *  3. Nếu "all":
+ *      - Lấy danh sách tất cả các ví.
+ *      - Truy vấn và gộp toàn bộ giao dịch (loại bỏ liệt kê duuplicate do 1 giao dịch sẽ được ghi nhận 2 lần: 1 chuyển điểm và 1 nhận điểm).
+ *      - Sắp xếp giảm dần theo ID và hiển thị bảng (STT, Từ người dùng, Đến người dùng, Số điểm).
+ *  4. Nếu nhập Wallet ID cụ thể:
+ *      - Kiểm tra hợp lệ.
+ *      - Truy vấn giao dịch của ví đó, sắp xếp giảm dần theo ID.
+ *      - Hiển thị bảng (STT, Từ người dùng, Đến người dùng, Số điểm).
+ *      - Lấy thêm số dư hiện tại của ví từ WalletController và in ra màn hình.
+ *  5. Nếu không có giao dịch nào → thông báo và dừng.
+ *  6. Tạm dừng chờ người dùng nhấn phím tiếp tục.
  */
 void AdminView::handleSearchTransactions() {
   utils::MessageHandler::logMessage("┌─────────────────────────────────────────────┐");
