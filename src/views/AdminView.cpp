@@ -184,7 +184,7 @@ void AdminView::handleViewAllWallets() {
   utils::MessageHandler::logMessage(
       "┌─────────────────────────────────────────────┐");
   utils::MessageHandler::logMessage(
-      "│      DANH SÁCH TẤT CẢ VÍ TRONG HỆ THỐNG     │");
+      "│            DANH SÁCH TẤT CẢ VÍ              │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
 
