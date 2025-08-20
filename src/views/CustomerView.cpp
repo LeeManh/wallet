@@ -145,18 +145,39 @@ void CustomerView::handleTransferPoints() {
 }
 
 /**
- * @brief Hiển thị lịch sử giao dịch của khách hàng.
- *
- * Mục đích:
- *   Cho phép khách hàng xem các giao dịch đã thực hiện.
+ * @brief Hiển thị lịch sử giao dịch của ví người dùng (Customer).
  *
  * Input:
- *   - Không có tham số đầu vào.
+ *  - Wallet ID do người dùng nhập từ bàn phím.
+ *    + Chỉ được phép nhập số dương.
+ *    + Hệ thống kiểm tra ví có thuộc quyền sở hữu của user hiện tại hay không.
  *
  * Output:
- *   - Không trả về giá trị.
- *   - In thông tin lịch sử giao dịch ra màn hình.
+ *  - Hiển thị bảng lịch sử giao dịch của ví đó với các cột:
+ *      [STT]  [Biến động +/-Số điểm]  [Mô tả (người chuyển/nhận)].
+ *  - Hiển thị thêm số dư hiện tại của ví.
+ *  - Nếu không có giao dịch hoặc Wallet ID không hợp lệ → báo lỗi/thông báo.
+ *
+ * Thủ tục xử lý:
+ *  1. Hiển thị tiêu đề "LỊCH SỬ GIAO DỊCH".
+ *  2. Yêu cầu người dùng nhập Wallet ID.
+ *  3. Kiểm tra:
+ *      - Nếu ID không hợp lệ → báo lỗi và dừng.
+ *      - Nếu ví không thuộc về user hiện tại → báo lỗi và dừng.
+ *  4. Tạo truy vấn (TxQuery) để lấy danh sách giao dịch của ví.
+ *  5. Sắp xếp các giao dịch theo ID giảm dần.
+ *  6. Nếu không có giao dịch → thông báo và dừng.
+ *  7. Nếu có:
+ *      - In bảng với header (STT | Biến động | Mô tả).
+ *      - Duyệt từng giao dịch:
+ *          + Xác định ví là người gửi hay nhận.
+ *          + Tính biến động số điểm (+/-).
+ *          + Tạo mô tả ("Nhận điểm từ X" hoặc "Chuyển điểm đến Y").
+ *          + In ra một dòng của bảng.
+ *  8. In footer và gọi hàm lấy số dư hiện tại của ví.
+ *  9. Tạm dừng, chờ người dùng nhấn phím tiếp tục.
  */
+
 void CustomerView::handleViewTransactionHistory() {
   utils::MessageHandler::logMessage("+-------------------------------------------------------------+");
   utils::MessageHandler::logMessage("|                  LỊCH SỬ GIAO DỊCH                          |");
