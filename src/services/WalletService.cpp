@@ -47,6 +47,21 @@ bool WalletService::createWallet(int userId, double initialBalance,
   return true;
 }
 
+std::string WalletService::getWalletInfo(models::Wallet wallet, enums::WalletInfo info) {
+  switch (info) {
+    case enums::WalletInfo::WALLET_ID:
+      return std::to_string(wallet.getId());
+    case enums::WalletInfo::USER_ID:
+      return std::to_string(wallet.getUserId());
+    case enums::WalletInfo::WALLET_TYPE:
+      return (wallet.getWalletType() == enums::WalletType::SYSTEM) ? "SYSTEM": "USER";
+    case enums::WalletInfo::POINT:
+      return std::to_string(static_cast<int>(wallet.getPoint()));
+    default:
+      return "";
+  }
+}
+
 /**
  * @brief Lấy ví của user dựa vào userId.
  * 
@@ -113,60 +128,6 @@ std::vector<models::Wallet> WalletService::getAllWallets() {
   }
 
   return result;
-}
-
-/**
- * @brief In danh sách ví ra màn hình console.
- * 
- * @note Không có giá trị trả về.
- */
-void WalletService::printListWallet() {
-  auto wallets = getAllWallets();
-
-  if (wallets.empty()) {
-    utils::MessageHandler::logWarning("Không có ví nào trong hệ thống!");
-  } else {
-    utils::MessageHandler::logMessage("");
-
-    int count = 1;
-    for (const auto& wallet : wallets) {
-      std::string walletTypeStr =
-          (wallet.getWalletType() == enums::WalletType::SYSTEM) ? "SYSTEM"
-                                                                : "USER";
-
-      utils::MessageHandler::logMessage(
-          "[" + std::to_string(count) +
-          "] Ví ID: " + std::to_string(wallet.getId()) +
-          " | User: " + std::to_string(wallet.getUserId()) +
-          " | Số điểm: " + utils::format::formatPoint(wallet.getPoint()) +
-          " điểm" + " | Loại: " + walletTypeStr);
-      count++;
-    }
-
-    utils::MessageHandler::logMessage(std::string(60, '-'));
-    utils::MessageHandler::logMessage("Tổng số ví: " +
-                                      std::to_string(wallets.size()));
-
-    double totalPoint = 0;
-    int userWallets = 0;
-    int systemWallets = 0;
-
-    for (const auto& wallet : wallets) {
-      totalPoint += wallet.getPoint();
-      if (wallet.getWalletType() == enums::WalletType::SYSTEM) {
-        systemWallets++;
-      } else {
-        userWallets++;
-      }
-    }
-
-    utils::MessageHandler::logMessage(
-        "Tổng số điểm hệ thống: " + utils::format::formatPoint(totalPoint) +
-        " điểm");
-    utils::MessageHandler::logMessage(
-        "Ví người dùng: " + std::to_string(userWallets) +
-        " | Ví hệ thống: " + std::to_string(systemWallets));
-  }
 }
 
 /**

@@ -2,7 +2,7 @@
 
 #include <iomanip>
 #include <sstream>
-
+#include <enums/Enums.hpp>
 namespace utils::format {
 /**
  * @brief Định dạng số thực thành chuỗi với số chữ số thập phân cố định.
@@ -91,5 +91,44 @@ std::string formatCell(const std::string& value, int space) {
  */
 std::string formatBorder(int width) {
     return std::string(width, '-');
+}
+
+std::string to_string(enums::UserInfo info) {
+  switch (info) {
+    case enums::UserInfo::USERNAME: return "Tên đăng nhập";
+    case enums::UserInfo::EMAIL: return "Email";
+    case enums::UserInfo::FULL_NAME: return "Họ và tên";
+    case enums::UserInfo::ID: return "ID";
+    default: return "UNKNOWN";
+  }
+}
+
+int getCellSize(enums::UserInfo info) {
+    switch (info) {
+        case enums::UserInfo::ID: return static_cast<int>(enums::CellSize::ID);
+        case enums::UserInfo::USERNAME: return static_cast<int>(enums::CellSize::USERNAME);
+        case enums::UserInfo::EMAIL: return static_cast<int>(enums::CellSize::EMAIL);
+        case enums::UserInfo::FULL_NAME: return static_cast<int>(enums::CellSize::FULL_NAME);
+        default: return 0;
+    }
+}
+std::string to_string(enums::WalletInfo info) {
+  switch (info) {
+    case enums::WalletInfo::WALLET_ID: return "Ví ID";
+    case enums::WalletInfo::USER_ID: return "User ID";
+    case enums::WalletInfo::WALLET_TYPE: return "Loại ví";
+    case enums::WalletInfo::POINT: return "Số điểm";
+    default: return "UNKNOWN";
+  }
+}
+
+int getCellSize(enums::WalletInfo info) {
+    switch (info) {
+        case enums::WalletInfo::WALLET_ID: return static_cast<int>(enums::CellSize::WALLET_ID);
+        case enums::WalletInfo::USER_ID: return static_cast<int>(enums::CellSize::USER_ID);
+        case enums::WalletInfo::WALLET_TYPE: return static_cast<int>(enums::CellSize::WALLET_TYPE);
+        case enums::WalletInfo::POINT: return static_cast<int>(enums::CellSize::POINT);
+        default: return 0;
+    }
 }
 }  // namespace utils::format

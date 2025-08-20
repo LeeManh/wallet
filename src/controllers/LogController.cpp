@@ -8,10 +8,12 @@
 #include "utils/ExceptionHandler.hpp"
 
 #include "models/User.hpp"
+#include "models/Wallet.hpp"
 
 #include "enums/Enums.hpp"
 
 #include "services/UserService.hpp"
+#include "services/WalletService.hpp"
 
 namespace controllers
 {
@@ -36,15 +38,15 @@ namespace controllers
      *   4. In đường viền dưới bảng.
      *   5. Nếu xảy ra lỗi, gọi ExceptionHandler để xử lý.
      */
-    void LogController::printListUsers(std::vector<models::User> users,
+    void LogController::printList(std::vector<models::User> users,
                                     std::vector<enums::UserInfo> userInfo) {
         try {
             std::string borderLine = "+";
             std::string header = "|";
 
             for(const auto& info : userInfo) {
-                int width = enums::getCellSize(info);
-                header += " " + utils::format::formatCell(enums::to_string(info), width) + "|";
+                int width = utils::format::getCellSize(info);
+                header += " " + utils::format::formatCell(utils::format::to_string(info), width) + "|";
                 borderLine += "-" + utils::format::formatBorder(width) + "+";
             }
 
@@ -55,13 +57,106 @@ namespace controllers
             for (const auto& user : users) {
                 std::ostringstream oss;
                 for(const auto& info : userInfo) {
-                    int width = enums::getCellSize(info);
+                    int width = utils::format::getCellSize(info);
                     std::string cellContent = services::UserService::getUserInfo(user, info);
                     oss << "| " << utils::format::formatCell(cellContent, width);
                 }
                 utils::MessageHandler::logMessage(oss.str() + "|");
             }
 
+            utils::MessageHandler::logMessage(borderLine);
+
+        } catch (const std::exception& e) {
+            utils::ExceptionHandler::handleException(e);
+        }
+    }
+    
+    void LogController::printList(models::User user,
+                                    std::vector<enums::UserInfo> userInfo) {
+        try {
+            std::string borderLine = "+";
+            std::string header = "|";
+
+            for(const auto& info : userInfo) {
+                int width = utils::format::getCellSize(info);
+                header += " " + utils::format::formatCell(utils::format::to_string(info), width) + "|";
+                borderLine += "-" + utils::format::formatBorder(width) + "+";
+            }
+
+            utils::MessageHandler::logMessage(borderLine);
+            utils::MessageHandler::logMessage(header);
+            utils::MessageHandler::logMessage(borderLine);
+
+            std::ostringstream oss;
+            for(const auto& info : userInfo) {
+                int width = utils::format::getCellSize(info);
+                std::string cellContent = services::UserService::getUserInfo(user, info);
+                oss << "| " << utils::format::formatCell(cellContent, width);
+            }
+            utils::MessageHandler::logMessage(oss.str() + "|");
+            
+
+            utils::MessageHandler::logMessage(borderLine);
+
+        } catch (const std::exception& e) {
+            utils::ExceptionHandler::handleException(e);
+        }
+    }
+
+    void LogController::printList(std::vector<models::Wallet> wallets,
+                                    std::vector<enums::WalletInfo> walletInfo) {
+        try {
+            std::string borderLine = "+";
+            std::string header = "|";
+
+            for(const auto& info : walletInfo) {
+                int width = utils::format::getCellSize(info);
+                header += " " + utils::format::formatCell(utils::format::to_string(info), width) + "|";
+                borderLine += "-" + utils::format::formatBorder(width) + "+";
+            }
+
+            utils::MessageHandler::logMessage(borderLine);
+            utils::MessageHandler::logMessage(header);
+            utils::MessageHandler::logMessage(borderLine);
+
+            for (const auto& wallet : wallets) {
+                std::ostringstream oss;
+                for(const auto& info : walletInfo) {
+                    int width = utils::format::getCellSize(info);
+                    std::string cellContent = services::WalletService::getWalletInfo(wallet, info);
+                    oss << "| " << utils::format::formatCell(cellContent, width);
+                }
+                utils::MessageHandler::logMessage(oss.str() + "|");
+            }
+
+            utils::MessageHandler::logMessage(borderLine);
+
+        } catch (const std::exception& e) {
+            utils::ExceptionHandler::handleException(e);
+        }
+    }
+    void LogController::printList(models::Wallet wallet,
+                                    std::vector<enums::WalletInfo> walletInfo) {
+        try {
+            std::string borderLine = "+";
+            std::string header = "|";
+
+            for(const auto& info : walletInfo) {
+                int width = utils::format::getCellSize(info);
+                header += " " + utils::format::formatCell(utils::format::to_string(info), width) + "|";
+                borderLine += "-" + utils::format::formatBorder(width) + "+";
+            }
+
+            utils::MessageHandler::logMessage(borderLine);
+            utils::MessageHandler::logMessage(header);
+            utils::MessageHandler::logMessage(borderLine);
+            std::ostringstream oss;
+            for(const auto& info : walletInfo) {
+                int width = utils::format::getCellSize(info);
+                std::string cellContent = services::WalletService::getWalletInfo(wallet, info);
+                oss << "| " << utils::format::formatCell(cellContent, width);
+            }
+            utils::MessageHandler::logMessage(oss.str() + "|");
             utils::MessageHandler::logMessage(borderLine);
 
         } catch (const std::exception& e) {

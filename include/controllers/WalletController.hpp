@@ -25,9 +25,6 @@ class WalletController {
 
   // Lấy danh sách tất cả ví
   static std::vector<models::Wallet> getAllWallets();
-
-  // In ra danh sách ví
-  static void printListWallet();
 };
 
 }  // namespace controllers

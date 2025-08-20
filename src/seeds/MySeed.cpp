@@ -82,7 +82,7 @@ void Seed::printSeededData(const bool isAdmin, const bool isUser) {
     std::vector<enums::UserInfo> userInfo = {
         enums::UserInfo::ID, enums::UserInfo::USERNAME,
         enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
-    controllers::LogController::printListUsers(users, userInfo);
+    controllers::LogController::printList(users, userInfo);
   } catch (const std::exception& e) {
     throw e;
   }

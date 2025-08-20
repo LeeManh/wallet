@@ -29,9 +29,6 @@ class WalletService {
   // Lấy danh sách tất cả ví
   static std::vector<models::Wallet> getAllWallets();
 
-  // In ra danh sách ví
-  static void printListWallet();
-
   // Kiểm tra ví có tồn tại không
   static bool checkHasWallet(int walletId);
 
@@ -43,6 +40,9 @@ class WalletService {
 
   // Rollback điểm của ví
   static void rollbackPoint(int walletId, double points);
+
+  // Lấy thông tin ví
+  static std::string getWalletInfo(models::Wallet wallet, enums::WalletInfo info);
 };
 
 }  // namespace services

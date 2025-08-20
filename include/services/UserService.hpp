@@ -39,8 +39,7 @@ class UserService {
   static std::optional<json> findUserByUsername(const std::string& username);
   static std::optional<json> getUserEmail(int userId);
   static std::vector<models::User> getAllUsers(const bool isAdmin = false);
-
-
+  static std::optional<models::User> findUserModelById(int userId);
  private:
   static bool isUsernameExists(const json& users, const std::string& username);
   static bool isEmailExists(const json& users, const std::string& email);

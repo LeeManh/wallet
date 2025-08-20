@@ -1,11 +1,14 @@
 #include "views/CustomerView.hpp"
 
 #include "controllers/AuthController.hpp"
+#include "controllers/LogController.hpp"
 #include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "exceptions/Exception.hpp"
+
 namespace views {
 
 /**
@@ -245,9 +248,13 @@ void CustomerView::handleViewProfile() {
       "│           THÔNG TIN CÁ NHÂN CỦA BẠN         │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
-
-  controllers::AuthController::getProfile(userId);
-
+  auto user = services::UserService::findUserModelById(userId);
+  if (!user.has_value())
+      throw exceptions::NotFoundException("Người dùng không tồn tại!");
+  std::vector<enums::UserInfo> userInfo = {
+      enums::UserInfo::ID, enums::UserInfo::USERNAME,
+      enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
+  controllers::LogController::printList(user.value(), userInfo);
   utils::input::pauseInput();
 }
 

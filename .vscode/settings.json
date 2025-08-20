@@ -66,8 +66,13 @@
     "valarray": "cpp",
     "variant": "cpp",
     "vector": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "stacktrace": "cpp",
+    "future": "cpp",
+    "format": "cpp",
+    "functional": "cpp"
   },
   "makefile.configureOnOpen": false,
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "C_Cpp.errorSquiggles": "disabled"
 }

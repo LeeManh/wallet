@@ -12,7 +12,7 @@
 #include "controllers/WalletController.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
-
+#include "exceptions/Exception.hpp"
 namespace views {
 
 /**
@@ -160,11 +160,11 @@ void AdminView::handleViewAllUsers() {
       "│         DANH SÁCH TẤT CẢ NGƯỜI DÙNG         │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
-  auto users = services::UserService::getAllUsers();
+  std::vector<models::User> users = services::UserService::getAllUsers();
   std::vector<enums::UserInfo> userInfo = {
       enums::UserInfo::ID, enums::UserInfo::USERNAME,
       enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
-  controllers::LogController::printListUsers(users, userInfo);
+  controllers::LogController::printList(users, userInfo);
 
   utils::input::pauseInput();
 }
@@ -188,8 +188,11 @@ void AdminView::handleViewAllWallets() {
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
 
-  controllers::WalletController::printListWallet();
-
+  std::vector<models::Wallet> wallets = services::WalletService::getAllWallets();
+  std::vector<enums::WalletInfo> walletInfo = {
+      enums::WalletInfo::WALLET_ID, enums::WalletInfo::USER_ID,
+      enums::WalletInfo::WALLET_TYPE, enums::WalletInfo::POINT};
+  controllers::LogController::printList(wallets, walletInfo);
   utils::input::pauseInput();
 }
 
@@ -375,9 +378,13 @@ void AdminView::handleViewProfile() {
       "│           THÔNG TIN CÁ NHÂN CỦA BẠN         │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
-
-  controllers::AuthController::getProfile(userId);
-
+  auto user = services::UserService::findUserModelById(userId);
+  if (!user.has_value())
+      throw exceptions::NotFoundException("Người dùng không tồn tại!");
+  std::vector<enums::UserInfo> userInfo = {
+      enums::UserInfo::ID, enums::UserInfo::USERNAME,
+      enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
+  controllers::LogController::printList(user.value(), userInfo);
   utils::input::pauseInput();
 }
 

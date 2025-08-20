@@ -59,12 +59,4 @@ std::vector<models::Wallet> WalletController::getAllWallets() {
   }
 }
 
-void WalletController::printListWallet() {
-  try {
-    services::WalletService::printListWallet();
-  } catch (const std::exception& e) {
-    utils::ExceptionHandler::handleException(e);
-  }
-}
-
 }  // namespace controllers
