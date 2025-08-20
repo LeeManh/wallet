@@ -248,13 +248,7 @@ void CustomerView::handleViewProfile() {
       "│           THÔNG TIN CÁ NHÂN CỦA BẠN         │");
   utils::MessageHandler::logMessage(
       "└─────────────────────────────────────────────┘");
-  auto user = services::UserService::findUserModelById(userId);
-  if (!user.has_value())
-      throw exceptions::NotFoundException("Người dùng không tồn tại!");
-  std::vector<enums::UserInfo> userInfo = {
-      enums::UserInfo::ID, enums::UserInfo::USERNAME,
-      enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
-  controllers::LogController::printList(user.value(), userInfo);
+  controllers::AuthController::getProfile(userId);
   utils::input::pauseInput();
 }
 

@@ -13,7 +13,7 @@
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Format.hpp"
-
+#include "controllers/LogController.hpp"
 namespace controllers {
 
 /**
@@ -117,18 +117,13 @@ void AuthController::registerUserByAdmin(const std::string& username,
  *   2. In thông tin hoặc xử lý ngoại lệ nếu không tìm thấy.
  */
 void AuthController::getProfile(const int userId) {
-  try {
-    auto userJson = services::UserService::findUserById(userId);
-    if (!userJson.has_value())
+  auto user = services::UserService::findUserModelById(userId);
+  if (!user.has_value())
       throw exceptions::NotFoundException("Người dùng không tồn tại!");
-
-    utils::MessageHandler::logMessage("Thông tin người dùng:");
-    utils::MessageHandler::logMessage("User ID: " + std::to_string(userId));
-    utils::MessageHandler::logMessage("Họ tên: " + std::string(userJson.value()["fullName"]));
-    utils::MessageHandler::logMessage("Email: " + std::string(userJson.value()["email"]));
-  } catch (const std::exception& e) {
-    utils::ExceptionHandler::handleException(e);
-  }
+  std::vector<enums::UserInfo> userInfo = {
+      enums::UserInfo::ID, enums::UserInfo::USERNAME,
+      enums::UserInfo::FULL_NAME, enums::UserInfo::EMAIL};
+  controllers::LogController::printList(user.value(), userInfo);
 }
 
 /**

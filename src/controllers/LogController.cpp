@@ -17,26 +17,16 @@
 
 namespace controllers
 {
-        /**
+    /**
      * @brief In danh sách người dùng ra log dưới dạng bảng.
      *
-     * Input:
-     *   - users: Danh sách đối tượng User cần in.
-     *   - userInfo: Danh sách các loại thông tin cột cần hiển thị (ví dụ: ID, USERNAME, EMAIL...).
+     * Hàm này tạo và in ra một bảng định dạng đẹp mắt của các đối tượng
+     * `models::User`. Bảng bao gồm đường viền, tiêu đề cột và dữ liệu
+     * được căn chỉnh.
      *
-     * Output:
-     *   - Không trả về giá trị.
-     *   - Kết quả được in ra log dưới dạng bảng với tiêu đề và đường viền.
-     *
-     * Thủ tục xử lý:
-     *   1. Tạo đường viền trên và tiêu đề bảng dựa trên danh sách cột userInfo.
-     *   2. In đường viền và tiêu đề ra log.
-     *   3. Duyệt qua từng người dùng trong users:
-     *        - Lấy thông tin từng cột từ user.
-     *        - Canh chỉnh độ rộng cột và ghép thành một dòng.
-     *        - In dòng đó ra log.
-     *   4. In đường viền dưới bảng.
-     *   5. Nếu xảy ra lỗi, gọi ExceptionHandler để xử lý.
+     * @param users Danh sách các đối tượng `models::User` cần in.
+     * @param userInfo Danh sách các loại thông tin (`enums::UserInfo`)
+     * cần hiển thị làm cột.
      */
     void LogController::printList(std::vector<models::User> users,
                                     std::vector<enums::UserInfo> userInfo) {
@@ -71,6 +61,16 @@ namespace controllers
         }
     }
     
+    /**
+     * @brief In thông tin một người dùng duy nhất ra log dưới dạng bảng.
+     *
+     * Hàm này tương tự như phiên bản vector, nhưng chỉ xử lý một đối tượng
+     * `models::User` duy nhất, in ra một bảng một hàng.
+     *
+     * @param user Đối tượng `models::User` duy nhất cần in.
+     * @param userInfo Danh sách các loại thông tin (`enums::UserInfo`)
+     * cần hiển thị làm cột.
+     */
     void LogController::printList(models::User user,
                                     std::vector<enums::UserInfo> userInfo) {
         try {
@@ -103,6 +103,17 @@ namespace controllers
         }
     }
 
+    /**
+     * @brief In danh sách ví ra log dưới dạng bảng.
+     *
+     * Hàm này tạo và in ra một bảng định dạng đẹp mắt của các đối tượng
+     * `models::Wallet`. Bảng bao gồm đường viền, tiêu đề cột và dữ liệu
+     * được căn chỉnh.
+     *
+     * @param wallets Danh sách các đối tượng `models::Wallet` cần in.
+     * @param walletInfo Danh sách các loại thông tin (`enums::WalletInfo`)
+     * cần hiển thị làm cột.
+     */
     void LogController::printList(std::vector<models::Wallet> wallets,
                                     std::vector<enums::WalletInfo> walletInfo) {
         try {
@@ -135,6 +146,17 @@ namespace controllers
             utils::ExceptionHandler::handleException(e);
         }
     }
+
+    /**
+     * @brief In thông tin một ví duy nhất ra log dưới dạng bảng.
+     *
+     * Hàm này tương tự như phiên bản vector, nhưng chỉ xử lý một đối tượng
+     * `models::Wallet` duy nhất, in ra một bảng một hàng.
+     *
+     * @param wallet Đối tượng `models::Wallet` duy nhất cần in.
+     * @param walletInfo Danh sách các loại thông tin (`enums::WalletInfo`)
+     * cần hiển thị làm cột.
+     */
     void LogController::printList(models::Wallet wallet,
                                     std::vector<enums::WalletInfo> walletInfo) {
         try {
@@ -163,5 +185,4 @@ namespace controllers
             utils::ExceptionHandler::handleException(e);
         }
     }
-
 } // namespace controllers
