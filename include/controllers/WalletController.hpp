@@ -28,6 +28,11 @@ class WalletController {
 
   // In ra danh sách ví
   static void printListWallet();
+ // kiểm tra có phải ID ví của người dùng không
+  static bool isWalletOwnedByUser(int userId, int walletId);
+// hàm gọi tên uesr
+  static std::optional<int> getOwnerIdByWalletId(int walletId);
+  static std::string        getOwnerNameByWalletId(int walletId);
 };
 
 }  // namespace controllers
