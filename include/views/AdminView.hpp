@@ -1,10 +1,13 @@
 #pragma once
 
 #include "utils/Format.hpp"
+#include <filesystem>
 
 namespace views {
 
 class AdminView {
+private:
+    void handleBackupRestoreMenu();
  public:
   int userId;
 
@@ -20,6 +23,10 @@ class AdminView {
   void handleChangePassword();
   void handleTransferPoints();
   void handleViewProfile();
+// Backup / Restore
+    void handleViewBackupHistory();  // Xem lịch sử backup
+    bool backupAllTo(const std::filesystem::path& outDir);
+    bool restoreFromFiles(const std::string& credPath,const std::string& txnPath,const std::string& walletPath);
 };
 
 }  // namespace views
