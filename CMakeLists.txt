@@ -54,9 +54,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)  # Thư mục chứa
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)  # Thư mục chứa file thư viện động (.so/.dll)
 
 # Tạo file thực thi từ các file nguồn
-# ${PROJECT_NAME} sẽ được thay thế bằng "wallet"
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+# Thêm macro cho backup/restore
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+  DATA_DIR="${CMAKE_SOURCE_DIR}/data"
+  BACKUP_DIR="${CMAKE_SOURCE_DIR}/backup"
+)
 # Liên kết các thư viện cần thiết
 # bcrypt: thư viện mã hóa mật khẩu
 # cotp: thư viện tạo mã OTP

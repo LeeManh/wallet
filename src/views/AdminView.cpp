@@ -16,9 +16,22 @@
 #include "controllers/WalletController.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "services/TransactionBackup.hpp"
+#include "services/CredentialBackup.hpp"
+#include "services/WalletBackup.hpp"
+#include "services/BackupHistory.hpp"
 #include "services/UserService.hpp"
 #include "utils/Utf8Console.hpp"
 
+using utils::MessageHandler;
+namespace fs = std::filesystem;
+// Hàm tạo timestamp
+static std::string nowTimestamp() {
+    auto t = std::time(nullptr);
+    std::ostringstream oss;
+    oss << std::put_time(std::localtime(&t), "%Y%m%d_%H%M%S");
+    return oss.str();
+   }
 namespace views {
 
 /**
@@ -44,6 +57,7 @@ namespace views {
  *      - 7: Đổi mật khẩu
  *      - 8: Chuyển điểm
  *      - 9: Xem thông tin cá nhân
+ *      - 10: Sao lưu / Phục hồi giao dịch
  *      - 0: Đăng xuất (thoát khỏi vòng lặp)
  *   4. Lặp lại cho đến khi chọn 0 (đăng xuất).
  */
@@ -75,12 +89,14 @@ void AdminView::display() {
     utils::MessageHandler::logMessage(
         "│ [9] Xem thông tin cá nhân                   │");
     utils::MessageHandler::logMessage(
+        "│ [10] Sao lưu / Phục hồi dữ liệu             │");
+    utils::MessageHandler::logMessage(
         "│ [0] Đăng xuất                               │");
     utils::MessageHandler::logMessage(
         "└─────────────────────────────────────────────┘");
 
-    // Nhận lựa chọn từ người dùng (0-9)
-    int choice = utils::input::getChoice(0, 9);
+    // Nhận lựa chọn từ người dùng (0-10)
+    int choice = utils::input::getChoice(0, 10);
 
     // Xử lý lựa chọn
     switch (choice) {
@@ -110,6 +126,9 @@ void AdminView::display() {
         break;
       case 9:
         handleViewProfile();  // Xem thông tin cá nhân
+        break;
+      case 10:
+        handleBackupRestoreMenu();
         break;
       case 0:
         return;  // Đăng xuất
@@ -574,6 +593,208 @@ void AdminView::handleViewProfile() {
   controllers::AuthController::getProfile(userId);
 
   utils::input::pauseInput();
+}
+/**
+ * Backup & Restore dữ liệu hệ thống
+ * ---------------------------------
+ * Hai hàm này chịu trách nhiệm sao lưu và phục hồi toàn bộ dữ liệu chính:
+ *  - credentials.json  : thông tin người dùng
+ *  - transactions.json : lịch sử giao dịch
+ *  - wallets.json      : trạng thái số dư ví
+ *
+ * Input:
+ *  - backupAllTo(outDir):
+ *      + outDir: đường dẫn thư mục đích để tạo bản sao lưu.
+ *  - restoreFromFiles(credPath, txnPath, walletPath):
+ *      + credPath   : đường dẫn tới file credentials.json (có thể rỗng).
+ *      + txnPath    : đường dẫn tới file transactions.json (có thể rỗng).
+ *      + walletPath : đường dẫn tới file wallets.json (có thể rỗng).
+ *
+ * Output:
+ *  - Trả về true nếu toàn bộ thao tác thành công.
+ *  - Trả về false nếu có lỗi hoặc thiếu file cần thiết.
+ *
+ * Cách thực thi:
+ *  - backupAllTo:
+ *      1. Kiểm tra và tạo thư mục outDir nếu chưa tồn tại.
+ *      2. Xuất dữ liệu từ CredentialBackup, TransactionBackup, WalletBackup ra file JSON.
+ *      3. Ghi lại lịch sử vào BackupHistory.
+ *      4. Trả kết quả cho người dùng.
+ *
+ *  - restoreFromFiles:
+ *      1. Kiểm tra tham số đầu vào, nếu rỗng hết thì báo lỗi.
+ *      2. Với từng file (credentials, transactions, wallets):
+ *         - Nếu tồn tại: gọi service import.
+ *         - Nếu không tồn tại: báo lỗi và đánh dấu fail.
+ *      3. Nếu tất cả file cần thiết import thành công thì báo "Phục hồi thành công".
+ *         Ngược lại báo "Phục hồi thất bại".
+ */
+bool views::AdminView::backupAllTo(const std::filesystem::path& outDir) {
+    try {
+        if (!fs::exists(outDir))
+            fs::create_directories(outDir);
+
+        std::string credFile   = (outDir / "credentials.json").string();
+        std::string txnFile    = (outDir / "transactions.json").string();
+        std::string walletFile = (outDir / "wallets.json").string();
+
+        services::CredentialBackup::exportToFile(credFile);
+        services::TransactionBackup::exportToFile(txnFile);
+        services::WalletBackup::exportToFile(walletFile);
+
+        services::BackupHistory::logBackup(nowTimestamp(), outDir.string());
+
+        MessageHandler::logSuccess("Sao lưu thành công -> " + outDir.string());
+        return true;
+    } catch (const std::exception& e) {
+        MessageHandler::logError(std::string("Lỗi sao lưu: ") + e.what());
+    }
+    return false;
+}
+
+bool views::AdminView::restoreFromFiles(const std::string& credPath,
+                                        const std::string& txnPath,
+                                        const std::string& walletPath) {
+    try {
+        if (credPath.empty() && txnPath.empty() && walletPath.empty()) {
+            MessageHandler::logError("Chưa nhập đường dẫn nào để phục hồi.");
+            return false;
+        }
+
+        bool ok1 = true, ok2 = true, ok3 = true;
+
+        if (!credPath.empty()) {
+            if (fs::exists(credPath)) {
+                services::CredentialBackup::importFromFile(credPath);
+            } else {
+                MessageHandler::logError("Không thấy file: " + credPath);
+                ok1 = false;
+            }
+        }
+
+        if (!txnPath.empty()) {
+            if (fs::exists(txnPath)) {
+                services::TransactionBackup::importFromFile(txnPath);
+            } else {
+                MessageHandler::logError("Không thấy file: " + txnPath);
+                ok2 = false;
+            }
+        }
+
+        if (!walletPath.empty()) {
+            if (fs::exists(walletPath)) {
+                services::WalletBackup::importFromFile(walletPath);
+            } else {
+                MessageHandler::logError("Không thấy file: " + walletPath);
+                ok3 = false;
+            }
+        }
+
+        if (ok1 && ok2 && ok3) {
+            MessageHandler::logSuccess("Phục hồi thành công.");
+            return true;
+        } else {
+            MessageHandler::logError("Phục hồi thất bại.");
+            return false;
+        }
+
+    } catch (const std::exception& e) {
+        MessageHandler::logError(std::string("Lỗi phục hồi: ") + e.what());
+    }
+    return false;
+}
+
+void views::AdminView::handleBackupRestoreMenu() {
+    while (true) {
+        utils::MessageHandler::logMessage(
+            "\n+─────────────────────────────────────────────────+\n"
+            "│           SAO LƯU & PHỤC HỒI DỮ LIỆU            │\n"
+            "+─────────────────────────────────────────────────+\n"
+            "│ 1. Tạo bản sao lưu mới                          │\n"
+            "│ 2. Xem lịch sử sao lưu                          │\n"
+            "│ 3. Khôi phục từ bản sao lưu                     │\n"
+            "│ 4. Khôi phục từ dữ liệu ngoài (file/folder)     │\n"
+            "│ 0. Quay lại                                     │\n"
+            "+─────────────────────────────────────────────────+\n"
+        );
+        int choice = utils::input::getChoice(0, 4);
+        if (choice == 0) break;
+
+        if (choice == 1) {
+            std::string dir = "backups/" + nowTimestamp();
+            backupAllTo(dir);
+        } 
+        else if (choice == 2) {
+            services::BackupHistory::printAll();
+        } 
+        else if (choice == 3) {
+            auto history = services::BackupHistory::getHistory();
+            if (history.empty()) {
+                MessageHandler::logMessage("Chưa có bản sao lưu nào để khôi phục.");
+                continue;
+            }
+
+            services::BackupHistory::printAll();
+            std::string idxStr = utils::input::getInput("Chọn số thứ tự backup để khôi phục: ");
+            int idx = -1;
+            try {
+                idx = std::stoi(idxStr) - 1;
+            } catch (...) {
+                MessageHandler::logError("Lựa chọn không hợp lệ.");
+                continue;
+            }
+
+            if (idx < 0 || idx >= (int)history.size()) {
+                MessageHandler::logError("Lựa chọn không hợp lệ.");
+                continue;
+            }
+
+            auto rec = history[idx];
+            std::string cred   = rec.directory + "/credentials.json";
+            std::string txn    = rec.directory + "/transactions.json";
+            std::string wallet = rec.directory + "/wallets.json";
+            restoreFromFiles(cred, txn, wallet);
+        }
+        else if (choice == 4) {
+            std::string path = utils::input::getInput("Nhập đường dẫn file hoặc thư mục: ");
+
+            if (!fs::exists(path)) {
+                MessageHandler::logError("Đường dẫn không tồn tại.");
+                continue;
+            }
+
+            std::string credFile, txnFile, walletFile;
+
+            if (fs::is_directory(path)) {
+                credFile   = (fs::path(path) / "credentials.json").string();
+                txnFile    = (fs::path(path) / "transactions.json").string();
+                walletFile = (fs::path(path) / "wallets.json").string();
+            } else {
+                std::string fname = fs::path(path).filename().string();
+                if (fname == "credentials.json") {
+                    credFile = path;
+                } else if (fname == "transactions.json") {
+                    txnFile = path;
+                } else if (fname == "wallets.json") {
+                    walletFile = path;
+                } else {
+                    MessageHandler::logError("Chỉ chấp nhận file credentials.json, transactions.json hoặc wallets.json");
+                    continue;
+                }
+            }
+            bool ok = restoreFromFiles(
+                fs::exists(credFile) ? credFile : "",
+                fs::exists(txnFile) ? txnFile : "",
+                fs::exists(walletFile) ? walletFile : ""
+            );
+
+            if (ok) {
+                MessageHandler::logSuccess("Phục hồi dữ liệu từ copy ngoài thành công!");
+            } else {
+                MessageHandler::logError("Phục hồi dữ liệu từ copy ngoài thất bại!");
+            }
+        }
+    }
 }
 
 }  // namespace views
