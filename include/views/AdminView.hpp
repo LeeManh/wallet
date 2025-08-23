@@ -17,7 +17,7 @@ private:
   void handleCreateAccount();
   void handleViewAllUsers();
   void handleViewAllWallets();
-  void handleViewTransactionHistory();
+  void handleSearchTransactions();
   void handleEditUserInfo();
   void handleManageTotalWallet();
   void handleChangePassword();

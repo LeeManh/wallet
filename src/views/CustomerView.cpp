@@ -1,11 +1,17 @@
 #include "views/CustomerView.hpp"
-
+#include <iomanip>
+#include <sstream>
+#include <algorithm>
+#include <unordered_map>
+#include "services/TransactionHistory.hpp"  
 #include "controllers/AuthController.hpp"
 #include "controllers/TransactionController.hpp"
 #include "controllers/WalletController.hpp"
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "utils/Utf8Console.hpp"
+
 namespace views {
 
 /**
@@ -139,20 +145,145 @@ void CustomerView::handleTransferPoints() {
 }
 
 /**
- * @brief Hiển thị lịch sử giao dịch của khách hàng.
- *
- * Mục đích:
- *   Cho phép khách hàng xem các giao dịch đã thực hiện.
+ * @brief Hiển thị lịch sử giao dịch của ví người dùng (Customer).
  *
  * Input:
- *   - Không có tham số đầu vào.
+ *  - Wallet ID do người dùng nhập từ bàn phím.
+ *    + Chỉ được phép nhập số dương.
+ *    + Hệ thống kiểm tra ví có thuộc quyền sở hữu của user hiện tại hay không.
  *
  * Output:
- *   - Không trả về giá trị.
- *   - In thông tin lịch sử giao dịch ra màn hình.
+ *  - Hiển thị bảng lịch sử giao dịch của ví đó với các cột:
+ *      [STT]  [Biến động +/-Số điểm]  [Mô tả (người chuyển/nhận)].
+ *  - Hiển thị thêm số dư hiện tại của ví.
+ *  - Nếu không có giao dịch hoặc Wallet ID không hợp lệ → báo lỗi/thông báo.
+ *
+ * Thủ tục xử lý:
+ *  1. Hiển thị tiêu đề "LỊCH SỬ GIAO DỊCH".
+ *  2. Yêu cầu người dùng nhập Wallet ID.
+ *  3. Kiểm tra:
+ *      - Nếu ID không hợp lệ → báo lỗi và dừng.
+ *      - Nếu ví không thuộc về user hiện tại → báo lỗi và dừng.
+ *  4. Tạo truy vấn (TxQuery) để lấy danh sách giao dịch của ví.
+ *  5. Sắp xếp các giao dịch theo ID giảm dần.
+ *  6. Nếu không có giao dịch → thông báo và dừng.
+ *  7. Nếu có:
+ *      - In bảng với header (STT | Biến động | Mô tả).
+ *      - Duyệt từng giao dịch:
+ *          + Xác định ví là người gửi hay nhận.
+ *          + Tính biến động số điểm (+/-).
+ *          + Tạo mô tả ("Nhận điểm từ X" hoặc "Chuyển điểm đến Y").
+ *          + In ra một dòng của bảng.
+ *  8. In footer và gọi hàm lấy số dư hiện tại của ví.
+ *  9. Tạm dừng, chờ người dùng nhấn phím tiếp tục.
  */
+
 void CustomerView::handleViewTransactionHistory() {
-  utils::MessageHandler::logMessage("Chức năng đang được phát triển...");
+  utils::MessageHandler::logMessage("+-------------------------------------------------------------+");
+  utils::MessageHandler::logMessage("|                  LỊCH SỬ GIAO DỊCH                          |");
+  utils::MessageHandler::logMessage("+-------------------------------------------------------------+");
+
+  std::string widStr = utils::input::getInput("Nhập Wallet ID: ");
+  if (!utils::validation::isPositiveNumber(widStr)) {
+    utils::MessageHandler::logError("Wallet ID không hợp lệ!");
+    utils::input::pauseInput();
+    return;
+  }
+
+  int walletId = std::stoi(widStr);
+  if (!controllers::WalletController::isWalletOwnedByUser(userId, walletId)) {
+    utils::MessageHandler::logError("Bạn chỉ xem được lịch sử giao dịch ví của mình");
+    utils::input::pauseInput();
+    return;
+  }
+
+  services::TxQuery q; q.direction = "all"; q.sort = "id_desc";
+  services::TransactionHistory history;
+  auto rows = history.queryByWallet(walletId, q);
+
+  std::sort(rows.begin(), rows.end(),
+            [](const auto& a, const auto& b){ return a.value("id",0) > b.value("id",0); });
+
+  if (rows.empty()) {
+    utils::MessageHandler::logMessage("Không có giao dịch nào.");
+    utils::input::pauseInput();
+    return;
+  }
+
+  // ===== cấu hình cột =====
+  constexpr int W_STT  = 3;
+  constexpr int W_MOVE = 12;
+  constexpr int W_DESC = 40;
+
+  auto hline = [&](){
+    return std::string("+")
+      + std::string(W_STT+2, '-') + "+"
+      + std::string(W_MOVE+2,'-') + "+"
+      + std::string(W_DESC+2,'-') + "+";
+  };
+
+  // Cache tên user theo walletId
+  std::unordered_map<int,std::string> nameCache;
+  auto fullNameOfWallet = [&](int wid)->const std::string&{
+    auto it = nameCache.find(wid);
+    if (it != nameCache.end()) return it->second;
+    auto ownerIdOpt = controllers::WalletController::getOwnerIdByWalletId(wid);
+    std::string name = "Unknown";
+    if (ownerIdOpt) {
+      if (auto u = services::UserService::findUserById(*ownerIdOpt))
+        name = u->value("fullName", "user#" + std::to_string(*ownerIdOpt));
+      else
+        name = "user#" + std::to_string(*ownerIdOpt);
+    } else name = "W#" + std::to_string(wid);
+    return nameCache.emplace(wid, std::move(name)).first->second;
+  };
+
+  // ===== header =====
+  utils::MessageHandler::logMessage(hline());
+  {
+    std::ostringstream hdr;
+    hdr << "| " << vnconsole::pad_right("STT", W_STT)
+        << " | " << vnconsole::pad_right("Biến động", W_MOVE)
+        << " | " << vnconsole::pad_right("Mô tả", W_DESC)
+        << " |";
+    utils::MessageHandler::logMessage(hdr.str());
+  }
+  utils::MessageHandler::logMessage(hline());
+
+  // ===== nội dung =====
+  int no = 1;
+  for (const auto& tx : rows) {
+    int    src = tx.value("sourceWalletId", -1);
+    int    dst = tx.value("destinationWalletId", -1);
+    double amt = tx.value("amount", 0.0);
+
+    // ±amount
+    std::ostringstream amtss; amtss << std::fixed << std::setprecision(2) << amt;
+    bool in = (dst == walletId);
+    std::string movement = (in ? "+" : "-") + amtss.str();
+
+    // Mô tả
+    const std::string& partner = in ? fullNameOfWallet(src) : fullNameOfWallet(dst);
+    std::string desc = in
+      ? ("Nhận điểm từ " + partner)
+      : ("Chuyển điểm đến " + partner);
+
+    // In 1 dòng
+    std::ostringstream line;
+    line << "| " << vnconsole::pad_left(std::to_string(no++), W_STT)
+         << " | " << vnconsole::pad_left(movement, W_MOVE)
+         << " | " << vnconsole::pad_right(desc, W_DESC)
+         << " |";
+    utils::MessageHandler::logMessage(line.str());
+  }
+
+  // ===== footer + số dư =====
+  utils::MessageHandler::logMessage(hline());
+
+  // Gọi để hiển thị số dư hiện tại
+  controllers::WalletController::getWalletByUserId(userId);
+
+  utils::input::pauseInput();
 }
 
 /**
