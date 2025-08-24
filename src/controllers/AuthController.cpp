@@ -13,6 +13,7 @@
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "utils/Validation.hpp"
 
 namespace controllers {
 
@@ -208,11 +209,16 @@ void AuthController::changePasswordWithOTP(const int userId,
                                            const std::string& newPassword) {
   try {
     auto userJson = services::UserService::findUserById(userId);
-    std::string email = userJson.value()["email"];
-
     if (!userJson.has_value())
-      throw exceptions::NotFoundException("Email không tồn tại!");
+      throw exceptions::NotFoundException("Người dùng không tồn tại!");
 
+    std::string email = userJson->at("email").get<std::string>();
+    std::string storedHash = userJson->at("passwordHash").get<std::string>();
+    // Kiểm tra mật khẩu cũ
+    if (!utils::hash::validatePassword(currentPassword, storedHash)) {
+      throw exceptions::ValidationException("Mật khẩu hiện tại không đúng!");
+    }
+    
     // Input OTP
     utils::MessageHandler::logMessage("Gửi mã OTP để xác thực...");
     services::OtpService::generateAndSendOTP(userId, email,

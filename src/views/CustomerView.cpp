@@ -11,6 +11,7 @@
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
 #include "utils/Utf8Console.hpp"
+#include "utils/Validation.hpp"
 
 namespace views {
 
@@ -341,12 +342,22 @@ void CustomerView::handleChangePassword() {
 
   std::string currentPassword =
       utils::input::getInput("Nhập mật khẩu hiện tại: ");
-  std::string newPassword = utils::input::getInput("Nhập mật khẩu mới: ");
+  std::string newPassword;
+  while (true) {
+    newPassword = utils::input::getInput("Nhập mật khẩu mới (≥ 6 ký tự):");
+    if (!utils::validation::isValidPassword(newPassword)) {
+      utils::MessageHandler::logError("Mật khẩu không hợp lệ! (tối thiểu 6 ký tự)");
+      utils::input::pauseInput();
+      continue; // quay lại vòng lặp, yêu cầu nhập lại
+    }
+    break;
+  }
   std::string confirmPassword =
       utils::input::getInput("Nhập lại mật khẩu mới: ");
 
   if (newPassword != confirmPassword) {
     utils::MessageHandler::logError("Mật khẩu mới không khớp!");
+    utils::input::pauseInput();
     return;
   }
 
