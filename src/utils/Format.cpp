@@ -113,4 +113,26 @@ std::string padRight(const std::string& str, int width) {
   }
   return str + std::string(width - visibleLen, ' ');
 }
+/**
+ * @brief Chia một chuỗi thành các dòng nhỏ hơn theo chiều rộng cố định.
+ *
+ * Input:
+ *   - text: Chuỗi cần chia.
+ *   - width: Chiều rộng tối đa của mỗi dòng.
+ *
+ * Output:
+ *   - Vector chứa các dòng đã chia.
+ *
+ * Thủ tục xử lý:
+ *   1. Tạo một vector để lưu các dòng kết quả.
+ *   2. Duyệt qua từng ký tự trong chuỗi, tạo dòng mới khi đạt chiều rộng.
+ *   3. Trả về vector chứa các dòng đã chia.
+ */
+std::vector<std::string> wrapText(const std::string& text, size_t width) {
+    std::vector<std::string> lines;
+    for (size_t i = 0; i < text.length(); i += width) {
+        lines.push_back(text.substr(i, width));
+    }
+    return lines;
+}
 }  // namespace utils::format

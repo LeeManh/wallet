@@ -9,10 +9,12 @@
 #include "services/AuthService.hpp"
 #include "services/OtpService.hpp"
 #include "services/UserService.hpp"
+#include "services/WalletService.hpp"
 #include "utils/ExceptionHandler.hpp"
 #include "utils/Format.hpp"
 #include "utils/Input.hpp"
 #include "utils/MessageHandler.hpp"
+#include "views/UserInfoView.hpp"
 
 namespace controllers {
 
@@ -124,12 +126,23 @@ void AuthController::getProfile(const int userId) {
     if (!userJson.has_value())
       throw exceptions::NotFoundException("Người dùng không tồn tại!");
 
-    utils::MessageHandler::logMessage("Thông tin người dùng:");
-    utils::MessageHandler::logMessage("User ID: " + std::to_string(userId));
-    utils::MessageHandler::logMessage(
-        "Họ tên: " + std::string(userJson.value()["fullName"]));
-    utils::MessageHandler::logMessage("Email: " +
-                                      std::string(userJson.value()["email"]));
+    std::string fullName = userJson.value()["fullName"];
+    std::string email = userJson.value()["email"];
+    std::string username = userJson.value()["username"];
+    int id = userJson.value()["id"];
+    bool isAdmin = userJson.value().contains("isAdmin") && userJson.value()["isAdmin"].get<bool>();
+    std::string role = isAdmin ? "📗 Quản trị viên" : "👤 Khách hàng";
+
+    // Lấy số dư ví
+    double walletBalance = 0.0;
+    auto walletOpt = services::WalletService::getWalletByUserId(userId);
+    if (walletOpt.has_value()) {
+      walletBalance = walletOpt->getPoint();
+    }
+
+    // Hiển thị thông tin
+    displayUserInfo(fullName, email, username, id, role, walletBalance);
+    
   } catch (const std::exception& e) {
     utils::ExceptionHandler::handleException(e);
   }

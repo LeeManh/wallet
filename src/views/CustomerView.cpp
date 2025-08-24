@@ -315,6 +315,9 @@ void CustomerView::handleEditProfile() {
 
   controllers::AuthController::updateProfile(userId, newFullName, newEmail);
 
+  // Hiển thị lại thông tin cá nhân sau khi cập nhật (UI mẫu)
+  controllers::AuthController::getProfile(userId);
+
   utils::input::pauseInput();
 }
 
