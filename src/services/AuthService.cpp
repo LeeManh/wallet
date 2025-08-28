@@ -15,6 +15,7 @@
 #include "utils/MessageHandler.hpp"
 #include "utils/Password.hpp"
 #include "utils/Storage.hpp"
+#include "utils/Format.hpp"
 
 namespace services {
 
@@ -211,18 +212,52 @@ bool AuthService::editUserInfo(int userId, const std::string& newFullName,
 
       // Xây dựng thông báo thay đổi
       std::ostringstream changeMsg;
+      bool hasChange = false;
+      const int fieldWidth = 10;
+      const int valueWidth = 40;
+
+      changeMsg << "🔄 Các thay đổi:\n";
+      changeMsg << "+" << std::string(fieldWidth+2, '-') << "+"
+                << std::string(valueWidth+2, '-') << "+\n";
+      changeMsg << "| " << utils::format::padRight("Trường", fieldWidth)
+                << " | " << utils::format::padRight("Thay đổi", valueWidth) << " |\n";
+      changeMsg << "+" << std::string(fieldWidth+2, '-') << "+"
+                << std::string(valueWidth+2, '-') << "+\n";
+
+      // Họ tên
       if (!newFullName.empty() && newFullName != oldFullName) {
-        changeMsg << "Họ tên: " << oldFullName << " -> " << newFullName << "\n";
+        std::string change = oldFullName + " → " + newFullName;
+        auto lines = utils::format::wrapText(change, valueWidth);
+        changeMsg << "| " << utils::format::padRight("Họ tên", fieldWidth) << " | "
+                  << utils::format::padRight(lines[0], valueWidth) << " |\n";
+        for (size_t i = 1; i < lines.size(); ++i) {
+          changeMsg << "| " << utils::format::padRight("", fieldWidth) << " | "
+                    << utils::format::padRight(lines[i], valueWidth) << " |\n";
+        }
+        changeMsg << "+" << std::string(fieldWidth+2, '-') << "+"
+                  << std::string(valueWidth+2, '-') << "+\n";
+        hasChange = true;
       }
+      // Email
       if (!newEmail.empty() && newEmail != oldEmail) {
-        changeMsg << "Email: " << oldEmail << " -> " << newEmail << "\n";
+        std::string change = oldEmail + " → " + newEmail;
+        auto lines = utils::format::wrapText(change, valueWidth);
+        changeMsg << "| " << utils::format::padRight("Email", fieldWidth) << " | "
+                  << utils::format::padRight(lines[0], valueWidth) << " |\n";
+        for (size_t i = 1; i < lines.size(); ++i) {
+          changeMsg << "| " << utils::format::padRight("", fieldWidth) << " | "
+                    << utils::format::padRight(lines[i], valueWidth) << " |\n";
+        }
+        changeMsg << "+" << std::string(fieldWidth+2, '-') << "+"
+                  << std::string(valueWidth+2, '-') << "+\n";
+        hasChange = true;
       }
+
       // Nếu có thay đổi, gửi OTP xác nhận
-      if (!changeMsg.str().empty()) {
+      if (hasChange) {
         utils::MessageHandler::logMessage(
-            "Hệ thống sẽ cập nhật thông tin sau khi bạn xác nhận OTP.\n"
-            "Các thay đổi:\n" +
-            changeMsg.str());
+            "Hệ thống sẽ cập nhật thông tin sau khi bạn xác nhận OTP.\n");
+        utils::MessageHandler::logMessage(changeMsg.str());
         otpValidation(userId, user["email"]);
       }
       // Cập nhật thông tin mới nếu đã xác thực OTP thành công
