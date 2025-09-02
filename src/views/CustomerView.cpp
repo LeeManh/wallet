@@ -12,6 +12,7 @@
 #include "utils/MessageHandler.hpp"
 #include "utils/Utf8Console.hpp"
 #include "utils/Validation.hpp"
+#include "exceptions/Exception.hpp"
 
 namespace views {
 
@@ -299,6 +300,15 @@ void CustomerView::handleViewTransactionHistory() {
  * Output:
  *   - Không trả về giá trị.
  *   - Lưu thông tin mới vào hệ thống.
+ *
+ * Thủ tục xử lý:
+ *   1. Hiển thị thông tin hiện tại của người dùng.
+ *   2. Vòng lặp nhập:
+ *      - Yêu cầu nhập họ tên mới và email mới.
+ *      - Gọi AuthController để cập nhật thông tin.
+ *      - Nếu ValidationException (email sai) → báo lỗi và cho nhập lại.
+ *      - Nếu lỗi khác → báo lỗi và thoát.
+ *   3. Khi cập nhật thành công → hiển thị lại thông tin cá nhân và dừng vòng lặp.
  */
 void CustomerView::handleEditProfile() {
   utils::MessageHandler::logMessage(
@@ -311,17 +321,28 @@ void CustomerView::handleEditProfile() {
   // Lấy thông tin hiện tại
   controllers::AuthController::getProfile(userId);
 
-  std::string newFullName = utils::input::getInput("Nhập họ tên mới (bỏ trống nếu không đổi): ");
-  std::string newEmail = utils::input::getInput("Nhập email mới (bỏ trống nếu không đổi): ");
+ while (true) {
+    try {
+      std::string newFullName = utils::input::getInput("Nhập họ tên mới (bỏ trống nếu không đổi): ");
+      std::string newEmail = utils::input::getInput("Nhập email mới (bỏ trống nếu không đổi): ");
 
-  controllers::AuthController::updateProfile(userId, newFullName, newEmail);
+      // Cập nhật thông tin
+      controllers::AuthController::updateProfile(userId, newFullName, newEmail);
+      break;
 
-  // Hiển thị lại thông tin cá nhân sau khi cập nhật (UI mẫu)
+    } catch (const exceptions::ValidationException& e) {
+      utils::MessageHandler::logError(e.what());
+      utils::MessageHandler::logMessage("Vui lòng nhập lại!\n");
+    } catch (const std::exception& e) {
+      utils::MessageHandler::logError(std::string("Lỗi: ") + e.what());
+      return; 
+    }
+  }
+
+  // Hiển thị lại thông tin cá nhân sau khi cập nhật thành công
   controllers::AuthController::getProfile(userId);
-
   utils::input::pauseInput();
 }
-
 /**
  * @brief Thay đổi mật khẩu của khách hàng.
  *
@@ -349,7 +370,7 @@ void CustomerView::handleChangePassword() {
   while (true) {
     newPassword = utils::input::getInput("Nhập mật khẩu mới (≥ 6 ký tự):");
     if (!utils::validation::isValidPassword(newPassword)) {
-      utils::MessageHandler::logError("Mật khẩu không hợp lệ! (tối thiểu 6 ký tự)");
+      utils::MessageHandler::logError("Mật khẩu không hợp lệ! Tối thiểu 6 ký tự.");
       utils::input::pauseInput();
       continue; // quay lại vòng lặp, yêu cầu nhập lại
     }
