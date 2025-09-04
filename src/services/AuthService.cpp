@@ -185,10 +185,11 @@ void AuthService::otpValidation(const int userId, const std::string& email) {
  *
  * Output:
  *   - Trả về true nếu cập nhật thành công.
+ *   - Ném ValidationException nếu email không hợp lệ.
  *   - Ném NotFoundException nếu user không tồn tại.
  *
  * Thủ tục xử lý:
- *   1. Xác thực email mới (nếu có).
+ *   1. Nếu có email mới, kiểm tra định dạng và trùng lặp.
  *   2. Tìm user trong file users.json.
  *   3. Nếu có họ tên mới hoặc email mới:
       - Hiển thị danh sách thay đổi
@@ -199,6 +200,9 @@ bool AuthService::editUserInfo(int userId, const std::string& newFullName,
                                const std::string& newEmail) {
   // Validate new email
   if (!newEmail.empty()) {
+    if (!utils::validation::isValidEmail(newEmail)) {
+        throw exceptions::ValidationException("Email không đúng định dạng. Ví dụ email hợp lệ: user.name123@example.com");
+    }
     UserService::validateUserEmail(userId, newEmail);
   }
 

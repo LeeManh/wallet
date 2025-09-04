@@ -52,7 +52,7 @@ void RegistrationView::display() {
   while (true) {
     email = utils::input::getInput("Nhập email: ");
     if (!utils::validation::isValidEmail(email)) {
-    utils::MessageHandler::logError("Email không hợp lệ!");
+    utils::MessageHandler::logError("Email không đúng định dạng. Ví dụ email hợp lệ: user.name123@example.com");
     } else {
     break;
     }
