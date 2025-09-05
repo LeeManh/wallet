@@ -7,7 +7,22 @@
 
 namespace views {
 
-void RegistrationView::display() {
+/**
+ * @brief Hiển thị giao diện đăng ký tài khoản mới.
+ *
+ * Input (từ bàn phím):
+ *   - Tên đăng nhập: tối thiểu 3 ký tự, chỉ gồm chữ, số, dấu gạch dưới.
+ *   - Mật khẩu: tối thiểu 6 ký tự.
+ *   - Xác nhận mật khẩu: phải khớp với mật khẩu đã nhập.
+ *   - Email: đúng định dạng theo quy tắc hệ thống.
+ *   - Họ tên: không được để trống.
+ *
+ * Output:
+ *   - Không trả về giá trị.
+ *   - Nếu hợp lệ: gọi AuthController::registerUser để đăng ký.
+ *   - Nếu sai: hiển thị lỗi và yêu cầu nhập lại cho đến khi đúng.
+ */
+  void RegistrationView::display() {
   utils::MessageHandler::logMessage("");
   utils::MessageHandler::logMessage(
       "┌─────────────────────────────────────────────┐");
