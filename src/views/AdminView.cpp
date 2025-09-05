@@ -652,6 +652,33 @@ bool views::AdminView::backupAllTo(const std::filesystem::path& outDir) {
     return false;
 }
 
+/**
+ * @brief Phục hồi dữ liệu hệ thống từ các file backup.
+ *
+ * Mục đích:
+ *   Đọc dữ liệu từ các file sao lưu (thông tin tài khoản, giao dịch, ví)
+ *   và import trở lại hệ thống.
+ *
+ * Input:
+ *   - credPath: Đường dẫn tới file backup thông tin tài khoản (credentials).
+ *   - txnPath: Đường dẫn tới file backup giao dịch (transactions).
+ *   - walletPath: Đường dẫn tới file backup ví (wallet).
+ *
+ * Output:
+ *   - true: Nếu phục hồi thành công tất cả các file hợp lệ.
+ *   - false: Nếu không có file nào được nhập hoặc có ít nhất một file thất bại.
+ *
+ * Thủ tục xử lý:
+ *   1. Kiểm tra nếu cả 3 đường dẫn đều rỗng → báo lỗi và trả về false.
+ *   2. Với từng file:
+ *        - Nếu đường dẫn không rỗng và file tồn tại → gọi service import.
+ *        - Nếu file không tồn tại → báo lỗi và đánh dấu thất bại.
+ *   3. Nếu tất cả các file hợp lệ → báo thành công, trả về true.
+ *   4. Nếu có file thất bại hoặc xảy ra exception → báo lỗi, trả về false.
+ *
+ * Ngoại lệ:
+ *   - Bắt và log std::exception nếu có lỗi trong quá trình import.
+ */
 bool views::AdminView::restoreFromFiles(const std::string& credPath,
                                         const std::string& txnPath,
                                         const std::string& walletPath) {
@@ -704,6 +731,33 @@ bool views::AdminView::restoreFromFiles(const std::string& credPath,
     return false;
 }
 
+/**
+ * @brief Hiển thị menu sao lưu & phục hồi dữ liệu cho Admin.
+ *
+ * Mục đích:
+ *   Cung cấp các lựa chọn để quản lý dữ liệu hệ thống:
+ *   - Tạo bản sao lưu mới
+ *   - Xem lịch sử sao lưu
+ *   - Khôi phục từ bản sao lưu đã có
+ *   - Khôi phục từ file/thư mục bên ngoài
+ *
+ * Input:
+ *   - Người dùng chọn thao tác từ bàn phím (0–4).
+ *
+ * Output:
+ *   - Thông báo kết quả thực hiện (thành công hoặc lỗi).
+ *
+ * Thủ tục xử lý:
+ *   1. Hiển thị menu lựa chọn.
+ *   2. Người dùng nhập số (0–4).
+ *      - 0 → Quay lại.
+ *      - 1 → Tạo bản sao lưu mới trong thư mục `backups/<timestamp>`.
+ *      - 2 → In ra toàn bộ lịch sử sao lưu.
+ *      - 3 → Liệt kê lịch sử sao lưu, cho phép chọn bản backup để khôi phục.
+ *      - 4 → Nhập đường dẫn file/thư mục bên ngoài, phục hồi dữ liệu từ đó.
+ *   3. Kiểm tra đường dẫn/file hợp lệ trước khi phục hồi.
+ *   4. Thông báo kết quả (thành công/thất bại) ra màn hình.
+ */
 void views::AdminView::handleBackupRestoreMenu() {
     while (true) {
         utils::MessageHandler::logMessage(
