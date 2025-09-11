@@ -21,8 +21,8 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 ### 🎪 Mục tiêu dự án
 
 - Xây dựng hệ thống quản lý tài khoản người dùng với bảo mật cao
-- Triển khai cơ chế ví điểm thưởng để quy đổi và giao dịch
-- Áp dụng xác thực hai lớp (2FA) với OTP cho các giao dịch quan trọng
+- Triển khai cơ chế ví điểm thưởng giao dịch
+- Áp dụng xác thực OTP cho các giao dịch quan trọng
 - Thực hiện quản lý vai trò người dùng (User/Admin)
 - Đảm bảo tính toàn vẹn dữ liệu trong các giao dịch chuyển điểm
 
@@ -76,7 +76,7 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 
 #### B. Phân quyền người dùng
 
-- **User Role**: Quản lý thông tin cá nhân, giao dịch ví
+- **User Role**: Quản lý thông tin cá nhân, giao dịch điểm trong ví
 - **Admin Role**: + Quản lý toàn bộ người dùng, thống kê hệ thống
 
 #### C. Quản lý hoạt động ví
@@ -127,6 +127,7 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 - Tạo tài khoản mới cho người dùng
 - Chỉnh sửa thông tin người dùng (với xác nhận OTP từ chủ tài khoản)
 - Xem thống kê hệ thống và danh sách ví
+- Backup và phục hồi dữ liệu
 
 ### 💰 C. Quản lý Ví Điểm Thưởng
 
