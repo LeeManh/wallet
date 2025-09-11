@@ -28,14 +28,52 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 
 ## 👥 Thành viên dự án
 
+
 ### 👨‍💻 Danh sách thành viên
 
-| STT | Họ tên             | MSSV       | Vai trò         | Công việc được giao                                    |
-| --- | ------------------ | ---------- | --------------- | ------------------------------------------------------ |
-| 1   | LÊ VĂN MẠNH        | K25DTCN137 | **Nhóm trưởng** | - Quản lý đăng nhập:<br/>  + Đăng nhập và đăng kí<br/>  + Sinh mật khẩu tự động khi đăng ký hoặc do admin tạo<br/>  + Thay đổi mật khẩu với xác thực OTP<br/>  + Xác thực đăng nhập bằng bcrypt<br/>- Quản lý hoạt động ví:<br/>  + Tạo ví cho user mới, quản lý ví hệ thống<br/>  + Đảm bảo các giao dịch tuân thủ nguyên tắc ACID (atomic, rollback nếu lỗi)<br/>  + Ghi log giao dịch, cập nhật trạng thái giao dịch<br/>- Bảo mật:<br/>  + Thiết lập hệ thống OTP |
-| 2   | NGÔ PHƯƠNG CHI.    | K25DTCN130 | **Thành Viên**  | - Quản lý thông tin người dùng:<br/>  + Chức năng người dùng tự cập nhật thông tin cá nhân<br/>  + Validate input khi đăng nhập và đăng ký<br/>- Tài liệu và chú thích:<br/>  + Làm chú thích cho các phần: views, utils, exceptions, controllers<br/>  + Làm tài liệu dự án<br/>- Thiết kế database |
-| 3   | ĐỖ THANH HÀ        | K25DTCN152 | **Thành Viên**  | - Quản lý dữ liệu và hiển thị:<br/>  + Hiển thị và format bảng user<br/>  + Seed data khi khởi tạo project lần đầu<br/>- Tài liệu và chú thích:<br/>  + Làm chú thích cho các phần: seeds, services, models<br/>  + Làm hướng dẫn setup project<br/>- Kiểm thử phần mềm |
-| 4   | VŨ THỊ LAN PHƯƠNG  | K25DTCN187 | **Thành Viên**  | - Quản lý lịch sử và backup:<br/>  + Chức năng lịch sử giao dịch cho ví User và tra cứu lịch sử giao dịch cho admin<br/>  + Backup data, lịch sử backup<br/>  + Restore data đã backup trong ds lịch sử<br/>  + Restore data theo link, file data copy<br/>- Hỗ trợ hệ thống:<br/>  + Chức năng hỗ trợ hiển tiếng Việt cho win |
+#### 1. **LÊ VĂN MẠNH** (K25DTCN137) — Nhóm trưởng
+**Công việc:**
+- Quản lý đăng nhập:
+   - Đăng nhập và đăng kí
+   - Sinh mật khẩu tự động khi đăng ký hoặc do admin tạo
+   - Thay đổi mật khẩu với xác thực OTP
+   - Xác thực đăng nhập bằng bcrypt
+- Quản lý hoạt động ví:
+   - Tạo ví cho user mới, quản lý ví hệ thống
+   - Đảm bảo các giao dịch tuân thủ nguyên tắc ACID (atomic, rollback nếu lỗi)
+   - Ghi log giao dịch, cập nhật trạng thái giao dịch
+- Bảo mật:
+   - Thiết lập hệ thống OTP
+
+#### 2. **NGÔ PHƯƠNG CHI.** (K25DTCN130) — Thành viên
+**Công việc:**
+- Quản lý thông tin người dùng:
+   - Chức năng người dùng tự cập nhật thông tin cá nhân
+   - Validate input khi đăng nhập và đăng ký
+- Tài liệu và chú thích:
+   - Làm chú thích cho các phần: views, utils, exceptions, controllers
+   - Làm tài liệu dự án
+- Thiết kế database
+
+#### 3. **ĐỖ THANH HÀ** (K25DTCN152) — Thành viên
+**Công việc:**
+- Quản lý dữ liệu và hiển thị:
+   - Hiển thị và format bảng user
+   - Seed data khi khởi tạo project lần đầu
+- Tài liệu và chú thích:
+   - Làm chú thích cho các phần: seeds, services, models
+   - Làm hướng dẫn setup project
+- Kiểm thử phần mềm
+
+#### 4. **VŨ THỊ LAN PHƯƠNG** (K25DTCN187) — Thành viên
+**Công việc:**
+- Quản lý lịch sử và backup:
+   - Chức năng lịch sử giao dịch cho ví User và tra cứu lịch sử giao dịch cho admin
+   - Backup data, lịch sử backup
+   - Restore data đã backup trong ds lịch sử
+   - Restore data theo link, file data copy
+- Hỗ trợ hệ thống:
+   - Chức năng hỗ trợ hiển tiếng Việt cho win
 
 ## 📊 Phân tích và đặc tả chức năng
 
