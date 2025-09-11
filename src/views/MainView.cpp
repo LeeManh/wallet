@@ -86,13 +86,14 @@ void MainView::handleLogin() {
   while (true) {
     username = utils::input::getInput("Nhập tên đăng nhập: ");
     if (!utils::validation::isValidUsername(username)) {
-      utils::MessageHandler::logError("Tên đăng nhập không hợp lệ!");
+      utils::MessageHandler::logError("Tên đăng nhập không hợp lệ! Tối thiểu 3 ký tự, chỉ gồm chữ, số, dấu "
+        "gạch dưới.");
       continue;
     }
 
     password = utils::input::getInput("Nhập mật khẩu: ");
     if (!utils::validation::isValidPassword(password)) {
-      utils::MessageHandler::logError("Mật khẩu không hợp lệ!");
+      utils::MessageHandler::logError("Mật khẩu không hợp lệ! Tối thiểu 6 ký tự.");
       continue;
     }
 

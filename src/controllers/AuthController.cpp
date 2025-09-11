@@ -166,12 +166,8 @@ void AuthController::getProfile(const int userId) {
 void AuthController::updateProfile(const int userId,
                                    const std::string& newFullName,
                                    const std::string& newEmail) {
-  try {
-    services::AuthService::editUserInfo(userId, newFullName, newEmail);
-    utils::MessageHandler::logSuccess("Cập nhật thông tin thành công!");
-  } catch (const std::exception& e) {
-    utils::ExceptionHandler::handleException(e);
-  }
+services::AuthService::editUserInfo(userId, newFullName, newEmail);
+utils::MessageHandler::logSuccess("Cập nhật thông tin thành công!");
 }
 
 /**
