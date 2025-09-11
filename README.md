@@ -32,10 +32,10 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 
 | STT | Họ tên             | MSSV       | Vai trò         | Công việc được giao                                    |
 | --- | ------------------ | ---------- | --------------- | ------------------------------------------------------ |
-| 1   | LÊ VĂN MẠNH        | K25DTCN137 | **Nhóm trưởng** | - [Công việc sẽ được phân công]<br/>- [Chưa thực hiện] |
-| 2   | [Tên thành viên 2] | [MSSV2]    | **Thành Viên**  | - [Công việc sẽ được phân công]<br/>- [Chưa thực hiện] |
-| 3   | [Tên thành viên 3] | [MSSV3]    | **Thành Viên**  | - [Công việc sẽ được phân công]<br/>- [Chưa thực hiện] |
-| 4   | [Tên thành viên 4] | [MSSV4]    | **Thành Viên**  | - [Công việc sẽ được phân công]<br/>- [Chưa thực hiện] |
+| 1   | LÊ VĂN MẠNH        | K25DTCN137 | **Nhóm trưởng** | - Quản lý đăng nhập:<br/>  + Đăng nhập và đăng kí<br/>  + Sinh mật khẩu tự động khi đăng ký hoặc do admin tạo<br/>  + Thay đổi mật khẩu với xác thực OTP<br/>  + Xác thực đăng nhập bằng bcrypt<br/>- Quản lý hoạt động ví:<br/>  + Tạo ví cho user mới, quản lý ví hệ thống<br/>  + Đảm bảo các giao dịch tuân thủ nguyên tắc ACID (atomic, rollback nếu lỗi)<br/>  + Ghi log giao dịch, cập nhật trạng thái giao dịch<br/>- Bảo mật:<br/>  + Thiết lập hệ thống OTP |
+| 2   | NGÔ PHƯƠNG CHI.    | K25DTCN130 | **Thành Viên**  | - Quản lý thông tin người dùng:<br/>  + Chức năng người dùng tự cập nhật thông tin cá nhân<br/>  + Validate input khi đăng nhập và đăng ký<br/>- Tài liệu và chú thích:<br/>  + Làm chú thích cho các phần: views, utils, exceptions, controllers<br/>  + Làm tài liệu dự án<br/>- Thiết kế database |
+| 3   | ĐỖ THANH HÀ        | K25DTCN152 | **Thành Viên**  | - Quản lý dữ liệu và hiển thị:<br/>  + Hiển thị và format bảng user<br/>  + Seed data khi khởi tạo project lần đầu<br/>- Tài liệu và chú thích:<br/>  + Làm chú thích cho các phần: seeds, services, models<br/>  + Làm hướng dẫn setup project<br/>- Kiểm thử phần mềm |
+| 4   | VŨ THỊ LAN PHƯƠNG  | K25DTCN187 | **Thành Viên**  | - Quản lý lịch sử và backup:<br/>  + Chức năng lịch sử giao dịch cho ví User và tra cứu lịch sử giao dịch cho admin<br/>  + Backup data, lịch sử backup<br/>  + Restore data đã backup trong ds lịch sử<br/>  + Restore data theo link, file data copy<br/>- Hỗ trợ hệ thống:<br/>  + Chức năng hỗ trợ hiển tiếng Việt cho win |
 
 ## 📊 Phân tích và đặc tả chức năng
 
@@ -117,7 +117,7 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 - Xem và chỉnh sửa thông tin cá nhân
 - Xem số dư ví điểm
 - Thực hiện giao dịch chuyển điểm
-- Xem lịch sử giao dịch _(đang phát triển)_
+- Xem lịch sử giao dịch
 - Thay đổi mật khẩu với xác thực OTP
 
 #### 👨‍💼 Người quản lý (Admin)
@@ -145,7 +145,7 @@ Hệ thống Đăng nhập và Quản lý Ví Điểm Thưởng là một ứng 
 
 3. **Báo cáo và thống kê**
    - Theo dõi số dư ví cá nhân
-   - Lịch sử giao dịch chi tiết _(đang phát triển)_
+   - Lịch sử giao dịch chi tiết 
    - Thống kê tổng quan hệ thống (Admin)
 
 ## 🏗️ Kiến trúc hệ thống
@@ -462,6 +462,16 @@ wallet/
 - **Validation**: Kiểm tra đầu vào nghiêm ngặt
 - **Access Control**: Phân quyền rõ ràng giữa User và Admin
 - **Transaction Safety**: Đảm bảo tính atomic của giao dịch
+
+## 🖼️ Demo
+
+### Giao diện menu người dùng
+
+![Menu User](assets/menu-user.png)
+
+### Giao diện menu admin
+
+![Menu Admin](assets/menu-admin.png)
 
 ## 📚 Tài liệu tham khảo
 
